@@ -1,1 +1,562 @@
-# common-platform-customer-mgmt
+# Firefly OpenCore Banking Platform - Customer Management Core Module
+
+[![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com/firefly-oss/common-platform-customer-mgmt)
+[![License](https://img.shields.io/badge/license-Apache%20License%202.0-blue)](LICENSE)
+[![Version](https://img.shields.io/badge/version-1.0.0--SNAPSHOT-orange.svg)](pom.xml)
+
+## Overview
+
+The **Firefly OpenCore Banking Platform - Customer Management Core Module** is a comprehensive, reactive microservice designed for managing customer data in modern banking and financial services platforms. Built with Spring WebFlux and reactive programming principles, this module provides a complete solution for handling both individual (Natural Person) and corporate (Legal Entity) customers with full compliance capabilities.
+
+### Key Features
+
+- **Reactive Architecture**: Built on Spring WebFlux for non-blocking, scalable operations
+- **Comprehensive Customer Management**: Support for both individual and corporate customers
+- **Regulatory Compliance**: Built-in GDPR consent management and PEP (Politically Exposed Person) tracking
+- **Multi-dimensional Relationships**: Complex party-to-party relationship modeling
+- **Contact Management**: Multi-channel contact information with verification capabilities
+- **Document Management**: Identity document handling and storage
+- **Geographic Support**: Address management with geo-location capabilities
+- **RESTful API**: Complete OpenAPI 3.0 documented REST endpoints
+- **Multi-module Architecture**: Clean separation of concerns across 5 modules
+
+## Architecture
+
+### Module Structure
+
+```
+common-platform-customer-mgmt/
+├── common-platform-customer-mgmt-core/       # Business logic and services
+├── common-platform-customer-mgmt-interfaces/ # Enums and interface definitions
+├── common-platform-customer-mgmt-models/     # JPA entities and data models
+├── common-platform-customer-mgmt-sdk/        # Client SDK for integration
+└── common-platform-customer-mgmt-web/        # REST controllers and web layer
+```
+
+### Technology Stack
+
+- **Framework**: Spring Boot 3.x with Spring WebFlux
+- **Database**: PostgreSQL with Spring Data R2DBC
+- **Build Tool**: Maven 3.x
+- **Documentation**: OpenAPI 3.0 / Swagger
+- **Testing**: JUnit 5, Mockito
+- **Code Quality**: Lombok for boilerplate reduction
+
+## Entity Relationship Diagram
+
+The following diagram illustrates the complete data model and relationships between all entities in the system:
+
+```mermaid
+erDiagram
+    PARTY {
+        bigint party_id PK
+        varchar party_kind "NATURAL_PERSON | LEGAL_ENTITY"
+        varchar preferred_language
+        varchar source_system
+        timestamp created_at
+        timestamp updated_at
+    }
+    
+    NATURAL_PERSON {
+        bigint natural_person_id PK
+        bigint party_id FK
+        varchar title
+        varchar given_name
+        varchar middle_name
+        varchar family_name1
+        varchar family_name2
+        date date_of_birth
+        varchar birth_place
+        bigint birth_country_id FK
+        bigint nationality_country_id FK
+        varchar gender "MALE | FEMALE | OTHER"
+        varchar marital_status "SINGLE | MARRIED | DIVORCED | WIDOWED | SEPARATED"
+        varchar tax_id_number
+        varchar residency_status "RESIDENT | NON_RESIDENT | TEMPORARY_RESIDENT"
+        varchar occupation
+        decimal monthly_income
+        varchar suffix
+        timestamp created_at
+        timestamp updated_at
+    }
+    
+    LEGAL_ENTITY {
+        bigint legal_entity_id PK
+        bigint party_id FK
+        varchar legal_name
+        varchar trade_name
+        varchar registration_number
+        varchar tax_id_number
+        bigint legal_form_id FK
+        date incorporation_date
+        varchar industry_description
+        bigint headcount
+        decimal share_capital
+        varchar website_url
+        bigint incorporation_country_id FK
+        timestamp created_at
+        timestamp updated_at
+    }
+    
+    ADDRESS {
+        bigint address_id PK
+        bigint party_id FK
+        varchar address_kind "HOME | WORK | BILLING | MAILING | OTHER"
+        varchar line1
+        varchar line2
+        varchar city
+        varchar region
+        varchar postal_code
+        bigint country_id FK
+        boolean is_primary
+        decimal latitude
+        decimal longitude
+        timestamp created_at
+        timestamp updated_at
+    }
+    
+    EMAIL_CONTACT {
+        bigint email_contact_id PK
+        bigint party_id FK
+        varchar email
+        varchar email_kind "PERSONAL | WORK | OTHER"
+        boolean is_primary
+        boolean is_verified
+        timestamp created_at
+        timestamp updated_at
+    }
+    
+    PHONE_CONTACT {
+        bigint phone_contact_id PK
+        bigint party_id FK
+        varchar phone_number
+        varchar phone_kind "MOBILE | HOME | WORK | FAX | OTHER"
+        varchar country_code
+        varchar extension
+        boolean is_primary
+        boolean is_verified
+        timestamp created_at
+        timestamp updated_at
+    }
+    
+    IDENTITY_DOCUMENT {
+        bigint identity_document_id PK
+        bigint party_id FK
+        varchar document_type "PASSPORT | ID_CARD | DRIVER_LICENSE | OTHER"
+        varchar document_number
+        varchar issuing_authority
+        bigint issuing_country_id FK
+        date issue_date
+        date expiry_date
+        boolean is_verified
+        varchar verification_method
+        timestamp created_at
+        timestamp updated_at
+    }
+    
+    CONSENT {
+        bigint consent_id PK
+        bigint party_id FK
+        varchar consent_type "DATA_PROCESSING | MARKETING | COOKIES | OTHER"
+        boolean granted
+        timestamp consent_date
+        timestamp expiry_date
+        varchar purpose_description
+        varchar legal_basis
+        varchar withdrawal_method
+        boolean is_active
+        timestamp created_at
+        timestamp updated_at
+    }
+    
+    PARTY_RELATIONSHIP {
+        bigint party_relationship_id PK
+        bigint from_party_id FK
+        bigint to_party_id FK
+        bigint relationship_type_id FK
+        timestamp start_date
+        timestamp end_date
+        boolean active
+        text notes
+        timestamp created_at
+        timestamp updated_at
+    }
+    
+    PARTY_STATUS {
+        bigint party_status_id PK
+        bigint party_id FK
+        varchar status_type "ACTIVE | INACTIVE | SUSPENDED | BLOCKED | PENDING"
+        varchar reason
+        timestamp effective_date
+        timestamp expiry_date
+        varchar set_by_user
+        text comments
+        timestamp created_at
+        timestamp updated_at
+    }
+    
+    PARTY_ECONOMIC_ACTIVITY {
+        bigint party_economic_activity_id PK
+        bigint party_id FK
+        varchar activity_code
+        varchar activity_description
+        boolean is_primary
+        decimal annual_revenue
+        varchar employment_status "EMPLOYED | SELF_EMPLOYED | UNEMPLOYED | RETIRED"
+        varchar employer_name
+        timestamp start_date
+        timestamp end_date
+        timestamp created_at
+        timestamp updated_at
+    }
+    
+    PARTY_PROVIDER {
+        bigint party_provider_id PK
+        bigint party_id FK
+        varchar provider_type "BANK | INSURANCE | INVESTMENT | OTHER"
+        varchar provider_name
+        varchar provider_code
+        varchar relationship_type
+        timestamp relationship_start_date
+        timestamp relationship_end_date
+        boolean is_active
+        text additional_info
+        timestamp created_at
+        timestamp updated_at
+    }
+    
+    POLITICALLY_EXPOSED_PERSON {
+        bigint pep_id PK
+        bigint party_id FK
+        varchar pep_category "DOMESTIC | FOREIGN | INTERNATIONAL"
+        varchar position_held
+        varchar organization_name
+        bigint jurisdiction_country_id FK
+        date position_start_date
+        date position_end_date
+        boolean is_current
+        varchar risk_level "LOW | MEDIUM | HIGH"
+        date last_reviewed
+        varchar reviewed_by
+        text notes
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    %% Relationships
+    PARTY ||--o| NATURAL_PERSON : "is a"
+    PARTY ||--o| LEGAL_ENTITY : "is a"
+    PARTY ||--o{ ADDRESS : "has"
+    PARTY ||--o{ EMAIL_CONTACT : "has"
+    PARTY ||--o{ PHONE_CONTACT : "has"
+    PARTY ||--o{ IDENTITY_DOCUMENT : "has"
+    PARTY ||--o{ CONSENT : "gives"
+    PARTY ||--o{ PARTY_STATUS : "has"
+    PARTY ||--o{ PARTY_ECONOMIC_ACTIVITY : "performs"
+    PARTY ||--o{ PARTY_PROVIDER : "relates to"
+    PARTY ||--o| POLITICALLY_EXPOSED_PERSON : "may be"
+    
+    PARTY ||--o{ PARTY_RELATIONSHIP : "from"
+    PARTY ||--o{ PARTY_RELATIONSHIP : "to"
+```
+
+### Entity Descriptions
+
+#### Core Entities
+
+- **Party**: The supertype entity representing any customer (individual or corporate)
+- **Natural Person**: Individual customers with personal information, demographics, and financial data
+- **Legal Entity**: Corporate customers with business registration, incorporation details, and company metrics
+
+#### Contact & Address Entities
+
+- **Address**: Physical addresses with geo-location support and multiple address types
+- **Email Contact**: Email addresses with verification status and categorization
+- **Phone Contact**: Phone numbers with country codes, extensions, and verification
+
+#### Document & Compliance Entities
+
+- **Identity Document**: Government-issued identification documents with verification tracking
+- **Consent**: GDPR-compliant consent management for data processing and marketing
+- **Politically Exposed Person**: Regulatory compliance for PEP identification and risk assessment
+
+#### Relationship & Status Entities
+
+- **Party Relationship**: Many-to-many relationships between parties with temporal data
+- **Party Status**: Status tracking with reasons and effective dates
+- **Party Economic Activity**: Employment and business activity information
+- **Party Provider**: Relationships with other financial service providers
+
+## API Structure
+
+### RESTful Endpoints
+
+All API endpoints follow RESTful conventions and start with `/api/v1`. The system uses reactive programming with `Mono<ResponseEntity<T>>` return types.
+
+#### Main Resources
+
+- **Parties**: `/api/v1/parties` - Core customer management
+- **Natural Persons**: `/api/v1/parties/{partyId}/natural-persons` - Individual customer details  
+- **Legal Entities**: `/api/v1/parties/{partyId}/legal-entities` - Corporate customer details
+
+#### Contact Management
+
+- **Addresses**: `/api/v1/parties/{partyId}/addresses` - Physical address management
+- **Email Contacts**: `/api/v1/parties/{partyId}/contacts/email` - Email address management
+- **Phone Contacts**: `/api/v1/parties/{partyId}/contacts/phone` - Phone number management
+
+#### Document & Compliance
+
+- **Identity Documents**: `/api/v1/parties/{partyId}/documents/identity` - Document management
+- **Consents**: `/api/v1/parties/{partyId}/consents` - Privacy consent management
+- **PEP Records**: `/api/v1/politically-exposed-persons` - Regulatory compliance
+
+#### Relationships
+
+- **Party Relationships**: `/api/v1/parties/{partyId}/relationships` - Inter-party relationships
+
+### API Features
+
+- **OpenAPI 3.0 Documentation**: Complete Swagger documentation
+- **Reactive Programming**: Non-blocking I/O with Spring WebFlux
+- **Validation**: Jakarta Bean Validation with comprehensive error handling
+- **Pagination**: Built-in pagination support for list operations
+- **Filtering**: Advanced filtering capabilities with FilterRequest pattern
+
+## Getting Started
+
+### Prerequisites
+
+- Java 17 or later
+- Maven 3.8 or later
+- PostgreSQL 13 or later
+- Docker (optional, for containerized deployment)
+
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/firefly-oss/common-platform-customer-mgmt.git
+   cd common-platform-customer-mgmt
+   ```
+
+2. **Build the project**
+   ```bash
+   mvn clean compile
+   ```
+
+3. **Run tests**
+   ```bash
+   mvn test
+   ```
+
+4. **Package the application**
+   ```bash
+   mvn clean package
+   ```
+
+### Configuration
+
+#### Database Configuration
+
+Configure PostgreSQL connection in `application.yml`:
+
+```yaml
+spring:
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5432/customer_mgmt
+    username: your_username
+    password: your_password
+    pool:
+      initial-size: 10
+      max-size: 50
+```
+
+#### Application Properties
+
+```yaml
+server:
+  port: 8080
+  
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+        
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+```
+
+### Running the Application
+
+#### Development Mode
+
+```bash
+mvn spring-boot:run -pl common-platform-customer-mgmt-web
+```
+
+#### Production Mode
+
+```bash
+java -jar common-platform-customer-mgmt-web/target/common-platform-customer-mgmt-web-1.0.0-SNAPSHOT.jar
+```
+
+#### Docker Deployment
+
+```bash
+# Build Docker image
+docker build -t firefly-customer-mgmt .
+
+# Run container
+docker run -p 8080:8080 -e DATABASE_URL=postgresql://localhost:5432/customer_mgmt firefly-customer-mgmt
+```
+
+### API Documentation
+
+Once the application is running, access the interactive API documentation at:
+
+- **Swagger UI**: http://localhost:8080/swagger-ui.html
+- **OpenAPI Spec**: http://localhost:8080/v3/api-docs
+
+## Development
+
+### Project Structure
+
+```
+src/
+├── main/java/com/catalis/core/customer/
+│   ├── core/           # Business logic and services
+│   ├── interfaces/     # Enums and interfaces
+│   ├── models/         # Entity definitions
+│   ├── sdk/           # Client SDK
+│   └── web/           # REST controllers
+└── test/java/         # Unit and integration tests
+```
+
+### Code Quality
+
+- **Lombok**: Used for reducing boilerplate code
+- **Validation**: Jakarta Bean Validation annotations
+- **Testing**: Comprehensive unit tests with JUnit 5 and Mockito
+- **Documentation**: JavaDoc for all public APIs
+
+### Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+### Testing Strategy
+
+```bash
+# Unit tests
+mvn test
+
+# Integration tests
+mvn verify
+
+# Test coverage report
+mvn jacoco:report
+```
+
+## Deployment
+
+### Environment-Specific Configuration
+
+#### Development
+```yaml
+spring:
+  profiles:
+    active: dev
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5432/customer_mgmt_dev
+```
+
+#### Staging
+```yaml
+spring:
+  profiles:
+    active: staging
+  r2dbc:
+    url: r2dbc:postgresql://staging-db:5432/customer_mgmt
+```
+
+#### Production
+```yaml
+spring:
+  profiles:
+    active: prod
+  r2dbc:
+    url: r2dbc:postgresql://prod-db:5432/customer_mgmt
+```
+
+### Monitoring & Observability
+
+- **Health Checks**: `/actuator/health`
+- **Metrics**: `/actuator/metrics`
+- **Info**: `/actuator/info`
+
+## Security
+
+### Data Protection
+
+- **GDPR Compliance**: Built-in consent management
+- **Data Encryption**: Sensitive data encryption at rest
+- **Access Control**: Role-based access control (RBAC)
+- **Audit Trail**: Comprehensive audit logging
+
+### API Security
+
+- **Authentication**: OAuth 2.0 / JWT support
+- **Authorization**: Method-level security
+- **Rate Limiting**: API rate limiting capabilities
+- **Input Validation**: Comprehensive input validation
+
+## Performance
+
+### Reactive Architecture Benefits
+
+- **Non-blocking I/O**: Improved throughput and resource utilization
+- **Backpressure Support**: Handling of varying load conditions
+- **Scalability**: Horizontal scaling capabilities
+- **Resource Efficiency**: Lower memory and thread usage
+
+### Database Optimization
+
+- **Connection Pooling**: R2DBC connection pool configuration
+- **Query Optimization**: Efficient query patterns
+- **Indexing Strategy**: Optimized database indexes
+- **Caching**: Strategic caching implementation
+
+## Support
+
+### Community
+
+- **Issues**: [GitHub Issues](https://github.com/firefly-oss/common-platform-customer-mgmt/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/firefly-oss/common-platform-customer-mgmt/discussions)
+- **Team**: Firefly Team
+
+### Commercial Support
+
+For enterprise support and consulting services, contact the Firefly Team.
+
+## License
+
+This project is licensed under the Apache 2.0 License - see the [LICENSE](LICENSE) file for details.
+
+## Acknowledgments
+
+- **Firefly Team** - Core development and architecture
+- **Spring Team** - For the excellent reactive framework
+- **PostgreSQL Community** - For the robust database platform
+
+---
+
+**Firefly OpenCore Banking Platform** - Empowering the next generation of financial services.
