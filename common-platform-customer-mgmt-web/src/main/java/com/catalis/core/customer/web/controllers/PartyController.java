@@ -1,0 +1,160 @@
+package com.catalis.core.customer.web.controllers;
+
+import com.catalis.common.core.filters.FilterRequest;
+import com.catalis.common.core.queries.PaginationResponse;
+import com.catalis.core.customer.core.services.PartyService;
+import com.catalis.core.customer.interfaces.dtos.PartyDTO;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Mono;
+
+import jakarta.validation.Valid;
+
+@RestController
+@RequestMapping("/api/v1/parties")
+@RequiredArgsConstructor
+@Validated
+@Tag(
+    name = "Parties", 
+    description = "API for managing parties - the main customer entities in the system"
+)
+public class PartyController {
+
+    private final PartyService partyService;
+
+    @PostMapping("/filter")
+    @Operation(
+        summary = "Filter parties",
+        description = "Retrieve a paginated list of parties based on filtering criteria"
+    )
+    @ApiResponses({
+        @ApiResponse(
+            responseCode = "200", 
+            description = "Successfully retrieved filtered parties",
+            content = @Content(schema = @Schema(implementation = PaginationResponse.class))
+        ),
+        @ApiResponse(
+            responseCode = "400", 
+            description = "Invalid filter request",
+            content = @Content
+        )
+    })
+    public Mono<ResponseEntity<PaginationResponse<PartyDTO>>> filterParties(
+            @Parameter(description = "Filter criteria for parties", required = true)
+            @Valid @RequestBody FilterRequest<PartyDTO> filterRequest) {
+        return partyService.filterParties(filterRequest)
+                .map(ResponseEntity::ok);
+    }
+
+    @PostMapping
+    @Operation(
+        summary = "Create party",
+        description = "Create a new party in the system"
+    )
+    @ApiResponses({
+        @ApiResponse(
+            responseCode = "201", 
+            description = "Party successfully created",
+            content = @Content(schema = @Schema(implementation = PartyDTO.class))
+        ),
+        @ApiResponse(
+            responseCode = "400", 
+            description = "Invalid party data",
+            content = @Content
+        )
+    })
+    public Mono<ResponseEntity<PartyDTO>> createParty(
+            @Parameter(description = "Party data to create", required = true)
+            @Valid @RequestBody PartyDTO partyDTO) {
+        return partyService.createParty(partyDTO)
+                .map(party -> ResponseEntity.status(HttpStatus.CREATED).body(party));
+    }
+
+    @GetMapping("/{partyId}")
+    @Operation(
+        summary = "Get party by ID",
+        description = "Retrieve a specific party by its unique identifier"
+    )
+    @ApiResponses({
+        @ApiResponse(
+            responseCode = "200", 
+            description = "Party found",
+            content = @Content(schema = @Schema(implementation = PartyDTO.class))
+        ),
+        @ApiResponse(
+            responseCode = "404", 
+            description = "Party not found",
+            content = @Content
+        )
+    })
+    public Mono<ResponseEntity<PartyDTO>> getPartyById(
+            @Parameter(description = "Unique identifier of the party", required = true)
+            @PathVariable Long partyId) {
+        return partyService.getPartyById(partyId)
+                .map(ResponseEntity::ok);
+    }
+
+    @PutMapping("/{partyId}")
+    @Operation(
+        summary = "Update party",
+        description = "Update an existing party with new information"
+    )
+    @ApiResponses({
+        @ApiResponse(
+            responseCode = "200", 
+            description = "Party successfully updated",
+            content = @Content(schema = @Schema(implementation = PartyDTO.class))
+        ),
+        @ApiResponse(
+            responseCode = "400", 
+            description = "Invalid party data",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "404", 
+            description = "Party not found",
+            content = @Content
+        )
+    })
+    public Mono<ResponseEntity<PartyDTO>> updateParty(
+            @Parameter(description = "Unique identifier of the party", required = true)
+            @PathVariable Long partyId,
+            @Parameter(description = "Updated party data", required = true)
+            @Valid @RequestBody PartyDTO partyDTO) {
+        return partyService.updateParty(partyId, partyDTO)
+                .map(ResponseEntity::ok);
+    }
+
+    @DeleteMapping("/{partyId}")
+    @Operation(
+        summary = "Delete party",
+        description = "Delete a party from the system"
+    )
+    @ApiResponses({
+        @ApiResponse(
+            responseCode = "204", 
+            description = "Party successfully deleted"
+        ),
+        @ApiResponse(
+            responseCode = "404", 
+            description = "Party not found",
+            content = @Content
+        )
+    })
+    public Mono<ResponseEntity<Void>> deleteParty(
+            @Parameter(description = "Unique identifier of the party", required = true)
+            @PathVariable Long partyId) {
+        return partyService.deleteParty(partyId)
+                .then(Mono.just(ResponseEntity.noContent().build()));
+    }
+}
