@@ -1,0 +1,53 @@
+package com.catalis.core.customer.core.services;
+
+import com.catalis.common.core.filters.FilterRequest;
+import com.catalis.common.core.queries.PaginationResponse;
+import com.catalis.core.customer.interfaces.dtos.ConsentDTO;
+import reactor.core.publisher.Mono;
+
+/**
+ * Service interface for managing consents.
+ */
+public interface ConsentService {
+    /**
+     * Filters the consents based on the given criteria.
+     *
+     * @param filterRequest the request object containing filtering criteria for ConsentDTO
+     * @return a reactive {@code Mono} emitting a {@code PaginationResponse} containing the filtered list of consents
+     */
+    Mono<PaginationResponse<ConsentDTO>> filterConsents(FilterRequest<ConsentDTO> filterRequest);
+    
+    /**
+     * Creates a new consent based on the provided information.
+     *
+     * @param consentDTO the DTO object containing details of the consent to be created
+     * @return a Mono that emits the created ConsentDTO object
+     */
+    Mono<ConsentDTO> createConsent(ConsentDTO consentDTO);
+    
+    /**
+     * Updates an existing consent with updated information.
+     *
+     * @param consentId the unique identifier of the consent to be updated
+     * @param consentDTO the data transfer object containing the updated details of the consent
+     * @return a reactive Mono containing the updated ConsentDTO
+     */
+    Mono<ConsentDTO> updateConsent(Long consentId, ConsentDTO consentDTO);
+    
+    /**
+     * Deletes a consent identified by its unique ID.
+     *
+     * @param consentId the unique identifier of the consent to be deleted
+     * @return a Mono that completes when the consent is successfully deleted or errors if the deletion fails
+     */
+    Mono<Void> deleteConsent(Long consentId);
+    
+    /**
+     * Retrieves a consent by its unique identifier.
+     *
+     * @param consentId the unique identifier of the consent to retrieve
+     * @return a Mono emitting the {@link ConsentDTO} representing the consent if found,
+     *         or an empty Mono if the consent does not exist
+     */
+    Mono<ConsentDTO> getConsentById(Long consentId);
+}

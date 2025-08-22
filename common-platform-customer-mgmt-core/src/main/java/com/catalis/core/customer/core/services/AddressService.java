@@ -1,0 +1,53 @@
+package com.catalis.core.customer.core.services;
+
+import com.catalis.common.core.filters.FilterRequest;
+import com.catalis.common.core.queries.PaginationResponse;
+import com.catalis.core.customer.interfaces.dtos.AddressDTO;
+import reactor.core.publisher.Mono;
+
+/**
+ * Service interface for managing addresses.
+ */
+public interface AddressService {
+    /**
+     * Filters the addresses based on the given criteria.
+     *
+     * @param filterRequest the request object containing filtering criteria for AddressDTO
+     * @return a reactive {@code Mono} emitting a {@code PaginationResponse} containing the filtered list of addresses
+     */
+    Mono<PaginationResponse<AddressDTO>> filterAddresses(FilterRequest<AddressDTO> filterRequest);
+    
+    /**
+     * Creates a new address based on the provided information.
+     *
+     * @param addressDTO the DTO object containing details of the address to be created
+     * @return a Mono that emits the created AddressDTO object
+     */
+    Mono<AddressDTO> createAddress(AddressDTO addressDTO);
+    
+    /**
+     * Updates an existing address with updated information.
+     *
+     * @param addressId the unique identifier of the address to be updated
+     * @param addressDTO the data transfer object containing the updated details of the address
+     * @return a reactive Mono containing the updated AddressDTO
+     */
+    Mono<AddressDTO> updateAddress(Long addressId, AddressDTO addressDTO);
+    
+    /**
+     * Deletes an address identified by its unique ID.
+     *
+     * @param addressId the unique identifier of the address to be deleted
+     * @return a Mono that completes when the address is successfully deleted or errors if the deletion fails
+     */
+    Mono<Void> deleteAddress(Long addressId);
+    
+    /**
+     * Retrieves an address by its unique identifier.
+     *
+     * @param addressId the unique identifier of the address to retrieve
+     * @return a Mono emitting the {@link AddressDTO} representing the address if found,
+     *         or an empty Mono if the address does not exist
+     */
+    Mono<AddressDTO> getAddressById(Long addressId);
+}
