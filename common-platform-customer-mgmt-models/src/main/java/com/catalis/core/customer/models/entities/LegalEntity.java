@@ -1,0 +1,72 @@
+package com.catalis.core.customer.models.entities;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+/**
+ * Legal Entity entity representing organizational customers.
+ * Maps to the 'legal_entity' table in PostgreSQL.
+ * This is a subtype of Party with a 1:1 relationship.
+ */
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Table("legal_entity")
+public class LegalEntity {
+
+    @Id
+    @Column("legal_entity_id")
+    private Long legalEntityId;
+
+    @Column("party_id")
+    private Long partyId;
+
+    @Column("legal_name")
+    private String legalName;
+
+    @Column("trade_name")
+    private String tradeName;
+
+    @Column("registration_number")
+    private String registrationNumber;
+
+    @Column("tax_id_number")
+    private String taxIdNumber;
+
+    @Column("legal_form_id")
+    private Long legalFormId;
+
+    @Column("incorporation_date")
+    private LocalDate incorporationDate;
+
+    @Column("industry_description")
+    private String industryDescription;
+
+    @Column("headcount")
+    private Long headcount;
+
+    @Column("share_capital")
+    private BigDecimal shareCapital;
+
+    @Column("website_url")
+    private String websiteUrl;
+
+    @Column("incorporation_country_id")
+    private Long incorporationCountryId;
+
+    @Column("created_at")
+    private LocalDateTime createdAt;
+
+    @Column("updated_at")
+    private LocalDateTime updatedAt;
+}
