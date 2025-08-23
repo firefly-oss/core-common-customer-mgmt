@@ -28,7 +28,7 @@ The **Firefly OpenCore Banking Platform - Customer Management Core Module** is a
 common-platform-customer-mgmt/
 ├── common-platform-customer-mgmt-core/       # Business logic and services
 ├── common-platform-customer-mgmt-interfaces/ # Enums and interface definitions
-├── common-platform-customer-mgmt-models/     # JPA entities and data models
+├── common-platform-customer-mgmt-models/     # R2DBC entities and data models
 ├── common-platform-customer-mgmt-sdk/        # Client SDK for integration
 └── common-platform-customer-mgmt-web/        # REST controllers and web layer
 ```
