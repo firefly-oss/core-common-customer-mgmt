@@ -131,7 +131,6 @@ erDiagram
         bigint party_id FK
         varchar phone_number
         varchar phone_kind "MOBILE | HOME | WORK | FAX | OTHER"
-        varchar country_code
         varchar extension
         boolean is_primary
         boolean is_verified
@@ -142,14 +141,15 @@ erDiagram
     IDENTITY_DOCUMENT {
         bigint identity_document_id PK
         bigint party_id FK
-        varchar document_type "PASSPORT | ID_CARD | DRIVER_LICENSE | OTHER"
+        bigint identity_document_category_id FK
+        bigint identity_document_type_id FK
         varchar document_number
-        varchar issuing_authority
         bigint issuing_country_id FK
-        date issue_date
-        date expiry_date
-        boolean is_verified
-        varchar verification_method
+        timestamp issue_date
+        timestamp expiry_date
+        varchar issuing_authority
+        boolean validated
+        varchar document_uri
         timestamp created_at
         timestamp updated_at
     }
@@ -157,14 +157,11 @@ erDiagram
     CONSENT {
         bigint consent_id PK
         bigint party_id FK
-        varchar consent_type "DATA_PROCESSING | MARKETING | COOKIES | OTHER"
+        bigint consent_type_id FK
         boolean granted
-        timestamp consent_date
-        timestamp expiry_date
-        varchar purpose_description
-        varchar legal_basis
-        varchar withdrawal_method
-        boolean is_active
+        timestamp granted_at
+        timestamp revoked_at
+        varchar channel
         timestamp created_at
         timestamp updated_at
     }
@@ -228,17 +225,13 @@ erDiagram
     POLITICALLY_EXPOSED_PERSON {
         bigint pep_id PK
         bigint party_id FK
-        varchar pep_category "DOMESTIC | FOREIGN | INTERNATIONAL"
-        varchar position_held
-        varchar organization_name
-        bigint jurisdiction_country_id FK
-        date position_start_date
-        date position_end_date
-        boolean is_current
-        varchar risk_level "LOW | MEDIUM | HIGH"
-        date last_reviewed
-        varchar reviewed_by
-        text notes
+        boolean pep
+        varchar category
+        varchar public_position
+        bigint country_of_position_id FK
+        timestamp start_date
+        timestamp end_date
+        varchar notes
         timestamp created_at
         timestamp updated_at
     }
@@ -272,7 +265,7 @@ erDiagram
 
 - **Address**: Physical addresses with geo-location support and multiple address types
 - **Email Contact**: Email addresses with verification status and categorization
-- **Phone Contact**: Phone numbers with country codes, extensions, and verification
+- **Phone Contact**: Phone numbers with extensions and verification status
 
 #### Document & Compliance Entities
 
