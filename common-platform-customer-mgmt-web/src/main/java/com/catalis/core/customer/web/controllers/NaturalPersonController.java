@@ -59,7 +59,7 @@ public class NaturalPersonController {
             @PathVariable Long partyId,
             @Parameter(description = "Filter criteria for natural persons", required = true)
             @Valid @RequestBody FilterRequest<NaturalPersonDTO> filterRequest) {
-        return naturalPersonService.filterNaturalPersons(filterRequest)
+        return naturalPersonService.filterNaturalPersons(partyId, filterRequest)
                 .map(ResponseEntity::ok);
     }
 
@@ -90,7 +90,7 @@ public class NaturalPersonController {
             @PathVariable Long partyId,
             @Parameter(description = "Natural person data to create", required = true)
             @Valid @RequestBody NaturalPersonDTO naturalPersonDTO) {
-        return naturalPersonService.createNaturalPerson(naturalPersonDTO)
+        return naturalPersonService.createNaturalPerson(partyId, naturalPersonDTO)
                 .map(naturalPerson -> ResponseEntity.status(HttpStatus.CREATED).body(naturalPerson));
     }
 
@@ -116,7 +116,7 @@ public class NaturalPersonController {
             @PathVariable Long partyId,
             @Parameter(description = "Unique identifier of the natural person", required = true)
             @PathVariable Long naturalPersonId) {
-        return naturalPersonService.getNaturalPersonById(naturalPersonId)
+        return naturalPersonService.getNaturalPersonById(partyId, naturalPersonId)
                 .map(ResponseEntity::ok);
     }
 
@@ -149,7 +149,7 @@ public class NaturalPersonController {
             @PathVariable Long naturalPersonId,
             @Parameter(description = "Updated natural person data", required = true)
             @Valid @RequestBody NaturalPersonDTO naturalPersonDTO) {
-        return naturalPersonService.updateNaturalPerson(naturalPersonId, naturalPersonDTO)
+        return naturalPersonService.updateNaturalPerson(partyId, naturalPersonId, naturalPersonDTO)
                 .map(ResponseEntity::ok);
     }
 
@@ -174,7 +174,7 @@ public class NaturalPersonController {
             @PathVariable Long partyId,
             @Parameter(description = "Unique identifier of the natural person", required = true)
             @PathVariable Long naturalPersonId) {
-        return naturalPersonService.deleteNaturalPerson(naturalPersonId)
+        return naturalPersonService.deleteNaturalPerson(partyId, naturalPersonId)
                 .then(Mono.just(ResponseEntity.noContent().build()));
     }
 }

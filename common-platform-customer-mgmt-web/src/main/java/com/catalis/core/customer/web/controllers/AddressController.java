@@ -59,7 +59,7 @@ public class AddressController {
             @PathVariable Long partyId,
             @Parameter(description = "Filter criteria for addresses", required = true)
             @Valid @RequestBody FilterRequest<AddressDTO> filterRequest) {
-        return addressService.filterAddresses(filterRequest)
+        return addressService.filterAddresses(partyId, filterRequest)
                 .map(ResponseEntity::ok);
     }
 
@@ -90,7 +90,7 @@ public class AddressController {
             @PathVariable Long partyId,
             @Parameter(description = "Address data to create", required = true)
             @Valid @RequestBody AddressDTO addressDTO) {
-        return addressService.createAddress(addressDTO)
+        return addressService.createAddress(partyId, addressDTO)
                 .map(address -> ResponseEntity.status(HttpStatus.CREATED).body(address));
     }
 
@@ -116,7 +116,7 @@ public class AddressController {
             @PathVariable Long partyId,
             @Parameter(description = "Unique identifier of the address", required = true)
             @PathVariable Long addressId) {
-        return addressService.getAddressById(addressId)
+        return addressService.getAddressById(partyId, addressId)
                 .map(ResponseEntity::ok);
     }
 
@@ -149,7 +149,7 @@ public class AddressController {
             @PathVariable Long addressId,
             @Parameter(description = "Updated address data", required = true)
             @Valid @RequestBody AddressDTO addressDTO) {
-        return addressService.updateAddress(addressId, addressDTO)
+        return addressService.updateAddress(partyId, addressId, addressDTO)
                 .map(ResponseEntity::ok);
     }
 
@@ -174,7 +174,7 @@ public class AddressController {
             @PathVariable Long partyId,
             @Parameter(description = "Unique identifier of the address", required = true)
             @PathVariable Long addressId) {
-        return addressService.deleteAddress(addressId)
+        return addressService.deleteAddress(partyId, addressId)
                 .then(Mono.just(ResponseEntity.noContent().build()));
     }
 }
