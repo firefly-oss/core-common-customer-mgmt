@@ -46,6 +46,11 @@ common-platform-customer-mgmt/
 
 The following diagram illustrates the complete data model and relationships between all entities in the system:
 
+**Note on Foreign Keys vs Logical References:**
+- Fields marked as `FK` have actual database foreign key constraints enforced by PostgreSQL
+- Fields without `FK` marking (but with `bigint` type ending in `_id`) are logical references only - they reference other entities conceptually but without database constraints
+- This design provides flexibility for referencing external systems (countries, document types, etc.) that may not have corresponding tables in this database
+
 ```mermaid
 erDiagram
     PARTY {
@@ -67,8 +72,8 @@ erDiagram
         varchar family_name2
         date date_of_birth
         varchar birth_place
-        bigint birth_country_id FK
-        bigint nationality_country_id FK
+        bigint birth_country_id
+        bigint nationality_country_id
         varchar gender "MALE | FEMALE | OTHER"
         varchar marital_status "SINGLE | MARRIED | DIVORCED | WIDOWED | SEPARATED"
         varchar tax_id_number
@@ -87,13 +92,13 @@ erDiagram
         varchar trade_name
         varchar registration_number
         varchar tax_id_number
-        bigint legal_form_id FK
+        bigint legal_form_id
         date incorporation_date
         varchar industry_description
         bigint headcount
         decimal share_capital
         varchar website_url
-        bigint incorporation_country_id FK
+        bigint incorporation_country_id
         timestamp created_at
         timestamp updated_at
     }
@@ -107,7 +112,7 @@ erDiagram
         varchar city
         varchar region
         varchar postal_code
-        bigint country_id FK
+        bigint country_id
         boolean is_primary
         decimal latitude
         decimal longitude
@@ -141,10 +146,10 @@ erDiagram
     IDENTITY_DOCUMENT {
         bigint identity_document_id PK
         bigint party_id FK
-        bigint identity_document_category_id FK
-        bigint identity_document_type_id FK
+        bigint identity_document_category_id
+        bigint identity_document_type_id
         varchar document_number
-        bigint issuing_country_id FK
+        bigint issuing_country_id
         timestamp issue_date
         timestamp expiry_date
         varchar issuing_authority
@@ -157,7 +162,7 @@ erDiagram
     CONSENT {
         bigint consent_id PK
         bigint party_id FK
-        bigint consent_type_id FK
+        bigint consent_type_id
         boolean granted
         timestamp granted_at
         timestamp revoked_at
@@ -170,7 +175,7 @@ erDiagram
         bigint party_relationship_id PK
         bigint from_party_id FK
         bigint to_party_id FK
-        bigint relationship_type_id FK
+        bigint relationship_type_id
         timestamp start_date
         timestamp end_date
         boolean active
@@ -195,14 +200,12 @@ erDiagram
     PARTY_ECONOMIC_ACTIVITY {
         bigint party_economic_activity_id PK
         bigint party_id FK
-        varchar activity_code
-        varchar activity_description
-        boolean is_primary
-        decimal annual_revenue
-        varchar employment_status "EMPLOYED | SELF_EMPLOYED | UNEMPLOYED | RETIRED"
-        varchar employer_name
+        bigint economic_activity_id
+        decimal annual_turnover
+        varchar currency_code
         timestamp start_date
         timestamp end_date
+        boolean is_primary
         timestamp created_at
         timestamp updated_at
     }
@@ -210,14 +213,10 @@ erDiagram
     PARTY_PROVIDER {
         bigint party_provider_id PK
         bigint party_id FK
-        varchar provider_type "BANK | INSURANCE | INVESTMENT | OTHER"
         varchar provider_name
-        varchar provider_code
-        varchar relationship_type
-        timestamp relationship_start_date
-        timestamp relationship_end_date
-        boolean is_active
-        text additional_info
+        varchar external_reference
+        varchar provider_status "ACTIVE | INACTIVE | SUSPENDED"
+        timestamp last_sync_at
         timestamp created_at
         timestamp updated_at
     }
@@ -228,7 +227,7 @@ erDiagram
         boolean pep
         varchar category
         varchar public_position
-        bigint country_of_position_id FK
+        bigint country_of_position_id
         timestamp start_date
         timestamp end_date
         varchar notes
