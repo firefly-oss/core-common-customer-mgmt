@@ -24,46 +24,67 @@ public class NaturalPersonServiceImpl implements NaturalPersonService {
     private NaturalPersonMapper mapper;
 
     @Override
-    public Mono<PaginationResponse<NaturalPersonDTO>> filterNaturalPersons(FilterRequest<NaturalPersonDTO> filterRequest) {
+    public Mono<PaginationResponse<NaturalPersonDTO>> filterNaturalPersons(Long partyId, FilterRequest<NaturalPersonDTO> filterRequest) {
+        // Add partyId filter to the existing filter request
+        // For now, we'll delegate to FilterUtils but this could be enhanced to add partyId filtering
         return FilterUtils
                 .createFilter(
                         NaturalPerson.class,
                         mapper::toDTO
                 )
                 .filter(filterRequest);
+        // TODO: Enhance FilterUtils to support party-specific filtering
     }
 
     @Override
-    public Mono<NaturalPersonDTO> createNaturalPerson(NaturalPersonDTO naturalPersonDTO) {
+    public Mono<NaturalPersonDTO> createNaturalPerson(Long partyId, NaturalPersonDTO naturalPersonDTO) {
         return Mono.just(naturalPersonDTO)
+                .doOnNext(dto -> dto.setPartyId(partyId)) // Ensure partyId is set
                 .map(mapper::toEntity)
                 .flatMap(repository::save)
                 .map(mapper::toDTO);
     }
 
     @Override
-    public Mono<NaturalPersonDTO> updateNaturalPerson(Long naturalPersonId, NaturalPersonDTO naturalPersonDTO) {
+    public Mono<NaturalPersonDTO> updateNaturalPerson(Long partyId, Long naturalPersonId, NaturalPersonDTO naturalPersonDTO) {
         return repository.findById(naturalPersonId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Natural person not found with ID: " + naturalPersonId)))
                 .flatMap(existingNaturalPerson -> {
+                    // Validate that the natural person belongs to the specified party
+                    if (!partyId.equals(existingNaturalPerson.getPartyId())) {
+                        return Mono.error(new RuntimeException("Natural person with ID " + naturalPersonId + " does not belong to party " + partyId));
+                    }
                     NaturalPerson updatedNaturalPerson = mapper.toEntity(naturalPersonDTO);
                     updatedNaturalPerson.setNaturalPersonId(naturalPersonId);
+                    updatedNaturalPerson.setPartyId(partyId); // Ensure party relationship is maintained
                     return repository.save(updatedNaturalPerson);
                 })
                 .map(mapper::toDTO);
     }
 
     @Override
-    public Mono<Void> deleteNaturalPerson(Long naturalPersonId) {
+    public Mono<Void> deleteNaturalPerson(Long partyId, Long naturalPersonId) {
         return repository.findById(naturalPersonId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Natural person not found with ID: " + naturalPersonId)))
-                .flatMap(naturalPerson -> repository.deleteById(naturalPersonId));
+                .flatMap(naturalPerson -> {
+                    // Validate that the natural person belongs to the specified party
+                    if (!partyId.equals(naturalPerson.getPartyId())) {
+                        return Mono.error(new RuntimeException("Natural person with ID " + naturalPersonId + " does not belong to party " + partyId));
+                    }
+                    return repository.deleteById(naturalPersonId);
+                });
     }
 
     @Override
-    public Mono<NaturalPersonDTO> getNaturalPersonById(Long naturalPersonId) {
+    public Mono<NaturalPersonDTO> getNaturalPersonById(Long partyId, Long naturalPersonId) {
         return repository.findById(naturalPersonId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Natural person not found with ID: " + naturalPersonId)))
-                .map(mapper::toDTO);
+                .flatMap(naturalPerson -> {
+                    // Validate that the natural person belongs to the specified party
+                    if (!partyId.equals(naturalPerson.getPartyId())) {
+                        return Mono.error(new RuntimeException("Natural person with ID " + naturalPersonId + " does not belong to party " + partyId));
+                    }
+                    return Mono.just(mapper.toDTO(naturalPerson));
+                });
     }
 }
