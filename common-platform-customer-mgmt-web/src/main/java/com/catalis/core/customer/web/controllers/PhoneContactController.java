@@ -59,7 +59,7 @@ public class PhoneContactController {
             @PathVariable Long partyId,
             @Parameter(description = "Filter criteria for phone contacts", required = true)
             @Valid @RequestBody FilterRequest<PhoneContactDTO> filterRequest) {
-        return phoneContactService.filterPhoneContacts(filterRequest)
+        return phoneContactService.filterPhoneContacts(partyId, filterRequest)
                 .map(ResponseEntity::ok);
     }
 
@@ -90,7 +90,7 @@ public class PhoneContactController {
             @PathVariable Long partyId,
             @Parameter(description = "Phone contact data to create", required = true)
             @Valid @RequestBody PhoneContactDTO phoneContactDTO) {
-        return phoneContactService.createPhoneContact(phoneContactDTO)
+        return phoneContactService.createPhoneContact(partyId, phoneContactDTO)
                 .map(phoneContact -> ResponseEntity.status(HttpStatus.CREATED).body(phoneContact));
     }
 
@@ -116,7 +116,7 @@ public class PhoneContactController {
             @PathVariable Long partyId,
             @Parameter(description = "Unique identifier of the phone contact", required = true)
             @PathVariable Long phoneContactId) {
-        return phoneContactService.getPhoneContactById(phoneContactId)
+        return phoneContactService.getPhoneContactById(partyId, phoneContactId)
                 .map(ResponseEntity::ok);
     }
 
@@ -149,7 +149,7 @@ public class PhoneContactController {
             @PathVariable Long phoneContactId,
             @Parameter(description = "Updated phone contact data", required = true)
             @Valid @RequestBody PhoneContactDTO phoneContactDTO) {
-        return phoneContactService.updatePhoneContact(phoneContactId, phoneContactDTO)
+        return phoneContactService.updatePhoneContact(partyId, phoneContactId, phoneContactDTO)
                 .map(ResponseEntity::ok);
     }
 
@@ -174,7 +174,7 @@ public class PhoneContactController {
             @PathVariable Long partyId,
             @Parameter(description = "Unique identifier of the phone contact", required = true)
             @PathVariable Long phoneContactId) {
-        return phoneContactService.deletePhoneContact(phoneContactId)
+        return phoneContactService.deletePhoneContact(partyId, phoneContactId)
                 .then(Mono.just(ResponseEntity.noContent().build()));
     }
 }

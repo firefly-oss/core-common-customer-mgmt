@@ -34,7 +34,7 @@ public class LegalEntityServiceImpl implements LegalEntityService {
     }
 
     @Override
-    public Mono<LegalEntityDTO> createLegalEntity(LegalEntityDTO legalEntityDTO) {
+    public Mono<LegalEntityDTO> createLegalEntity(Long partyId, LegalEntityDTO legalEntityDTO) {
         return Mono.just(legalEntityDTO)
                 .map(mapper::toEntity)
                 .flatMap(repository::save)
@@ -42,7 +42,7 @@ public class LegalEntityServiceImpl implements LegalEntityService {
     }
 
     @Override
-    public Mono<LegalEntityDTO> updateLegalEntity(Long legalEntityId, LegalEntityDTO legalEntityDTO) {
+    public Mono<LegalEntityDTO> updateLegalEntity(Long partyId, Long legalEntityId, LegalEntityDTO legalEntityDTO) {
         return repository.findById(legalEntityId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Legal entity not found with ID: " + legalEntityId)))
                 .flatMap(existingLegalEntity -> {
@@ -54,14 +54,14 @@ public class LegalEntityServiceImpl implements LegalEntityService {
     }
 
     @Override
-    public Mono<Void> deleteLegalEntity(Long legalEntityId) {
+    public Mono<Void> deleteLegalEntity(Long partyId, Long legalEntityId) {
         return repository.findById(legalEntityId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Legal entity not found with ID: " + legalEntityId)))
                 .flatMap(legalEntity -> repository.deleteById(legalEntityId));
     }
 
     @Override
-    public Mono<LegalEntityDTO> getLegalEntityById(Long legalEntityId) {
+    public Mono<LegalEntityDTO> getLegalEntityById(Long partyId, Long legalEntityId) {
         return repository.findById(legalEntityId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Legal entity not found with ID: " + legalEntityId)))
                 .map(mapper::toDTO);

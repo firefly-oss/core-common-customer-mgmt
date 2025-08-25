@@ -24,7 +24,7 @@ public class EmailContactServiceImpl implements EmailContactService {
     private EmailContactMapper mapper;
 
     @Override
-    public Mono<PaginationResponse<EmailContactDTO>> filterEmailContacts(FilterRequest<EmailContactDTO> filterRequest) {
+    public Mono<PaginationResponse<EmailContactDTO>> filterEmailContacts(Long partyId, FilterRequest<EmailContactDTO> filterRequest) {
         return FilterUtils
                 .createFilter(
                         EmailContact.class,
@@ -34,7 +34,7 @@ public class EmailContactServiceImpl implements EmailContactService {
     }
 
     @Override
-    public Mono<EmailContactDTO> createEmailContact(EmailContactDTO emailContactDTO) {
+    public Mono<EmailContactDTO> createEmailContact(Long partyId, EmailContactDTO emailContactDTO) {
         return Mono.just(emailContactDTO)
                 .map(mapper::toEntity)
                 .flatMap(repository::save)
@@ -42,7 +42,7 @@ public class EmailContactServiceImpl implements EmailContactService {
     }
 
     @Override
-    public Mono<EmailContactDTO> updateEmailContact(Long emailContactId, EmailContactDTO emailContactDTO) {
+    public Mono<EmailContactDTO> updateEmailContact(Long partyId, Long emailContactId, EmailContactDTO emailContactDTO) {
         return repository.findById(emailContactId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Email contact not found with ID: " + emailContactId)))
                 .flatMap(existingEmailContact -> {
@@ -54,14 +54,14 @@ public class EmailContactServiceImpl implements EmailContactService {
     }
 
     @Override
-    public Mono<Void> deleteEmailContact(Long emailContactId) {
+    public Mono<Void> deleteEmailContact(Long partyId, Long emailContactId) {
         return repository.findById(emailContactId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Email contact not found with ID: " + emailContactId)))
                 .flatMap(emailContact -> repository.deleteById(emailContactId));
     }
 
     @Override
-    public Mono<EmailContactDTO> getEmailContactById(Long emailContactId) {
+    public Mono<EmailContactDTO> getEmailContactById(Long partyId, Long emailContactId) {
         return repository.findById(emailContactId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Email contact not found with ID: " + emailContactId)))
                 .map(mapper::toDTO);

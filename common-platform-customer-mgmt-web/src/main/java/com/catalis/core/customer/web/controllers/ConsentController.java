@@ -59,7 +59,7 @@ public class ConsentController {
             @PathVariable Long partyId,
             @Parameter(description = "Filter criteria for consents", required = true)
             @Valid @RequestBody FilterRequest<ConsentDTO> filterRequest) {
-        return consentService.filterConsents(filterRequest)
+        return consentService.filterConsents(partyId, filterRequest)
                 .map(ResponseEntity::ok);
     }
 
@@ -90,7 +90,7 @@ public class ConsentController {
             @PathVariable Long partyId,
             @Parameter(description = "Consent data to create", required = true)
             @Valid @RequestBody ConsentDTO consentDTO) {
-        return consentService.createConsent(consentDTO)
+        return consentService.createConsent(partyId, consentDTO)
                 .map(consent -> ResponseEntity.status(HttpStatus.CREATED).body(consent));
     }
 
@@ -116,7 +116,7 @@ public class ConsentController {
             @PathVariable Long partyId,
             @Parameter(description = "Unique identifier of the consent", required = true)
             @PathVariable Long consentId) {
-        return consentService.getConsentById(consentId)
+        return consentService.getConsentById(partyId, consentId)
                 .map(ResponseEntity::ok);
     }
 
@@ -149,7 +149,7 @@ public class ConsentController {
             @PathVariable Long consentId,
             @Parameter(description = "Updated consent data", required = true)
             @Valid @RequestBody ConsentDTO consentDTO) {
-        return consentService.updateConsent(consentId, consentDTO)
+        return consentService.updateConsent(partyId, consentId, consentDTO)
                 .map(ResponseEntity::ok);
     }
 
@@ -174,7 +174,7 @@ public class ConsentController {
             @PathVariable Long partyId,
             @Parameter(description = "Unique identifier of the consent", required = true)
             @PathVariable Long consentId) {
-        return consentService.deleteConsent(consentId)
+        return consentService.deleteConsent(partyId, consentId)
                 .then(Mono.just(ResponseEntity.noContent().build()));
     }
 }

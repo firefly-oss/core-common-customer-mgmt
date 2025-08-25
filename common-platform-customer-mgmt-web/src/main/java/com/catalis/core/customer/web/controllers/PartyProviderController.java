@@ -21,12 +21,12 @@ import reactor.core.publisher.Mono;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/v1/party-providers")
+@RequestMapping("/api/v1/parties/{partyId}/party-providers")
 @RequiredArgsConstructor
 @Validated
 @Tag(
     name = "Party Providers", 
-    description = "API for managing party providers"
+    description = "API for managing party providers associated with parties"
 )
 public class PartyProviderController {
 
@@ -34,8 +34,8 @@ public class PartyProviderController {
 
     @PostMapping("/filter")
     @Operation(
-        summary = "Filter party providers",
-        description = "Retrieve a paginated list of party providers based on filtering criteria"
+        summary = "Filter party providers for a party",
+        description = "Retrieve a paginated list of party providers associated with a specific party based on filtering criteria"
     )
     @ApiResponses({
         @ApiResponse(
@@ -47,19 +47,26 @@ public class PartyProviderController {
             responseCode = "400", 
             description = "Invalid filter request",
             content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "404", 
+            description = "Party not found",
+            content = @Content
         )
     })
     public Mono<ResponseEntity<PaginationResponse<PartyProviderDTO>>> filterPartyProviders(
+            @Parameter(description = "Unique identifier of the party", required = true)
+            @PathVariable Long partyId,
             @Parameter(description = "Filter criteria for party providers", required = true)
             @Valid @RequestBody FilterRequest<PartyProviderDTO> filterRequest) {
-        return partyProviderService.filterPartyProviders(filterRequest)
+        return partyProviderService.filterPartyProviders(partyId, filterRequest)
                 .map(ResponseEntity::ok);
     }
 
     @PostMapping
     @Operation(
-        summary = "Create party provider",
-        description = "Create a new party provider"
+        summary = "Create party provider for a party",
+        description = "Create a new party provider associated with a specific party"
     )
     @ApiResponses({
         @ApiResponse(
@@ -71,19 +78,26 @@ public class PartyProviderController {
             responseCode = "400", 
             description = "Invalid party provider data",
             content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "404", 
+            description = "Party not found",
+            content = @Content
         )
     })
     public Mono<ResponseEntity<PartyProviderDTO>> createPartyProvider(
+            @Parameter(description = "Unique identifier of the party", required = true)
+            @PathVariable Long partyId,
             @Parameter(description = "Party provider data to create", required = true)
             @Valid @RequestBody PartyProviderDTO partyProviderDTO) {
-        return partyProviderService.createPartyProvider(partyProviderDTO)
+        return partyProviderService.createPartyProvider(partyId, partyProviderDTO)
                 .map(partyProvider -> ResponseEntity.status(HttpStatus.CREATED).body(partyProvider));
     }
 
     @GetMapping("/{partyProviderId}")
     @Operation(
         summary = "Get party provider by ID",
-        description = "Retrieve a specific party provider by its unique identifier"
+        description = "Retrieve a specific party provider associated with a party by its unique identifier"
     )
     @ApiResponses({
         @ApiResponse(
@@ -93,21 +107,23 @@ public class PartyProviderController {
         ),
         @ApiResponse(
             responseCode = "404", 
-            description = "Party provider not found",
+            description = "Party provider or party not found",
             content = @Content
         )
     })
     public Mono<ResponseEntity<PartyProviderDTO>> getPartyProviderById(
+            @Parameter(description = "Unique identifier of the party", required = true)
+            @PathVariable Long partyId,
             @Parameter(description = "Unique identifier of the party provider", required = true)
             @PathVariable Long partyProviderId) {
-        return partyProviderService.getPartyProviderById(partyProviderId)
+        return partyProviderService.getPartyProviderById(partyId, partyProviderId)
                 .map(ResponseEntity::ok);
     }
 
     @PutMapping("/{partyProviderId}")
     @Operation(
         summary = "Update party provider",
-        description = "Update an existing party provider"
+        description = "Update an existing party provider associated with a party"
     )
     @ApiResponses({
         @ApiResponse(
@@ -122,23 +138,25 @@ public class PartyProviderController {
         ),
         @ApiResponse(
             responseCode = "404", 
-            description = "Party provider not found",
+            description = "Party provider or party not found",
             content = @Content
         )
     })
     public Mono<ResponseEntity<PartyProviderDTO>> updatePartyProvider(
+            @Parameter(description = "Unique identifier of the party", required = true)
+            @PathVariable Long partyId,
             @Parameter(description = "Unique identifier of the party provider", required = true)
             @PathVariable Long partyProviderId,
             @Parameter(description = "Updated party provider data", required = true)
             @Valid @RequestBody PartyProviderDTO partyProviderDTO) {
-        return partyProviderService.updatePartyProvider(partyProviderId, partyProviderDTO)
+        return partyProviderService.updatePartyProvider(partyId, partyProviderId, partyProviderDTO)
                 .map(ResponseEntity::ok);
     }
 
     @DeleteMapping("/{partyProviderId}")
     @Operation(
         summary = "Delete party provider",
-        description = "Delete a party provider from the system"
+        description = "Delete a party provider associated with a party from the system"
     )
     @ApiResponses({
         @ApiResponse(
@@ -147,14 +165,16 @@ public class PartyProviderController {
         ),
         @ApiResponse(
             responseCode = "404", 
-            description = "Party provider not found",
+            description = "Party provider or party not found",
             content = @Content
         )
     })
     public Mono<ResponseEntity<Void>> deletePartyProvider(
+            @Parameter(description = "Unique identifier of the party", required = true)
+            @PathVariable Long partyId,
             @Parameter(description = "Unique identifier of the party provider", required = true)
             @PathVariable Long partyProviderId) {
-        return partyProviderService.deletePartyProvider(partyProviderId)
+        return partyProviderService.deletePartyProvider(partyId, partyProviderId)
                 .then(Mono.just(ResponseEntity.noContent().build()));
     }
 }

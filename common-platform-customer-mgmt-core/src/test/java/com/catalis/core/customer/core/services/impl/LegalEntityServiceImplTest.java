@@ -37,10 +37,12 @@ class LegalEntityServiceImplTest {
     private LegalEntityDTO legalEntityDTO;
     private LegalEntity legalEntity;
     private Long legalEntityId;
+    private Long partyId;
 
     @BeforeEach
     void setUp() {
         legalEntityId = 1L;
+        partyId = 1L;
         
         legalEntity = new LegalEntity();
         legalEntity.setLegalEntityId(legalEntityId);
@@ -80,7 +82,7 @@ class LegalEntityServiceImplTest {
         when(legalEntityMapper.toDTO(legalEntity)).thenReturn(legalEntityDTO);
 
         // Act & Assert
-        StepVerifier.create(legalEntityService.createLegalEntity(legalEntityDTO))
+        StepVerifier.create(legalEntityService.createLegalEntity(partyId, legalEntityDTO))
                 .expectNext(legalEntityDTO)
                 .verifyComplete();
 
@@ -96,7 +98,7 @@ class LegalEntityServiceImplTest {
         when(legalEntityRepository.save(legalEntity)).thenReturn(Mono.error(new RuntimeException("Database error")));
 
         // Act & Assert
-        StepVerifier.create(legalEntityService.createLegalEntity(legalEntityDTO))
+        StepVerifier.create(legalEntityService.createLegalEntity(partyId, legalEntityDTO))
                 .expectErrorMatches(throwable -> throwable instanceof RuntimeException && 
                         throwable.getMessage().equals("Database error"))
                 .verify();
@@ -121,7 +123,7 @@ class LegalEntityServiceImplTest {
         when(legalEntityMapper.toDTO(updatedLegalEntity)).thenReturn(legalEntityDTO);
 
         // Act & Assert
-        StepVerifier.create(legalEntityService.updateLegalEntity(legalEntityId, updateDTO))
+        StepVerifier.create(legalEntityService.updateLegalEntity(partyId, legalEntityId, updateDTO))
                 .expectNext(legalEntityDTO)
                 .verifyComplete();
 
@@ -137,7 +139,7 @@ class LegalEntityServiceImplTest {
         when(legalEntityRepository.findById(legalEntityId)).thenReturn(Mono.empty());
 
         // Act & Assert
-        StepVerifier.create(legalEntityService.updateLegalEntity(legalEntityId, legalEntityDTO))
+        StepVerifier.create(legalEntityService.updateLegalEntity(partyId, legalEntityId, legalEntityDTO))
                 .expectErrorMatches(throwable -> throwable instanceof RuntimeException && 
                         throwable.getMessage().equals("Legal entity not found with ID: " + legalEntityId))
                 .verify();
@@ -154,7 +156,7 @@ class LegalEntityServiceImplTest {
         when(legalEntityRepository.deleteById(legalEntityId)).thenReturn(Mono.empty());
 
         // Act & Assert
-        StepVerifier.create(legalEntityService.deleteLegalEntity(legalEntityId))
+        StepVerifier.create(legalEntityService.deleteLegalEntity(partyId, legalEntityId))
                 .verifyComplete();
 
         verify(legalEntityRepository).findById(legalEntityId);
@@ -167,7 +169,7 @@ class LegalEntityServiceImplTest {
         when(legalEntityRepository.findById(legalEntityId)).thenReturn(Mono.empty());
 
         // Act & Assert
-        StepVerifier.create(legalEntityService.deleteLegalEntity(legalEntityId))
+        StepVerifier.create(legalEntityService.deleteLegalEntity(partyId, legalEntityId))
                 .expectErrorMatches(throwable -> throwable instanceof RuntimeException && 
                         throwable.getMessage().equals("Legal entity not found with ID: " + legalEntityId))
                 .verify();
@@ -183,7 +185,7 @@ class LegalEntityServiceImplTest {
         when(legalEntityRepository.deleteById(legalEntityId)).thenReturn(Mono.error(new RuntimeException("Delete failed")));
 
         // Act & Assert
-        StepVerifier.create(legalEntityService.deleteLegalEntity(legalEntityId))
+        StepVerifier.create(legalEntityService.deleteLegalEntity(partyId, legalEntityId))
                 .expectErrorMatches(throwable -> throwable instanceof RuntimeException && 
                         throwable.getMessage().equals("Delete failed"))
                 .verify();
@@ -199,7 +201,7 @@ class LegalEntityServiceImplTest {
         when(legalEntityMapper.toDTO(legalEntity)).thenReturn(legalEntityDTO);
 
         // Act & Assert
-        StepVerifier.create(legalEntityService.getLegalEntityById(legalEntityId))
+        StepVerifier.create(legalEntityService.getLegalEntityById(partyId, legalEntityId))
                 .expectNext(legalEntityDTO)
                 .verifyComplete();
 
@@ -213,7 +215,7 @@ class LegalEntityServiceImplTest {
         when(legalEntityRepository.findById(legalEntityId)).thenReturn(Mono.empty());
 
         // Act & Assert
-        StepVerifier.create(legalEntityService.getLegalEntityById(legalEntityId))
+        StepVerifier.create(legalEntityService.getLegalEntityById(partyId, legalEntityId))
                 .expectErrorMatches(throwable -> throwable instanceof RuntimeException && 
                         throwable.getMessage().equals("Legal entity not found with ID: " + legalEntityId))
                 .verify();
@@ -228,7 +230,7 @@ class LegalEntityServiceImplTest {
         when(legalEntityRepository.findById(legalEntityId)).thenReturn(Mono.error(new RuntimeException("Database connection failed")));
 
         // Act & Assert
-        StepVerifier.create(legalEntityService.getLegalEntityById(legalEntityId))
+        StepVerifier.create(legalEntityService.getLegalEntityById(partyId, legalEntityId))
                 .expectErrorMatches(throwable -> throwable instanceof RuntimeException && 
                         throwable.getMessage().equals("Database connection failed"))
                 .verify();

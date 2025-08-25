@@ -21,12 +21,12 @@ import reactor.core.publisher.Mono;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/v1/party-statuses")
+@RequestMapping("/api/v1/parties/{partyId}/party-statuses")
 @RequiredArgsConstructor
 @Validated
 @Tag(
     name = "Party Statuses", 
-    description = "API for managing party statuses"
+    description = "API for managing party statuses associated with parties"
 )
 public class PartyStatusController {
 
@@ -34,8 +34,8 @@ public class PartyStatusController {
 
     @PostMapping("/filter")
     @Operation(
-        summary = "Filter party statuses",
-        description = "Retrieve a paginated list of party statuses based on filtering criteria"
+        summary = "Filter party statuses for a party",
+        description = "Retrieve a paginated list of party statuses associated with a specific party based on filtering criteria"
     )
     @ApiResponses({
         @ApiResponse(
@@ -47,19 +47,26 @@ public class PartyStatusController {
             responseCode = "400", 
             description = "Invalid filter request",
             content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "404", 
+            description = "Party not found",
+            content = @Content
         )
     })
     public Mono<ResponseEntity<PaginationResponse<PartyStatusDTO>>> filterPartyStatuses(
+            @Parameter(description = "Unique identifier of the party", required = true)
+            @PathVariable Long partyId,
             @Parameter(description = "Filter criteria for party statuses", required = true)
             @Valid @RequestBody FilterRequest<PartyStatusDTO> filterRequest) {
-        return partyStatusService.filterPartyStatuses(filterRequest)
+        return partyStatusService.filterPartyStatuses(partyId, filterRequest)
                 .map(ResponseEntity::ok);
     }
 
     @PostMapping
     @Operation(
-        summary = "Create party status",
-        description = "Create a new party status"
+        summary = "Create party status for a party",
+        description = "Create a new party status associated with a specific party"
     )
     @ApiResponses({
         @ApiResponse(
@@ -71,19 +78,26 @@ public class PartyStatusController {
             responseCode = "400", 
             description = "Invalid party status data",
             content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "404", 
+            description = "Party not found",
+            content = @Content
         )
     })
     public Mono<ResponseEntity<PartyStatusDTO>> createPartyStatus(
+            @Parameter(description = "Unique identifier of the party", required = true)
+            @PathVariable Long partyId,
             @Parameter(description = "Party status data to create", required = true)
             @Valid @RequestBody PartyStatusDTO partyStatusDTO) {
-        return partyStatusService.createPartyStatus(partyStatusDTO)
+        return partyStatusService.createPartyStatus(partyId, partyStatusDTO)
                 .map(partyStatus -> ResponseEntity.status(HttpStatus.CREATED).body(partyStatus));
     }
 
     @GetMapping("/{partyStatusId}")
     @Operation(
         summary = "Get party status by ID",
-        description = "Retrieve a specific party status by its unique identifier"
+        description = "Retrieve a specific party status associated with a party by its unique identifier"
     )
     @ApiResponses({
         @ApiResponse(
@@ -93,21 +107,23 @@ public class PartyStatusController {
         ),
         @ApiResponse(
             responseCode = "404", 
-            description = "Party status not found",
+            description = "Party status or party not found",
             content = @Content
         )
     })
     public Mono<ResponseEntity<PartyStatusDTO>> getPartyStatusById(
+            @Parameter(description = "Unique identifier of the party", required = true)
+            @PathVariable Long partyId,
             @Parameter(description = "Unique identifier of the party status", required = true)
             @PathVariable Long partyStatusId) {
-        return partyStatusService.getPartyStatusById(partyStatusId)
+        return partyStatusService.getPartyStatusById(partyId, partyStatusId)
                 .map(ResponseEntity::ok);
     }
 
     @PutMapping("/{partyStatusId}")
     @Operation(
         summary = "Update party status",
-        description = "Update an existing party status"
+        description = "Update an existing party status associated with a party"
     )
     @ApiResponses({
         @ApiResponse(
@@ -122,23 +138,25 @@ public class PartyStatusController {
         ),
         @ApiResponse(
             responseCode = "404", 
-            description = "Party status not found",
+            description = "Party status or party not found",
             content = @Content
         )
     })
     public Mono<ResponseEntity<PartyStatusDTO>> updatePartyStatus(
+            @Parameter(description = "Unique identifier of the party", required = true)
+            @PathVariable Long partyId,
             @Parameter(description = "Unique identifier of the party status", required = true)
             @PathVariable Long partyStatusId,
             @Parameter(description = "Updated party status data", required = true)
             @Valid @RequestBody PartyStatusDTO partyStatusDTO) {
-        return partyStatusService.updatePartyStatus(partyStatusId, partyStatusDTO)
+        return partyStatusService.updatePartyStatus(partyId, partyStatusId, partyStatusDTO)
                 .map(ResponseEntity::ok);
     }
 
     @DeleteMapping("/{partyStatusId}")
     @Operation(
         summary = "Delete party status",
-        description = "Delete a party status from the system"
+        description = "Delete a party status associated with a party from the system"
     )
     @ApiResponses({
         @ApiResponse(
@@ -147,14 +165,16 @@ public class PartyStatusController {
         ),
         @ApiResponse(
             responseCode = "404", 
-            description = "Party status not found",
+            description = "Party status or party not found",
             content = @Content
         )
     })
     public Mono<ResponseEntity<Void>> deletePartyStatus(
+            @Parameter(description = "Unique identifier of the party", required = true)
+            @PathVariable Long partyId,
             @Parameter(description = "Unique identifier of the party status", required = true)
             @PathVariable Long partyStatusId) {
-        return partyStatusService.deletePartyStatus(partyStatusId)
+        return partyStatusService.deletePartyStatus(partyId, partyStatusId)
                 .then(Mono.just(ResponseEntity.noContent().build()));
     }
 }

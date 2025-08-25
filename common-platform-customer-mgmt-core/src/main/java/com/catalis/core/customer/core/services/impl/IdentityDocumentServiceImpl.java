@@ -24,7 +24,7 @@ public class IdentityDocumentServiceImpl implements IdentityDocumentService {
     private IdentityDocumentMapper mapper;
 
     @Override
-    public Mono<PaginationResponse<IdentityDocumentDTO>> filterIdentityDocuments(FilterRequest<IdentityDocumentDTO> filterRequest) {
+    public Mono<PaginationResponse<IdentityDocumentDTO>> filterIdentityDocuments(Long partyId, FilterRequest<IdentityDocumentDTO> filterRequest) {
         return FilterUtils
                 .createFilter(
                         IdentityDocument.class,
@@ -34,7 +34,7 @@ public class IdentityDocumentServiceImpl implements IdentityDocumentService {
     }
 
     @Override
-    public Mono<IdentityDocumentDTO> createIdentityDocument(IdentityDocumentDTO identityDocumentDTO) {
+    public Mono<IdentityDocumentDTO> createIdentityDocument(Long partyId, IdentityDocumentDTO identityDocumentDTO) {
         return Mono.just(identityDocumentDTO)
                 .map(mapper::toEntity)
                 .flatMap(repository::save)
@@ -42,7 +42,7 @@ public class IdentityDocumentServiceImpl implements IdentityDocumentService {
     }
 
     @Override
-    public Mono<IdentityDocumentDTO> updateIdentityDocument(Long identityDocumentId, IdentityDocumentDTO identityDocumentDTO) {
+    public Mono<IdentityDocumentDTO> updateIdentityDocument(Long partyId, Long identityDocumentId, IdentityDocumentDTO identityDocumentDTO) {
         return repository.findById(identityDocumentId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Identity document not found with ID: " + identityDocumentId)))
                 .flatMap(existingIdentityDocument -> {
@@ -54,14 +54,14 @@ public class IdentityDocumentServiceImpl implements IdentityDocumentService {
     }
 
     @Override
-    public Mono<Void> deleteIdentityDocument(Long identityDocumentId) {
+    public Mono<Void> deleteIdentityDocument(Long partyId, Long identityDocumentId) {
         return repository.findById(identityDocumentId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Identity document not found with ID: " + identityDocumentId)))
                 .flatMap(identityDocument -> repository.deleteById(identityDocumentId));
     }
 
     @Override
-    public Mono<IdentityDocumentDTO> getIdentityDocumentById(Long identityDocumentId) {
+    public Mono<IdentityDocumentDTO> getIdentityDocumentById(Long partyId, Long identityDocumentId) {
         return repository.findById(identityDocumentId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Identity document not found with ID: " + identityDocumentId)))
                 .map(mapper::toDTO);

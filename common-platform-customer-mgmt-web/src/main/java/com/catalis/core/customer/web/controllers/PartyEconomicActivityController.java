@@ -21,12 +21,12 @@ import reactor.core.publisher.Mono;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/v1/party-economic-activities")
+@RequestMapping("/api/v1/parties/{partyId}/party-economic-activities")
 @RequiredArgsConstructor
 @Validated
 @Tag(
     name = "Party Economic Activities", 
-    description = "API for managing party economic activities"
+    description = "API for managing party economic activities associated with parties"
 )
 public class PartyEconomicActivityController {
 
@@ -34,8 +34,8 @@ public class PartyEconomicActivityController {
 
     @PostMapping("/filter")
     @Operation(
-        summary = "Filter party economic activities",
-        description = "Retrieve a paginated list of party economic activities based on filtering criteria"
+        summary = "Filter party economic activities for a party",
+        description = "Retrieve a paginated list of party economic activities associated with a specific party based on filtering criteria"
     )
     @ApiResponses({
         @ApiResponse(
@@ -47,19 +47,26 @@ public class PartyEconomicActivityController {
             responseCode = "400", 
             description = "Invalid filter request",
             content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "404", 
+            description = "Party not found",
+            content = @Content
         )
     })
     public Mono<ResponseEntity<PaginationResponse<PartyEconomicActivityDTO>>> filterPartyEconomicActivities(
+            @Parameter(description = "Unique identifier of the party", required = true)
+            @PathVariable Long partyId,
             @Parameter(description = "Filter criteria for party economic activities", required = true)
             @Valid @RequestBody FilterRequest<PartyEconomicActivityDTO> filterRequest) {
-        return partyEconomicActivityService.filterPartyEconomicActivities(filterRequest)
+        return partyEconomicActivityService.filterPartyEconomicActivities(partyId, filterRequest)
                 .map(ResponseEntity::ok);
     }
 
     @PostMapping
     @Operation(
-        summary = "Create party economic activity",
-        description = "Create a new party economic activity"
+        summary = "Create party economic activity for a party",
+        description = "Create a new party economic activity associated with a specific party"
     )
     @ApiResponses({
         @ApiResponse(
@@ -71,19 +78,26 @@ public class PartyEconomicActivityController {
             responseCode = "400", 
             description = "Invalid party economic activity data",
             content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "404", 
+            description = "Party not found",
+            content = @Content
         )
     })
     public Mono<ResponseEntity<PartyEconomicActivityDTO>> createPartyEconomicActivity(
+            @Parameter(description = "Unique identifier of the party", required = true)
+            @PathVariable Long partyId,
             @Parameter(description = "Party economic activity data to create", required = true)
             @Valid @RequestBody PartyEconomicActivityDTO partyEconomicActivityDTO) {
-        return partyEconomicActivityService.createPartyEconomicActivity(partyEconomicActivityDTO)
+        return partyEconomicActivityService.createPartyEconomicActivity(partyId, partyEconomicActivityDTO)
                 .map(partyEconomicActivity -> ResponseEntity.status(HttpStatus.CREATED).body(partyEconomicActivity));
     }
 
     @GetMapping("/{partyEconomicActivityId}")
     @Operation(
         summary = "Get party economic activity by ID",
-        description = "Retrieve a specific party economic activity by its unique identifier"
+        description = "Retrieve a specific party economic activity associated with a party by its unique identifier"
     )
     @ApiResponses({
         @ApiResponse(
@@ -93,21 +107,23 @@ public class PartyEconomicActivityController {
         ),
         @ApiResponse(
             responseCode = "404", 
-            description = "Party economic activity not found",
+            description = "Party economic activity or party not found",
             content = @Content
         )
     })
     public Mono<ResponseEntity<PartyEconomicActivityDTO>> getPartyEconomicActivityById(
+            @Parameter(description = "Unique identifier of the party", required = true)
+            @PathVariable Long partyId,
             @Parameter(description = "Unique identifier of the party economic activity", required = true)
             @PathVariable Long partyEconomicActivityId) {
-        return partyEconomicActivityService.getPartyEconomicActivityById(partyEconomicActivityId)
+        return partyEconomicActivityService.getPartyEconomicActivityById(partyId, partyEconomicActivityId)
                 .map(ResponseEntity::ok);
     }
 
     @PutMapping("/{partyEconomicActivityId}")
     @Operation(
         summary = "Update party economic activity",
-        description = "Update an existing party economic activity"
+        description = "Update an existing party economic activity associated with a party"
     )
     @ApiResponses({
         @ApiResponse(
@@ -122,23 +138,25 @@ public class PartyEconomicActivityController {
         ),
         @ApiResponse(
             responseCode = "404", 
-            description = "Party economic activity not found",
+            description = "Party economic activity or party not found",
             content = @Content
         )
     })
     public Mono<ResponseEntity<PartyEconomicActivityDTO>> updatePartyEconomicActivity(
+            @Parameter(description = "Unique identifier of the party", required = true)
+            @PathVariable Long partyId,
             @Parameter(description = "Unique identifier of the party economic activity", required = true)
             @PathVariable Long partyEconomicActivityId,
             @Parameter(description = "Updated party economic activity data", required = true)
             @Valid @RequestBody PartyEconomicActivityDTO partyEconomicActivityDTO) {
-        return partyEconomicActivityService.updatePartyEconomicActivity(partyEconomicActivityId, partyEconomicActivityDTO)
+        return partyEconomicActivityService.updatePartyEconomicActivity(partyId, partyEconomicActivityId, partyEconomicActivityDTO)
                 .map(ResponseEntity::ok);
     }
 
     @DeleteMapping("/{partyEconomicActivityId}")
     @Operation(
         summary = "Delete party economic activity",
-        description = "Delete a party economic activity from the system"
+        description = "Delete a party economic activity associated with a party from the system"
     )
     @ApiResponses({
         @ApiResponse(
@@ -147,14 +165,16 @@ public class PartyEconomicActivityController {
         ),
         @ApiResponse(
             responseCode = "404", 
-            description = "Party economic activity not found",
+            description = "Party economic activity or party not found",
             content = @Content
         )
     })
     public Mono<ResponseEntity<Void>> deletePartyEconomicActivity(
+            @Parameter(description = "Unique identifier of the party", required = true)
+            @PathVariable Long partyId,
             @Parameter(description = "Unique identifier of the party economic activity", required = true)
             @PathVariable Long partyEconomicActivityId) {
-        return partyEconomicActivityService.deletePartyEconomicActivity(partyEconomicActivityId)
+        return partyEconomicActivityService.deletePartyEconomicActivity(partyId, partyEconomicActivityId)
                 .then(Mono.just(ResponseEntity.noContent().build()));
     }
 }

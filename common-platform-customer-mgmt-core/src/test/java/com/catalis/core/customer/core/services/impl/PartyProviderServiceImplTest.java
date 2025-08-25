@@ -37,10 +37,12 @@ class PartyProviderServiceImplTest {
     private PartyProviderDTO partyProviderDTO;
     private PartyProvider partyProvider;
     private Long partyProviderId;
+    private Long partyId;
 
     @BeforeEach
     void setUp() {
         partyProviderId = 1L;
+        partyId = 1L;
         
         partyProvider = new PartyProvider();
         partyProvider.setPartyProviderId(partyProviderId);
@@ -61,15 +63,15 @@ class PartyProviderServiceImplTest {
         
         // Create a spy of the service to mock the filterPartyProviders method
         PartyProviderServiceImpl spyService = spy(partyProviderService);
-        doReturn(Mono.just(mockResponse)).when(spyService).filterPartyProviders(filterRequest);
+        doReturn(Mono.just(mockResponse)).when(spyService).filterPartyProviders(partyId, filterRequest);
 
         // Act & Assert
-        StepVerifier.create(spyService.filterPartyProviders(filterRequest))
+        StepVerifier.create(spyService.filterPartyProviders(partyId, filterRequest))
                 .expectNext(mockResponse)
                 .verifyComplete();
 
         // Verify that filterPartyProviders was called
-        verify(spyService).filterPartyProviders(filterRequest);
+        verify(spyService).filterPartyProviders(partyId, filterRequest);
     }
 
     @Test
@@ -80,7 +82,7 @@ class PartyProviderServiceImplTest {
         when(partyProviderMapper.toDTO(partyProvider)).thenReturn(partyProviderDTO);
 
         // Act & Assert
-        StepVerifier.create(partyProviderService.createPartyProvider(partyProviderDTO))
+        StepVerifier.create(partyProviderService.createPartyProvider(partyId, partyProviderDTO))
                 .expectNext(partyProviderDTO)
                 .verifyComplete();
 
@@ -96,7 +98,7 @@ class PartyProviderServiceImplTest {
         when(partyProviderRepository.save(partyProvider)).thenReturn(Mono.error(new RuntimeException("Database error")));
 
         // Act & Assert
-        StepVerifier.create(partyProviderService.createPartyProvider(partyProviderDTO))
+        StepVerifier.create(partyProviderService.createPartyProvider(partyId, partyProviderDTO))
                 .expectErrorMatches(throwable -> throwable instanceof RuntimeException && 
                         throwable.getMessage().equals("Database error"))
                 .verify();
@@ -121,7 +123,7 @@ class PartyProviderServiceImplTest {
         when(partyProviderMapper.toDTO(updatedPartyProvider)).thenReturn(partyProviderDTO);
 
         // Act & Assert
-        StepVerifier.create(partyProviderService.updatePartyProvider(partyProviderId, updateDTO))
+        StepVerifier.create(partyProviderService.updatePartyProvider(partyId, partyProviderId, updateDTO))
                 .expectNext(partyProviderDTO)
                 .verifyComplete();
 
@@ -137,7 +139,7 @@ class PartyProviderServiceImplTest {
         when(partyProviderRepository.findById(partyProviderId)).thenReturn(Mono.empty());
 
         // Act & Assert
-        StepVerifier.create(partyProviderService.updatePartyProvider(partyProviderId, partyProviderDTO))
+        StepVerifier.create(partyProviderService.updatePartyProvider(partyId, partyProviderId, partyProviderDTO))
                 .expectErrorMatches(throwable -> throwable instanceof RuntimeException && 
                         throwable.getMessage().equals("Party provider not found with ID: " + partyProviderId))
                 .verify();
@@ -154,7 +156,7 @@ class PartyProviderServiceImplTest {
         when(partyProviderRepository.deleteById(partyProviderId)).thenReturn(Mono.empty());
 
         // Act & Assert
-        StepVerifier.create(partyProviderService.deletePartyProvider(partyProviderId))
+        StepVerifier.create(partyProviderService.deletePartyProvider(partyId, partyProviderId))
                 .verifyComplete();
 
         verify(partyProviderRepository).findById(partyProviderId);
@@ -167,7 +169,7 @@ class PartyProviderServiceImplTest {
         when(partyProviderRepository.findById(partyProviderId)).thenReturn(Mono.empty());
 
         // Act & Assert
-        StepVerifier.create(partyProviderService.deletePartyProvider(partyProviderId))
+        StepVerifier.create(partyProviderService.deletePartyProvider(partyId, partyProviderId))
                 .expectErrorMatches(throwable -> throwable instanceof RuntimeException && 
                         throwable.getMessage().equals("Party provider not found with ID: " + partyProviderId))
                 .verify();
@@ -183,7 +185,7 @@ class PartyProviderServiceImplTest {
         when(partyProviderRepository.deleteById(partyProviderId)).thenReturn(Mono.error(new RuntimeException("Delete failed")));
 
         // Act & Assert
-        StepVerifier.create(partyProviderService.deletePartyProvider(partyProviderId))
+        StepVerifier.create(partyProviderService.deletePartyProvider(partyId, partyProviderId))
                 .expectErrorMatches(throwable -> throwable instanceof RuntimeException && 
                         throwable.getMessage().equals("Delete failed"))
                 .verify();
@@ -199,7 +201,7 @@ class PartyProviderServiceImplTest {
         when(partyProviderMapper.toDTO(partyProvider)).thenReturn(partyProviderDTO);
 
         // Act & Assert
-        StepVerifier.create(partyProviderService.getPartyProviderById(partyProviderId))
+        StepVerifier.create(partyProviderService.getPartyProviderById(partyId, partyProviderId))
                 .expectNext(partyProviderDTO)
                 .verifyComplete();
 
@@ -213,7 +215,7 @@ class PartyProviderServiceImplTest {
         when(partyProviderRepository.findById(partyProviderId)).thenReturn(Mono.empty());
 
         // Act & Assert
-        StepVerifier.create(partyProviderService.getPartyProviderById(partyProviderId))
+        StepVerifier.create(partyProviderService.getPartyProviderById(partyId, partyProviderId))
                 .expectErrorMatches(throwable -> throwable instanceof RuntimeException && 
                         throwable.getMessage().equals("Party provider not found with ID: " + partyProviderId))
                 .verify();
@@ -228,7 +230,7 @@ class PartyProviderServiceImplTest {
         when(partyProviderRepository.findById(partyProviderId)).thenReturn(Mono.error(new RuntimeException("Database connection failed")));
 
         // Act & Assert
-        StepVerifier.create(partyProviderService.getPartyProviderById(partyProviderId))
+        StepVerifier.create(partyProviderService.getPartyProviderById(partyId, partyProviderId))
                 .expectErrorMatches(throwable -> throwable instanceof RuntimeException && 
                         throwable.getMessage().equals("Database connection failed"))
                 .verify();

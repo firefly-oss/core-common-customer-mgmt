@@ -90,7 +90,7 @@ public class LegalEntityController {
             @PathVariable Long partyId,
             @Parameter(description = "Legal entity data to create", required = true)
             @Valid @RequestBody LegalEntityDTO legalEntityDTO) {
-        return legalEntityService.createLegalEntity(legalEntityDTO)
+        return legalEntityService.createLegalEntity(partyId, legalEntityDTO)
                 .map(legalEntity -> ResponseEntity.status(HttpStatus.CREATED).body(legalEntity));
     }
 
@@ -116,7 +116,7 @@ public class LegalEntityController {
             @PathVariable Long partyId,
             @Parameter(description = "Unique identifier of the legal entity", required = true)
             @PathVariable Long legalEntityId) {
-        return legalEntityService.getLegalEntityById(legalEntityId)
+        return legalEntityService.getLegalEntityById(partyId, legalEntityId)
                 .map(ResponseEntity::ok);
     }
 
@@ -149,7 +149,7 @@ public class LegalEntityController {
             @PathVariable Long legalEntityId,
             @Parameter(description = "Updated legal entity data", required = true)
             @Valid @RequestBody LegalEntityDTO legalEntityDTO) {
-        return legalEntityService.updateLegalEntity(legalEntityId, legalEntityDTO)
+        return legalEntityService.updateLegalEntity(partyId, legalEntityId, legalEntityDTO)
                 .map(ResponseEntity::ok);
     }
 
@@ -174,7 +174,7 @@ public class LegalEntityController {
             @PathVariable Long partyId,
             @Parameter(description = "Unique identifier of the legal entity", required = true)
             @PathVariable Long legalEntityId) {
-        return legalEntityService.deleteLegalEntity(legalEntityId)
+        return legalEntityService.deleteLegalEntity(partyId, legalEntityId)
                 .then(Mono.just(ResponseEntity.noContent().build()));
     }
 }

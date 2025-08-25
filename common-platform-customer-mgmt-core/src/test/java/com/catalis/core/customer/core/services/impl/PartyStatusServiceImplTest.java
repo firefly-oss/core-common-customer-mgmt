@@ -37,10 +37,12 @@ class PartyStatusServiceImplTest {
     private PartyStatusDTO partyStatusDTO;
     private PartyStatus partyStatus;
     private Long partyStatusId;
+    private Long partyId;
 
     @BeforeEach
     void setUp() {
         partyStatusId = 1L;
+        partyId = 1L;
         
         partyStatus = new PartyStatus();
         partyStatus.setPartyStatusId(partyStatusId);
@@ -61,15 +63,15 @@ class PartyStatusServiceImplTest {
         
         // Create a spy of the service to mock the filterPartyStatuses method
         PartyStatusServiceImpl spyService = spy(partyStatusService);
-        doReturn(Mono.just(mockResponse)).when(spyService).filterPartyStatuses(filterRequest);
+        doReturn(Mono.just(mockResponse)).when(spyService).filterPartyStatuses(partyId, filterRequest);
 
         // Act & Assert
-        StepVerifier.create(spyService.filterPartyStatuses(filterRequest))
+        StepVerifier.create(spyService.filterPartyStatuses(partyId, filterRequest))
                 .expectNext(mockResponse)
                 .verifyComplete();
 
         // Verify that filterPartyStatuses was called
-        verify(spyService).filterPartyStatuses(filterRequest);
+        verify(spyService).filterPartyStatuses(partyId, filterRequest);
     }
 
     @Test
@@ -80,7 +82,7 @@ class PartyStatusServiceImplTest {
         when(partyStatusMapper.toDTO(partyStatus)).thenReturn(partyStatusDTO);
 
         // Act & Assert
-        StepVerifier.create(partyStatusService.createPartyStatus(partyStatusDTO))
+        StepVerifier.create(partyStatusService.createPartyStatus(partyId, partyStatusDTO))
                 .expectNext(partyStatusDTO)
                 .verifyComplete();
 
@@ -96,7 +98,7 @@ class PartyStatusServiceImplTest {
         when(partyStatusRepository.save(partyStatus)).thenReturn(Mono.error(new RuntimeException("Database error")));
 
         // Act & Assert
-        StepVerifier.create(partyStatusService.createPartyStatus(partyStatusDTO))
+        StepVerifier.create(partyStatusService.createPartyStatus(partyId, partyStatusDTO))
                 .expectErrorMatches(throwable -> throwable instanceof RuntimeException && 
                         throwable.getMessage().equals("Database error"))
                 .verify();
@@ -121,7 +123,7 @@ class PartyStatusServiceImplTest {
         when(partyStatusMapper.toDTO(updatedPartyStatus)).thenReturn(partyStatusDTO);
 
         // Act & Assert
-        StepVerifier.create(partyStatusService.updatePartyStatus(partyStatusId, updateDTO))
+        StepVerifier.create(partyStatusService.updatePartyStatus(partyId, partyStatusId, updateDTO))
                 .expectNext(partyStatusDTO)
                 .verifyComplete();
 
@@ -137,7 +139,7 @@ class PartyStatusServiceImplTest {
         when(partyStatusRepository.findById(partyStatusId)).thenReturn(Mono.empty());
 
         // Act & Assert
-        StepVerifier.create(partyStatusService.updatePartyStatus(partyStatusId, partyStatusDTO))
+        StepVerifier.create(partyStatusService.updatePartyStatus(partyId, partyStatusId, partyStatusDTO))
                 .expectErrorMatches(throwable -> throwable instanceof RuntimeException && 
                         throwable.getMessage().equals("Party status not found with ID: " + partyStatusId))
                 .verify();
@@ -154,7 +156,7 @@ class PartyStatusServiceImplTest {
         when(partyStatusRepository.deleteById(partyStatusId)).thenReturn(Mono.empty());
 
         // Act & Assert
-        StepVerifier.create(partyStatusService.deletePartyStatus(partyStatusId))
+        StepVerifier.create(partyStatusService.deletePartyStatus(partyId, partyStatusId))
                 .verifyComplete();
 
         verify(partyStatusRepository).findById(partyStatusId);
@@ -167,7 +169,7 @@ class PartyStatusServiceImplTest {
         when(partyStatusRepository.findById(partyStatusId)).thenReturn(Mono.empty());
 
         // Act & Assert
-        StepVerifier.create(partyStatusService.deletePartyStatus(partyStatusId))
+        StepVerifier.create(partyStatusService.deletePartyStatus(partyId, partyStatusId))
                 .expectErrorMatches(throwable -> throwable instanceof RuntimeException && 
                         throwable.getMessage().equals("Party status not found with ID: " + partyStatusId))
                 .verify();
@@ -183,7 +185,7 @@ class PartyStatusServiceImplTest {
         when(partyStatusRepository.deleteById(partyStatusId)).thenReturn(Mono.error(new RuntimeException("Delete failed")));
 
         // Act & Assert
-        StepVerifier.create(partyStatusService.deletePartyStatus(partyStatusId))
+        StepVerifier.create(partyStatusService.deletePartyStatus(partyId, partyStatusId))
                 .expectErrorMatches(throwable -> throwable instanceof RuntimeException && 
                         throwable.getMessage().equals("Delete failed"))
                 .verify();
@@ -199,7 +201,7 @@ class PartyStatusServiceImplTest {
         when(partyStatusMapper.toDTO(partyStatus)).thenReturn(partyStatusDTO);
 
         // Act & Assert
-        StepVerifier.create(partyStatusService.getPartyStatusById(partyStatusId))
+        StepVerifier.create(partyStatusService.getPartyStatusById(partyId, partyStatusId))
                 .expectNext(partyStatusDTO)
                 .verifyComplete();
 
@@ -213,7 +215,7 @@ class PartyStatusServiceImplTest {
         when(partyStatusRepository.findById(partyStatusId)).thenReturn(Mono.empty());
 
         // Act & Assert
-        StepVerifier.create(partyStatusService.getPartyStatusById(partyStatusId))
+        StepVerifier.create(partyStatusService.getPartyStatusById(partyId, partyStatusId))
                 .expectErrorMatches(throwable -> throwable instanceof RuntimeException && 
                         throwable.getMessage().equals("Party status not found with ID: " + partyStatusId))
                 .verify();
@@ -228,7 +230,7 @@ class PartyStatusServiceImplTest {
         when(partyStatusRepository.findById(partyStatusId)).thenReturn(Mono.error(new RuntimeException("Database connection failed")));
 
         // Act & Assert
-        StepVerifier.create(partyStatusService.getPartyStatusById(partyStatusId))
+        StepVerifier.create(partyStatusService.getPartyStatusById(partyId, partyStatusId))
                 .expectErrorMatches(throwable -> throwable instanceof RuntimeException && 
                         throwable.getMessage().equals("Database connection failed"))
                 .verify();

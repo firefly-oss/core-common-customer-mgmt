@@ -37,10 +37,12 @@ class ConsentServiceImplTest {
     private ConsentDTO consentDTO;
     private Consent consent;
     private Long consentId;
+    private Long partyId;
 
     @BeforeEach
     void setUp() {
         consentId = 1L;
+        partyId = 1L;
         
         consent = new Consent();
         consent.setConsentId(consentId);
@@ -61,15 +63,15 @@ class ConsentServiceImplTest {
         
         // Create a spy of the service to mock the filterConsents method
         ConsentServiceImpl spyService = spy(consentService);
-        doReturn(Mono.just(mockResponse)).when(spyService).filterConsents(filterRequest);
+        doReturn(Mono.just(mockResponse)).when(spyService).filterConsents(partyId, filterRequest);
 
         // Act & Assert
-        StepVerifier.create(spyService.filterConsents(filterRequest))
+        StepVerifier.create(spyService.filterConsents(partyId, filterRequest))
                 .expectNext(mockResponse)
                 .verifyComplete();
 
         // Verify that filterConsents was called
-        verify(spyService).filterConsents(filterRequest);
+        verify(spyService).filterConsents(partyId, filterRequest);
     }
 
     @Test
@@ -80,7 +82,7 @@ class ConsentServiceImplTest {
         when(consentMapper.toDTO(consent)).thenReturn(consentDTO);
 
         // Act & Assert
-        StepVerifier.create(consentService.createConsent(consentDTO))
+        StepVerifier.create(consentService.createConsent(partyId, consentDTO))
                 .expectNext(consentDTO)
                 .verifyComplete();
 
@@ -96,7 +98,7 @@ class ConsentServiceImplTest {
         when(consentRepository.save(consent)).thenReturn(Mono.error(new RuntimeException("Database error")));
 
         // Act & Assert
-        StepVerifier.create(consentService.createConsent(consentDTO))
+        StepVerifier.create(consentService.createConsent(partyId, consentDTO))
                 .expectErrorMatches(throwable -> throwable instanceof RuntimeException && 
                         throwable.getMessage().equals("Database error"))
                 .verify();
@@ -121,7 +123,7 @@ class ConsentServiceImplTest {
         when(consentMapper.toDTO(updatedConsent)).thenReturn(consentDTO);
 
         // Act & Assert
-        StepVerifier.create(consentService.updateConsent(consentId, updateDTO))
+        StepVerifier.create(consentService.updateConsent(partyId, consentId, updateDTO))
                 .expectNext(consentDTO)
                 .verifyComplete();
 
@@ -137,7 +139,7 @@ class ConsentServiceImplTest {
         when(consentRepository.findById(consentId)).thenReturn(Mono.empty());
 
         // Act & Assert
-        StepVerifier.create(consentService.updateConsent(consentId, consentDTO))
+        StepVerifier.create(consentService.updateConsent(partyId, consentId, consentDTO))
                 .expectErrorMatches(throwable -> throwable instanceof RuntimeException && 
                         throwable.getMessage().equals("Consent not found with ID: " + consentId))
                 .verify();
@@ -154,7 +156,7 @@ class ConsentServiceImplTest {
         when(consentRepository.deleteById(consentId)).thenReturn(Mono.empty());
 
         // Act & Assert
-        StepVerifier.create(consentService.deleteConsent(consentId))
+        StepVerifier.create(consentService.deleteConsent(partyId, consentId))
                 .verifyComplete();
 
         verify(consentRepository).findById(consentId);
@@ -167,7 +169,7 @@ class ConsentServiceImplTest {
         when(consentRepository.findById(consentId)).thenReturn(Mono.empty());
 
         // Act & Assert
-        StepVerifier.create(consentService.deleteConsent(consentId))
+        StepVerifier.create(consentService.deleteConsent(partyId, consentId))
                 .expectErrorMatches(throwable -> throwable instanceof RuntimeException && 
                         throwable.getMessage().equals("Consent not found with ID: " + consentId))
                 .verify();
@@ -183,7 +185,7 @@ class ConsentServiceImplTest {
         when(consentRepository.deleteById(consentId)).thenReturn(Mono.error(new RuntimeException("Delete failed")));
 
         // Act & Assert
-        StepVerifier.create(consentService.deleteConsent(consentId))
+        StepVerifier.create(consentService.deleteConsent(partyId, consentId))
                 .expectErrorMatches(throwable -> throwable instanceof RuntimeException && 
                         throwable.getMessage().equals("Delete failed"))
                 .verify();
@@ -199,7 +201,7 @@ class ConsentServiceImplTest {
         when(consentMapper.toDTO(consent)).thenReturn(consentDTO);
 
         // Act & Assert
-        StepVerifier.create(consentService.getConsentById(consentId))
+        StepVerifier.create(consentService.getConsentById(partyId, consentId))
                 .expectNext(consentDTO)
                 .verifyComplete();
 
@@ -213,7 +215,7 @@ class ConsentServiceImplTest {
         when(consentRepository.findById(consentId)).thenReturn(Mono.empty());
 
         // Act & Assert
-        StepVerifier.create(consentService.getConsentById(consentId))
+        StepVerifier.create(consentService.getConsentById(partyId, consentId))
                 .expectErrorMatches(throwable -> throwable instanceof RuntimeException && 
                         throwable.getMessage().equals("Consent not found with ID: " + consentId))
                 .verify();
@@ -228,7 +230,7 @@ class ConsentServiceImplTest {
         when(consentRepository.findById(consentId)).thenReturn(Mono.error(new RuntimeException("Database connection failed")));
 
         // Act & Assert
-        StepVerifier.create(consentService.getConsentById(consentId))
+        StepVerifier.create(consentService.getConsentById(partyId, consentId))
                 .expectErrorMatches(throwable -> throwable instanceof RuntimeException && 
                         throwable.getMessage().equals("Database connection failed"))
                 .verify();

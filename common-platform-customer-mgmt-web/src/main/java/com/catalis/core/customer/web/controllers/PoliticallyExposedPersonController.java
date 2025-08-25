@@ -21,12 +21,12 @@ import reactor.core.publisher.Mono;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/v1/politically-exposed-persons")
+@RequestMapping("/api/v1/parties/{partyId}/politically-exposed-persons")
 @RequiredArgsConstructor
 @Validated
 @Tag(
     name = "Politically Exposed Persons", 
-    description = "API for managing politically exposed persons (PEP) - regulatory compliance entities"
+    description = "API for managing politically exposed persons (PEP) associated with parties - regulatory compliance entities"
 )
 public class PoliticallyExposedPersonController {
 
@@ -34,8 +34,8 @@ public class PoliticallyExposedPersonController {
 
     @PostMapping("/filter")
     @Operation(
-        summary = "Filter politically exposed persons",
-        description = "Retrieve a paginated list of politically exposed persons based on filtering criteria for regulatory compliance"
+        summary = "Filter politically exposed persons for a party",
+        description = "Retrieve a paginated list of politically exposed persons associated with a specific party based on filtering criteria for regulatory compliance"
     )
     @ApiResponses({
         @ApiResponse(
@@ -47,19 +47,26 @@ public class PoliticallyExposedPersonController {
             responseCode = "400", 
             description = "Invalid filter request",
             content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "404", 
+            description = "Party not found",
+            content = @Content
         )
     })
     public Mono<ResponseEntity<PaginationResponse<PoliticallyExposedPersonDTO>>> filterPoliticallyExposedPersons(
+            @Parameter(description = "Unique identifier of the party", required = true)
+            @PathVariable Long partyId,
             @Parameter(description = "Filter criteria for politically exposed persons", required = true)
             @Valid @RequestBody FilterRequest<PoliticallyExposedPersonDTO> filterRequest) {
-        return politicallyExposedPersonService.filterPoliticallyExposedPersons(filterRequest)
+        return politicallyExposedPersonService.filterPoliticallyExposedPersons(partyId, filterRequest)
                 .map(ResponseEntity::ok);
     }
 
     @PostMapping
     @Operation(
-        summary = "Create politically exposed person",
-        description = "Create a new politically exposed person record for regulatory compliance"
+        summary = "Create politically exposed person for a party",
+        description = "Create a new politically exposed person record associated with a specific party for regulatory compliance"
     )
     @ApiResponses({
         @ApiResponse(
@@ -71,19 +78,26 @@ public class PoliticallyExposedPersonController {
             responseCode = "400", 
             description = "Invalid politically exposed person data",
             content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "404", 
+            description = "Party not found",
+            content = @Content
         )
     })
     public Mono<ResponseEntity<PoliticallyExposedPersonDTO>> createPoliticallyExposedPerson(
+            @Parameter(description = "Unique identifier of the party", required = true)
+            @PathVariable Long partyId,
             @Parameter(description = "Politically exposed person data to create", required = true)
             @Valid @RequestBody PoliticallyExposedPersonDTO politicallyExposedPersonDTO) {
-        return politicallyExposedPersonService.createPoliticallyExposedPerson(politicallyExposedPersonDTO)
+        return politicallyExposedPersonService.createPoliticallyExposedPerson(partyId, politicallyExposedPersonDTO)
                 .map(pep -> ResponseEntity.status(HttpStatus.CREATED).body(pep));
     }
 
     @GetMapping("/{pepId}")
     @Operation(
         summary = "Get politically exposed person by ID",
-        description = "Retrieve a specific politically exposed person by its unique identifier"
+        description = "Retrieve a specific politically exposed person associated with a party by its unique identifier"
     )
     @ApiResponses({
         @ApiResponse(
@@ -93,21 +107,23 @@ public class PoliticallyExposedPersonController {
         ),
         @ApiResponse(
             responseCode = "404", 
-            description = "Politically exposed person not found",
+            description = "Politically exposed person or party not found",
             content = @Content
         )
     })
     public Mono<ResponseEntity<PoliticallyExposedPersonDTO>> getPoliticallyExposedPersonById(
+            @Parameter(description = "Unique identifier of the party", required = true)
+            @PathVariable Long partyId,
             @Parameter(description = "Unique identifier of the politically exposed person", required = true)
             @PathVariable Long pepId) {
-        return politicallyExposedPersonService.getPoliticallyExposedPersonById(pepId)
+        return politicallyExposedPersonService.getPoliticallyExposedPersonById(partyId, pepId)
                 .map(ResponseEntity::ok);
     }
 
     @PutMapping("/{pepId}")
     @Operation(
         summary = "Update politically exposed person",
-        description = "Update an existing politically exposed person record"
+        description = "Update an existing politically exposed person record associated with a party"
     )
     @ApiResponses({
         @ApiResponse(
@@ -122,23 +138,25 @@ public class PoliticallyExposedPersonController {
         ),
         @ApiResponse(
             responseCode = "404", 
-            description = "Politically exposed person not found",
+            description = "Politically exposed person or party not found",
             content = @Content
         )
     })
     public Mono<ResponseEntity<PoliticallyExposedPersonDTO>> updatePoliticallyExposedPerson(
+            @Parameter(description = "Unique identifier of the party", required = true)
+            @PathVariable Long partyId,
             @Parameter(description = "Unique identifier of the politically exposed person", required = true)
             @PathVariable Long pepId,
             @Parameter(description = "Updated politically exposed person data", required = true)
             @Valid @RequestBody PoliticallyExposedPersonDTO politicallyExposedPersonDTO) {
-        return politicallyExposedPersonService.updatePoliticallyExposedPerson(pepId, politicallyExposedPersonDTO)
+        return politicallyExposedPersonService.updatePoliticallyExposedPerson(partyId, pepId, politicallyExposedPersonDTO)
                 .map(ResponseEntity::ok);
     }
 
     @DeleteMapping("/{pepId}")
     @Operation(
         summary = "Delete politically exposed person",
-        description = "Delete a politically exposed person record from the system"
+        description = "Delete a politically exposed person record associated with a party from the system"
     )
     @ApiResponses({
         @ApiResponse(
@@ -147,14 +165,16 @@ public class PoliticallyExposedPersonController {
         ),
         @ApiResponse(
             responseCode = "404", 
-            description = "Politically exposed person not found",
+            description = "Politically exposed person or party not found",
             content = @Content
         )
     })
     public Mono<ResponseEntity<Void>> deletePoliticallyExposedPerson(
+            @Parameter(description = "Unique identifier of the party", required = true)
+            @PathVariable Long partyId,
             @Parameter(description = "Unique identifier of the politically exposed person", required = true)
             @PathVariable Long pepId) {
-        return politicallyExposedPersonService.deletePoliticallyExposedPerson(pepId)
+        return politicallyExposedPersonService.deletePoliticallyExposedPerson(partyId, pepId)
                 .then(Mono.just(ResponseEntity.noContent().build()));
     }
 }

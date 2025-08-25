@@ -59,7 +59,7 @@ public class PartyRelationshipController {
             @PathVariable Long partyId,
             @Parameter(description = "Filter criteria for party relationships", required = true)
             @Valid @RequestBody FilterRequest<PartyRelationshipDTO> filterRequest) {
-        return partyRelationshipService.filterPartyRelationships(filterRequest)
+        return partyRelationshipService.filterPartyRelationships(partyId, filterRequest)
                 .map(ResponseEntity::ok);
     }
 
@@ -90,7 +90,7 @@ public class PartyRelationshipController {
             @PathVariable Long partyId,
             @Parameter(description = "Party relationship data to create", required = true)
             @Valid @RequestBody PartyRelationshipDTO partyRelationshipDTO) {
-        return partyRelationshipService.createPartyRelationship(partyRelationshipDTO)
+        return partyRelationshipService.createPartyRelationship(partyId, partyRelationshipDTO)
                 .map(relationship -> ResponseEntity.status(HttpStatus.CREATED).body(relationship));
     }
 
@@ -116,7 +116,7 @@ public class PartyRelationshipController {
             @PathVariable Long partyId,
             @Parameter(description = "Unique identifier of the party relationship", required = true)
             @PathVariable Long relationshipId) {
-        return partyRelationshipService.getPartyRelationshipById(relationshipId)
+        return partyRelationshipService.getPartyRelationshipById(partyId, relationshipId)
                 .map(ResponseEntity::ok);
     }
 
@@ -149,7 +149,7 @@ public class PartyRelationshipController {
             @PathVariable Long relationshipId,
             @Parameter(description = "Updated party relationship data", required = true)
             @Valid @RequestBody PartyRelationshipDTO partyRelationshipDTO) {
-        return partyRelationshipService.updatePartyRelationship(relationshipId, partyRelationshipDTO)
+        return partyRelationshipService.updatePartyRelationship(partyId, relationshipId, partyRelationshipDTO)
                 .map(ResponseEntity::ok);
     }
 
@@ -174,7 +174,7 @@ public class PartyRelationshipController {
             @PathVariable Long partyId,
             @Parameter(description = "Unique identifier of the party relationship", required = true)
             @PathVariable Long relationshipId) {
-        return partyRelationshipService.deletePartyRelationship(relationshipId)
+        return partyRelationshipService.deletePartyRelationship(partyId, relationshipId)
                 .then(Mono.just(ResponseEntity.noContent().build()));
     }
 }

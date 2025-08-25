@@ -29,12 +29,20 @@
       "description": "API for managing identity documents associated with parties"
     },
     {
-      "name": "Legal Entities",
-      "description": "API for managing legal entities - corporate customers associated with parties"
+      "name": "Party Economic Activities",
+      "description": "API for managing party economic activities associated with parties"
     },
     {
-      "name": "Politically Exposed Persons",
-      "description": "API for managing politically exposed persons (PEP) - regulatory compliance entities"
+      "name": "Party Providers",
+      "description": "API for managing party providers associated with parties"
+    },
+    {
+      "name": "Party Group Memberships",
+      "description": "API for managing party group memberships associated with parties"
+    },
+    {
+      "name": "Legal Entities",
+      "description": "API for managing legal entities - corporate customers associated with parties"
     },
     {
       "name": "Email Contacts",
@@ -50,7 +58,7 @@
     },
     {
       "name": "Party Statuses",
-      "description": "API for managing party statuses"
+      "description": "API for managing party statuses associated with parties"
     },
     {
       "name": "Consents",
@@ -61,507 +69,15 @@
       "description": "API for managing relationships between parties - hierarchies, associations, and business connections"
     },
     {
-      "name": "Party Economic Activities",
-      "description": "API for managing party economic activities"
-    },
-    {
       "name": "Natural Persons",
       "description": "API for managing natural persons - individual customers associated with parties"
     },
     {
-      "name": "Party Providers",
-      "description": "API for managing party providers"
+      "name": "Politically Exposed Persons",
+      "description": "API for managing politically exposed persons (PEP) associated with parties - regulatory compliance entities"
     }
   ],
   "paths": {
-    "/api/v1/politically-exposed-persons/{pepId}": {
-      "get": {
-        "tags": [
-          "Politically Exposed Persons"
-        ],
-        "summary": "Get politically exposed person by ID",
-        "description": "Retrieve a specific politically exposed person by its unique identifier",
-        "operationId": "getPoliticallyExposedPersonById",
-        "parameters": [
-          {
-            "name": "pepId",
-            "in": "path",
-            "description": "Unique identifier of the politically exposed person",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Politically exposed person found",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/PoliticallyExposedPersonDTO"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Politically exposed person not found"
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "Politically Exposed Persons"
-        ],
-        "summary": "Update politically exposed person",
-        "description": "Update an existing politically exposed person record",
-        "operationId": "updatePoliticallyExposedPerson",
-        "parameters": [
-          {
-            "name": "pepId",
-            "in": "path",
-            "description": "Unique identifier of the politically exposed person",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          },
-          {
-            "name": "X-Idempotency-Key",
-            "in": "header",
-            "description": "Unique key for idempotent requests. If provided, ensures that identical requests with the same key will only be processed once.",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/PoliticallyExposedPersonDTO"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "400": {
-            "description": "Invalid politically exposed person data"
-          },
-          "404": {
-            "description": "Politically exposed person not found"
-          },
-          "200": {
-            "description": "Politically exposed person successfully updated",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/PoliticallyExposedPersonDTO"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "Politically Exposed Persons"
-        ],
-        "summary": "Delete politically exposed person",
-        "description": "Delete a politically exposed person record from the system",
-        "operationId": "deletePoliticallyExposedPerson",
-        "parameters": [
-          {
-            "name": "pepId",
-            "in": "path",
-            "description": "Unique identifier of the politically exposed person",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "404": {
-            "description": "Politically exposed person not found"
-          },
-          "204": {
-            "description": "Politically exposed person successfully deleted"
-          }
-        }
-      }
-    },
-    "/api/v1/party-statuses/{partyStatusId}": {
-      "get": {
-        "tags": [
-          "Party Statuses"
-        ],
-        "summary": "Get party status by ID",
-        "description": "Retrieve a specific party status by its unique identifier",
-        "operationId": "getPartyStatusById",
-        "parameters": [
-          {
-            "name": "partyStatusId",
-            "in": "path",
-            "description": "Unique identifier of the party status",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "404": {
-            "description": "Party status not found"
-          },
-          "200": {
-            "description": "Party status found",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/PartyStatusDTO"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "Party Statuses"
-        ],
-        "summary": "Update party status",
-        "description": "Update an existing party status",
-        "operationId": "updatePartyStatus",
-        "parameters": [
-          {
-            "name": "partyStatusId",
-            "in": "path",
-            "description": "Unique identifier of the party status",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          },
-          {
-            "name": "X-Idempotency-Key",
-            "in": "header",
-            "description": "Unique key for idempotent requests. If provided, ensures that identical requests with the same key will only be processed once.",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/PartyStatusDTO"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "400": {
-            "description": "Invalid party status data"
-          },
-          "200": {
-            "description": "Party status successfully updated",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/PartyStatusDTO"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Party status not found"
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "Party Statuses"
-        ],
-        "summary": "Delete party status",
-        "description": "Delete a party status from the system",
-        "operationId": "deletePartyStatus",
-        "parameters": [
-          {
-            "name": "partyStatusId",
-            "in": "path",
-            "description": "Unique identifier of the party status",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "Party status successfully deleted"
-          },
-          "404": {
-            "description": "Party status not found"
-          }
-        }
-      }
-    },
-    "/api/v1/party-providers/{partyProviderId}": {
-      "get": {
-        "tags": [
-          "Party Providers"
-        ],
-        "summary": "Get party provider by ID",
-        "description": "Retrieve a specific party provider by its unique identifier",
-        "operationId": "getPartyProviderById",
-        "parameters": [
-          {
-            "name": "partyProviderId",
-            "in": "path",
-            "description": "Unique identifier of the party provider",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Party provider found",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/PartyProviderDTO"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Party provider not found"
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "Party Providers"
-        ],
-        "summary": "Update party provider",
-        "description": "Update an existing party provider",
-        "operationId": "updatePartyProvider",
-        "parameters": [
-          {
-            "name": "partyProviderId",
-            "in": "path",
-            "description": "Unique identifier of the party provider",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          },
-          {
-            "name": "X-Idempotency-Key",
-            "in": "header",
-            "description": "Unique key for idempotent requests. If provided, ensures that identical requests with the same key will only be processed once.",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/PartyProviderDTO"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "400": {
-            "description": "Invalid party provider data"
-          },
-          "404": {
-            "description": "Party provider not found"
-          },
-          "200": {
-            "description": "Party provider successfully updated",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/PartyProviderDTO"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "Party Providers"
-        ],
-        "summary": "Delete party provider",
-        "description": "Delete a party provider from the system",
-        "operationId": "deletePartyProvider",
-        "parameters": [
-          {
-            "name": "partyProviderId",
-            "in": "path",
-            "description": "Unique identifier of the party provider",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "Party provider successfully deleted"
-          },
-          "404": {
-            "description": "Party provider not found"
-          }
-        }
-      }
-    },
-    "/api/v1/party-economic-activities/{partyEconomicActivityId}": {
-      "get": {
-        "tags": [
-          "Party Economic Activities"
-        ],
-        "summary": "Get party economic activity by ID",
-        "description": "Retrieve a specific party economic activity by its unique identifier",
-        "operationId": "getPartyEconomicActivityById",
-        "parameters": [
-          {
-            "name": "partyEconomicActivityId",
-            "in": "path",
-            "description": "Unique identifier of the party economic activity",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Party economic activity found",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/PartyEconomicActivityDTO"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Party economic activity not found"
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "Party Economic Activities"
-        ],
-        "summary": "Update party economic activity",
-        "description": "Update an existing party economic activity",
-        "operationId": "updatePartyEconomicActivity",
-        "parameters": [
-          {
-            "name": "partyEconomicActivityId",
-            "in": "path",
-            "description": "Unique identifier of the party economic activity",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          },
-          {
-            "name": "X-Idempotency-Key",
-            "in": "header",
-            "description": "Unique key for idempotent requests. If provided, ensures that identical requests with the same key will only be processed once.",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/PartyEconomicActivityDTO"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "Party economic activity successfully updated",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/PartyEconomicActivityDTO"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Invalid party economic activity data"
-          },
-          "404": {
-            "description": "Party economic activity not found"
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "Party Economic Activities"
-        ],
-        "summary": "Delete party economic activity",
-        "description": "Delete a party economic activity from the system",
-        "operationId": "deletePartyEconomicActivity",
-        "parameters": [
-          {
-            "name": "partyEconomicActivityId",
-            "in": "path",
-            "description": "Unique identifier of the party economic activity",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "Party economic activity successfully deleted"
-          },
-          "404": {
-            "description": "Party economic activity not found"
-          }
-        }
-      }
-    },
     "/api/v1/parties/{partyId}": {
       "get": {
         "tags": [
@@ -583,6 +99,9 @@
           }
         ],
         "responses": {
+          "404": {
+            "description": "Party not found"
+          },
           "200": {
             "description": "Party found",
             "content": {
@@ -592,9 +111,6 @@
                 }
               }
             }
-          },
-          "404": {
-            "description": "Party not found"
           }
         }
       },
@@ -637,6 +153,12 @@
           "required": true
         },
         "responses": {
+          "400": {
+            "description": "Invalid party data"
+          },
+          "404": {
+            "description": "Party not found"
+          },
           "200": {
             "description": "Party successfully updated",
             "content": {
@@ -646,12 +168,6 @@
                 }
               }
             }
-          },
-          "400": {
-            "description": "Invalid party data"
-          },
-          "404": {
-            "description": "Party not found"
           }
         }
       },
@@ -715,6 +231,9 @@
           }
         ],
         "responses": {
+          "404": {
+            "description": "Party relationship or party not found"
+          },
           "200": {
             "description": "Party relationship found",
             "content": {
@@ -724,9 +243,6 @@
                 }
               }
             }
-          },
-          "404": {
-            "description": "Party relationship or party not found"
           }
         }
       },
@@ -779,6 +295,12 @@
           "required": true
         },
         "responses": {
+          "404": {
+            "description": "Party relationship or party not found"
+          },
+          "400": {
+            "description": "Invalid party relationship data"
+          },
           "200": {
             "description": "Party relationship successfully updated",
             "content": {
@@ -788,12 +310,6 @@
                 }
               }
             }
-          },
-          "400": {
-            "description": "Invalid party relationship data"
-          },
-          "404": {
-            "description": "Party relationship or party not found"
           }
         }
       },
@@ -827,11 +343,771 @@
           }
         ],
         "responses": {
-          "204": {
-            "description": "Party relationship successfully deleted"
-          },
           "404": {
             "description": "Party relationship or party not found"
+          },
+          "204": {
+            "description": "Party relationship successfully deleted"
+          }
+        }
+      }
+    },
+    "/api/v1/parties/{partyId}/politically-exposed-persons/{pepId}": {
+      "get": {
+        "tags": [
+          "Politically Exposed Persons"
+        ],
+        "summary": "Get politically exposed person by ID",
+        "description": "Retrieve a specific politically exposed person associated with a party by its unique identifier",
+        "operationId": "getPoliticallyExposedPersonById",
+        "parameters": [
+          {
+            "name": "partyId",
+            "in": "path",
+            "description": "Unique identifier of the party",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "pepId",
+            "in": "path",
+            "description": "Unique identifier of the politically exposed person",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Politically exposed person found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PoliticallyExposedPersonDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Politically exposed person or party not found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Politically Exposed Persons"
+        ],
+        "summary": "Update politically exposed person",
+        "description": "Update an existing politically exposed person record associated with a party",
+        "operationId": "updatePoliticallyExposedPerson",
+        "parameters": [
+          {
+            "name": "partyId",
+            "in": "path",
+            "description": "Unique identifier of the party",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "pepId",
+            "in": "path",
+            "description": "Unique identifier of the politically exposed person",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "X-Idempotency-Key",
+            "in": "header",
+            "description": "Unique key for idempotent requests. If provided, ensures that identical requests with the same key will only be processed once.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PoliticallyExposedPersonDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Politically exposed person successfully updated",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PoliticallyExposedPersonDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Politically exposed person or party not found"
+          },
+          "400": {
+            "description": "Invalid politically exposed person data"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Politically Exposed Persons"
+        ],
+        "summary": "Delete politically exposed person",
+        "description": "Delete a politically exposed person record associated with a party from the system",
+        "operationId": "deletePoliticallyExposedPerson",
+        "parameters": [
+          {
+            "name": "partyId",
+            "in": "path",
+            "description": "Unique identifier of the party",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "pepId",
+            "in": "path",
+            "description": "Unique identifier of the politically exposed person",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "Politically exposed person or party not found"
+          },
+          "204": {
+            "description": "Politically exposed person successfully deleted"
+          }
+        }
+      }
+    },
+    "/api/v1/parties/{partyId}/party-statuses/{partyStatusId}": {
+      "get": {
+        "tags": [
+          "Party Statuses"
+        ],
+        "summary": "Get party status by ID",
+        "description": "Retrieve a specific party status associated with a party by its unique identifier",
+        "operationId": "getPartyStatusById",
+        "parameters": [
+          {
+            "name": "partyId",
+            "in": "path",
+            "description": "Unique identifier of the party",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "partyStatusId",
+            "in": "path",
+            "description": "Unique identifier of the party status",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Party status found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PartyStatusDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Party status or party not found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Party Statuses"
+        ],
+        "summary": "Update party status",
+        "description": "Update an existing party status associated with a party",
+        "operationId": "updatePartyStatus",
+        "parameters": [
+          {
+            "name": "partyId",
+            "in": "path",
+            "description": "Unique identifier of the party",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "partyStatusId",
+            "in": "path",
+            "description": "Unique identifier of the party status",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "X-Idempotency-Key",
+            "in": "header",
+            "description": "Unique key for idempotent requests. If provided, ensures that identical requests with the same key will only be processed once.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PartyStatusDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Party status successfully updated",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PartyStatusDTO"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid party status data"
+          },
+          "404": {
+            "description": "Party status or party not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Party Statuses"
+        ],
+        "summary": "Delete party status",
+        "description": "Delete a party status associated with a party from the system",
+        "operationId": "deletePartyStatus",
+        "parameters": [
+          {
+            "name": "partyId",
+            "in": "path",
+            "description": "Unique identifier of the party",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "partyStatusId",
+            "in": "path",
+            "description": "Unique identifier of the party status",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "Party status or party not found"
+          },
+          "204": {
+            "description": "Party status successfully deleted"
+          }
+        }
+      }
+    },
+    "/api/v1/parties/{partyId}/party-providers/{partyProviderId}": {
+      "get": {
+        "tags": [
+          "Party Providers"
+        ],
+        "summary": "Get party provider by ID",
+        "description": "Retrieve a specific party provider associated with a party by its unique identifier",
+        "operationId": "getPartyProviderById",
+        "parameters": [
+          {
+            "name": "partyId",
+            "in": "path",
+            "description": "Unique identifier of the party",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "partyProviderId",
+            "in": "path",
+            "description": "Unique identifier of the party provider",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Party provider found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PartyProviderDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Party provider or party not found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Party Providers"
+        ],
+        "summary": "Update party provider",
+        "description": "Update an existing party provider associated with a party",
+        "operationId": "updatePartyProvider",
+        "parameters": [
+          {
+            "name": "partyId",
+            "in": "path",
+            "description": "Unique identifier of the party",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "partyProviderId",
+            "in": "path",
+            "description": "Unique identifier of the party provider",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "X-Idempotency-Key",
+            "in": "header",
+            "description": "Unique key for idempotent requests. If provided, ensures that identical requests with the same key will only be processed once.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PartyProviderDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Party provider successfully updated",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PartyProviderDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Party provider or party not found"
+          },
+          "400": {
+            "description": "Invalid party provider data"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Party Providers"
+        ],
+        "summary": "Delete party provider",
+        "description": "Delete a party provider associated with a party from the system",
+        "operationId": "deletePartyProvider",
+        "parameters": [
+          {
+            "name": "partyId",
+            "in": "path",
+            "description": "Unique identifier of the party",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "partyProviderId",
+            "in": "path",
+            "description": "Unique identifier of the party provider",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Party provider successfully deleted"
+          },
+          "404": {
+            "description": "Party provider or party not found"
+          }
+        }
+      }
+    },
+    "/api/v1/parties/{partyId}/party-group-memberships/{partyGroupMembershipId}": {
+      "get": {
+        "tags": [
+          "Party Group Memberships"
+        ],
+        "summary": "Get party group membership by ID",
+        "description": "Retrieve a specific party group membership associated with a party by its unique identifier",
+        "operationId": "getPartyGroupMembershipById",
+        "parameters": [
+          {
+            "name": "partyId",
+            "in": "path",
+            "description": "Unique identifier of the party",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "partyGroupMembershipId",
+            "in": "path",
+            "description": "Unique identifier of the party group membership",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "Party group membership or party not found"
+          },
+          "200": {
+            "description": "Party group membership found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PartyGroupMembershipDTO"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Party Group Memberships"
+        ],
+        "summary": "Update party group membership",
+        "description": "Update an existing party group membership associated with a party",
+        "operationId": "updatePartyGroupMembership",
+        "parameters": [
+          {
+            "name": "partyId",
+            "in": "path",
+            "description": "Unique identifier of the party",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "partyGroupMembershipId",
+            "in": "path",
+            "description": "Unique identifier of the party group membership",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "X-Idempotency-Key",
+            "in": "header",
+            "description": "Unique key for idempotent requests. If provided, ensures that identical requests with the same key will only be processed once.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PartyGroupMembershipDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "400": {
+            "description": "Invalid party group membership data"
+          },
+          "200": {
+            "description": "Party group membership successfully updated",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PartyGroupMembershipDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Party group membership or party not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Party Group Memberships"
+        ],
+        "summary": "Delete party group membership",
+        "description": "Delete a party group membership associated with a party from the system",
+        "operationId": "deletePartyGroupMembership",
+        "parameters": [
+          {
+            "name": "partyId",
+            "in": "path",
+            "description": "Unique identifier of the party",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "partyGroupMembershipId",
+            "in": "path",
+            "description": "Unique identifier of the party group membership",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "Party group membership or party not found"
+          },
+          "204": {
+            "description": "Party group membership successfully deleted"
+          }
+        }
+      }
+    },
+    "/api/v1/parties/{partyId}/party-economic-activities/{partyEconomicActivityId}": {
+      "get": {
+        "tags": [
+          "Party Economic Activities"
+        ],
+        "summary": "Get party economic activity by ID",
+        "description": "Retrieve a specific party economic activity associated with a party by its unique identifier",
+        "operationId": "getPartyEconomicActivityById",
+        "parameters": [
+          {
+            "name": "partyId",
+            "in": "path",
+            "description": "Unique identifier of the party",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "partyEconomicActivityId",
+            "in": "path",
+            "description": "Unique identifier of the party economic activity",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Party economic activity found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PartyEconomicActivityDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Party economic activity or party not found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Party Economic Activities"
+        ],
+        "summary": "Update party economic activity",
+        "description": "Update an existing party economic activity associated with a party",
+        "operationId": "updatePartyEconomicActivity",
+        "parameters": [
+          {
+            "name": "partyId",
+            "in": "path",
+            "description": "Unique identifier of the party",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "partyEconomicActivityId",
+            "in": "path",
+            "description": "Unique identifier of the party economic activity",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "X-Idempotency-Key",
+            "in": "header",
+            "description": "Unique key for idempotent requests. If provided, ensures that identical requests with the same key will only be processed once.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PartyEconomicActivityDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Party economic activity successfully updated",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PartyEconomicActivityDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Party economic activity or party not found"
+          },
+          "400": {
+            "description": "Invalid party economic activity data"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Party Economic Activities"
+        ],
+        "summary": "Delete party economic activity",
+        "description": "Delete a party economic activity associated with a party from the system",
+        "operationId": "deletePartyEconomicActivity",
+        "parameters": [
+          {
+            "name": "partyId",
+            "in": "path",
+            "description": "Unique identifier of the party",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "partyEconomicActivityId",
+            "in": "path",
+            "description": "Unique identifier of the party economic activity",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Party economic activity successfully deleted"
+          },
+          "404": {
+            "description": "Party economic activity or party not found"
           }
         }
       }
@@ -867,6 +1143,9 @@
           }
         ],
         "responses": {
+          "404": {
+            "description": "Natural person or party not found"
+          },
           "200": {
             "description": "Natural person found",
             "content": {
@@ -876,9 +1155,6 @@
                 }
               }
             }
-          },
-          "404": {
-            "description": "Natural person or party not found"
           }
         }
       },
@@ -931,9 +1207,6 @@
           "required": true
         },
         "responses": {
-          "400": {
-            "description": "Invalid natural person data"
-          },
           "404": {
             "description": "Natural person or party not found"
           },
@@ -946,6 +1219,9 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "Invalid natural person data"
           }
         }
       },
@@ -1083,6 +1359,9 @@
           "required": true
         },
         "responses": {
+          "400": {
+            "description": "Invalid legal entity data"
+          },
           "200": {
             "description": "Legal entity successfully updated",
             "content": {
@@ -1092,9 +1371,6 @@
                 }
               }
             }
-          },
-          "400": {
-            "description": "Invalid legal entity data"
           },
           "404": {
             "description": "Legal entity or party not found"
@@ -1323,9 +1599,6 @@
           }
         ],
         "responses": {
-          "404": {
-            "description": "Phone contact or party not found"
-          },
           "200": {
             "description": "Phone contact found",
             "content": {
@@ -1335,6 +1608,9 @@
                 }
               }
             }
+          },
+          "404": {
+            "description": "Phone contact or party not found"
           }
         }
       },
@@ -1390,9 +1666,6 @@
           "400": {
             "description": "Invalid phone contact data"
           },
-          "404": {
-            "description": "Phone contact or party not found"
-          },
           "200": {
             "description": "Phone contact successfully updated",
             "content": {
@@ -1402,6 +1675,9 @@
                 }
               }
             }
+          },
+          "404": {
+            "description": "Phone contact or party not found"
           }
         }
       },
@@ -1435,11 +1711,11 @@
           }
         ],
         "responses": {
-          "404": {
-            "description": "Phone contact or party not found"
-          },
           "204": {
             "description": "Phone contact successfully deleted"
+          },
+          "404": {
+            "description": "Phone contact or party not found"
           }
         }
       }
@@ -1475,9 +1751,6 @@
           }
         ],
         "responses": {
-          "404": {
-            "description": "Email contact or party not found"
-          },
           "200": {
             "description": "Email contact found",
             "content": {
@@ -1487,6 +1760,9 @@
                 }
               }
             }
+          },
+          "404": {
+            "description": "Email contact or party not found"
           }
         }
       },
@@ -1539,9 +1815,6 @@
           "required": true
         },
         "responses": {
-          "404": {
-            "description": "Email contact or party not found"
-          },
           "200": {
             "description": "Email contact successfully updated",
             "content": {
@@ -1554,6 +1827,9 @@
           },
           "400": {
             "description": "Invalid email contact data"
+          },
+          "404": {
+            "description": "Email contact or party not found"
           }
         }
       },
@@ -1587,11 +1863,11 @@
           }
         ],
         "responses": {
-          "404": {
-            "description": "Email contact or party not found"
-          },
           "204": {
             "description": "Email contact successfully deleted"
+          },
+          "404": {
+            "description": "Email contact or party not found"
           }
         }
       }
@@ -1779,6 +2055,9 @@
           }
         ],
         "responses": {
+          "404": {
+            "description": "Address or party not found"
+          },
           "200": {
             "description": "Address found",
             "content": {
@@ -1788,9 +2067,6 @@
                 }
               }
             }
-          },
-          "404": {
-            "description": "Address or party not found"
           }
         }
       },
@@ -1891,379 +2167,11 @@
           }
         ],
         "responses": {
-          "204": {
-            "description": "Address successfully deleted"
-          },
           "404": {
             "description": "Address or party not found"
-          }
-        }
-      }
-    },
-    "/api/v1/politically-exposed-persons": {
-      "post": {
-        "tags": [
-          "Politically Exposed Persons"
-        ],
-        "summary": "Create politically exposed person",
-        "description": "Create a new politically exposed person record for regulatory compliance",
-        "operationId": "createPoliticallyExposedPerson",
-        "parameters": [
-          {
-            "name": "X-Idempotency-Key",
-            "in": "header",
-            "description": "Unique key for idempotent requests. If provided, ensures that identical requests with the same key will only be processed once.",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/PoliticallyExposedPersonDTO"
-              }
-            }
           },
-          "required": true
-        },
-        "responses": {
-          "400": {
-            "description": "Invalid politically exposed person data"
-          },
-          "201": {
-            "description": "Politically exposed person successfully created",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/PoliticallyExposedPersonDTO"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/politically-exposed-persons/filter": {
-      "post": {
-        "tags": [
-          "Politically Exposed Persons"
-        ],
-        "summary": "Filter politically exposed persons",
-        "description": "Retrieve a paginated list of politically exposed persons based on filtering criteria for regulatory compliance",
-        "operationId": "filterPoliticallyExposedPersons",
-        "parameters": [
-          {
-            "name": "X-Idempotency-Key",
-            "in": "header",
-            "description": "Unique key for idempotent requests. If provided, ensures that identical requests with the same key will only be processed once.",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/FilterRequestPoliticallyExposedPersonDTO"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "Successfully retrieved filtered politically exposed persons",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/PaginationResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Invalid filter request"
-          }
-        }
-      }
-    },
-    "/api/v1/party-statuses": {
-      "post": {
-        "tags": [
-          "Party Statuses"
-        ],
-        "summary": "Create party status",
-        "description": "Create a new party status",
-        "operationId": "createPartyStatus",
-        "parameters": [
-          {
-            "name": "X-Idempotency-Key",
-            "in": "header",
-            "description": "Unique key for idempotent requests. If provided, ensures that identical requests with the same key will only be processed once.",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/PartyStatusDTO"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "201": {
-            "description": "Party status successfully created",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/PartyStatusDTO"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Invalid party status data"
-          }
-        }
-      }
-    },
-    "/api/v1/party-statuses/filter": {
-      "post": {
-        "tags": [
-          "Party Statuses"
-        ],
-        "summary": "Filter party statuses",
-        "description": "Retrieve a paginated list of party statuses based on filtering criteria",
-        "operationId": "filterPartyStatuses",
-        "parameters": [
-          {
-            "name": "X-Idempotency-Key",
-            "in": "header",
-            "description": "Unique key for idempotent requests. If provided, ensures that identical requests with the same key will only be processed once.",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/FilterRequestPartyStatusDTO"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "Successfully retrieved filtered party statuses",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/PaginationResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Invalid filter request"
-          }
-        }
-      }
-    },
-    "/api/v1/party-providers": {
-      "post": {
-        "tags": [
-          "Party Providers"
-        ],
-        "summary": "Create party provider",
-        "description": "Create a new party provider",
-        "operationId": "createPartyProvider",
-        "parameters": [
-          {
-            "name": "X-Idempotency-Key",
-            "in": "header",
-            "description": "Unique key for idempotent requests. If provided, ensures that identical requests with the same key will only be processed once.",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/PartyProviderDTO"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "400": {
-            "description": "Invalid party provider data"
-          },
-          "201": {
-            "description": "Party provider successfully created",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/PartyProviderDTO"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/party-providers/filter": {
-      "post": {
-        "tags": [
-          "Party Providers"
-        ],
-        "summary": "Filter party providers",
-        "description": "Retrieve a paginated list of party providers based on filtering criteria",
-        "operationId": "filterPartyProviders",
-        "parameters": [
-          {
-            "name": "X-Idempotency-Key",
-            "in": "header",
-            "description": "Unique key for idempotent requests. If provided, ensures that identical requests with the same key will only be processed once.",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/FilterRequestPartyProviderDTO"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "Successfully retrieved filtered party providers",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/PaginationResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Invalid filter request"
-          }
-        }
-      }
-    },
-    "/api/v1/party-economic-activities": {
-      "post": {
-        "tags": [
-          "Party Economic Activities"
-        ],
-        "summary": "Create party economic activity",
-        "description": "Create a new party economic activity",
-        "operationId": "createPartyEconomicActivity",
-        "parameters": [
-          {
-            "name": "X-Idempotency-Key",
-            "in": "header",
-            "description": "Unique key for idempotent requests. If provided, ensures that identical requests with the same key will only be processed once.",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/PartyEconomicActivityDTO"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "201": {
-            "description": "Party economic activity successfully created",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/PartyEconomicActivityDTO"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Invalid party economic activity data"
-          }
-        }
-      }
-    },
-    "/api/v1/party-economic-activities/filter": {
-      "post": {
-        "tags": [
-          "Party Economic Activities"
-        ],
-        "summary": "Filter party economic activities",
-        "description": "Retrieve a paginated list of party economic activities based on filtering criteria",
-        "operationId": "filterPartyEconomicActivities",
-        "parameters": [
-          {
-            "name": "X-Idempotency-Key",
-            "in": "header",
-            "description": "Unique key for idempotent requests. If provided, ensures that identical requests with the same key will only be processed once.",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/FilterRequestPartyEconomicActivityDTO"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "Successfully retrieved filtered party economic activities",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/PaginationResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Invalid filter request"
+          "204": {
+            "description": "Address successfully deleted"
           }
         }
       }
@@ -2298,6 +2206,9 @@
           "required": true
         },
         "responses": {
+          "400": {
+            "description": "Invalid party data"
+          },
           "201": {
             "description": "Party successfully created",
             "content": {
@@ -2307,9 +2218,6 @@
                 }
               }
             }
-          },
-          "400": {
-            "description": "Invalid party data"
           }
         }
       }
@@ -2357,6 +2265,9 @@
           "404": {
             "description": "Party not found"
           },
+          "400": {
+            "description": "Invalid party relationship data"
+          },
           "201": {
             "description": "Party relationship successfully created",
             "content": {
@@ -2366,9 +2277,6 @@
                 }
               }
             }
-          },
-          "400": {
-            "description": "Invalid party relationship data"
           }
         }
       }
@@ -2413,6 +2321,12 @@
           "required": true
         },
         "responses": {
+          "404": {
+            "description": "Party not found"
+          },
+          "400": {
+            "description": "Invalid filter request"
+          },
           "200": {
             "description": "Successfully retrieved filtered party relationships",
             "content": {
@@ -2422,12 +2336,596 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/api/v1/parties/{partyId}/politically-exposed-persons": {
+      "post": {
+        "tags": [
+          "Politically Exposed Persons"
+        ],
+        "summary": "Create politically exposed person for a party",
+        "description": "Create a new politically exposed person record associated with a specific party for regulatory compliance",
+        "operationId": "createPoliticallyExposedPerson",
+        "parameters": [
+          {
+            "name": "partyId",
+            "in": "path",
+            "description": "Unique identifier of the party",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
           },
+          {
+            "name": "X-Idempotency-Key",
+            "in": "header",
+            "description": "Unique key for idempotent requests. If provided, ensures that identical requests with the same key will only be processed once.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PoliticallyExposedPersonDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "404": {
+            "description": "Party not found"
+          },
+          "201": {
+            "description": "Politically exposed person successfully created",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PoliticallyExposedPersonDTO"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid politically exposed person data"
+          }
+        }
+      }
+    },
+    "/api/v1/parties/{partyId}/politically-exposed-persons/filter": {
+      "post": {
+        "tags": [
+          "Politically Exposed Persons"
+        ],
+        "summary": "Filter politically exposed persons for a party",
+        "description": "Retrieve a paginated list of politically exposed persons associated with a specific party based on filtering criteria for regulatory compliance",
+        "operationId": "filterPoliticallyExposedPersons",
+        "parameters": [
+          {
+            "name": "partyId",
+            "in": "path",
+            "description": "Unique identifier of the party",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "X-Idempotency-Key",
+            "in": "header",
+            "description": "Unique key for idempotent requests. If provided, ensures that identical requests with the same key will only be processed once.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FilterRequestPoliticallyExposedPersonDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "404": {
+            "description": "Party not found"
+          },
+          "200": {
+            "description": "Successfully retrieved filtered politically exposed persons",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid filter request"
+          }
+        }
+      }
+    },
+    "/api/v1/parties/{partyId}/party-statuses": {
+      "post": {
+        "tags": [
+          "Party Statuses"
+        ],
+        "summary": "Create party status for a party",
+        "description": "Create a new party status associated with a specific party",
+        "operationId": "createPartyStatus",
+        "parameters": [
+          {
+            "name": "partyId",
+            "in": "path",
+            "description": "Unique identifier of the party",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "X-Idempotency-Key",
+            "in": "header",
+            "description": "Unique key for idempotent requests. If provided, ensures that identical requests with the same key will only be processed once.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PartyStatusDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "404": {
+            "description": "Party not found"
+          },
+          "400": {
+            "description": "Invalid party status data"
+          },
+          "201": {
+            "description": "Party status successfully created",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PartyStatusDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/parties/{partyId}/party-statuses/filter": {
+      "post": {
+        "tags": [
+          "Party Statuses"
+        ],
+        "summary": "Filter party statuses for a party",
+        "description": "Retrieve a paginated list of party statuses associated with a specific party based on filtering criteria",
+        "operationId": "filterPartyStatuses",
+        "parameters": [
+          {
+            "name": "partyId",
+            "in": "path",
+            "description": "Unique identifier of the party",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "X-Idempotency-Key",
+            "in": "header",
+            "description": "Unique key for idempotent requests. If provided, ensures that identical requests with the same key will only be processed once.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FilterRequestPartyStatusDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
           "404": {
             "description": "Party not found"
           },
           "400": {
             "description": "Invalid filter request"
+          },
+          "200": {
+            "description": "Successfully retrieved filtered party statuses",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginationResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/parties/{partyId}/party-providers": {
+      "post": {
+        "tags": [
+          "Party Providers"
+        ],
+        "summary": "Create party provider for a party",
+        "description": "Create a new party provider associated with a specific party",
+        "operationId": "createPartyProvider",
+        "parameters": [
+          {
+            "name": "partyId",
+            "in": "path",
+            "description": "Unique identifier of the party",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "X-Idempotency-Key",
+            "in": "header",
+            "description": "Unique key for idempotent requests. If provided, ensures that identical requests with the same key will only be processed once.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PartyProviderDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Party provider successfully created",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PartyProviderDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Party not found"
+          },
+          "400": {
+            "description": "Invalid party provider data"
+          }
+        }
+      }
+    },
+    "/api/v1/parties/{partyId}/party-providers/filter": {
+      "post": {
+        "tags": [
+          "Party Providers"
+        ],
+        "summary": "Filter party providers for a party",
+        "description": "Retrieve a paginated list of party providers associated with a specific party based on filtering criteria",
+        "operationId": "filterPartyProviders",
+        "parameters": [
+          {
+            "name": "partyId",
+            "in": "path",
+            "description": "Unique identifier of the party",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "X-Idempotency-Key",
+            "in": "header",
+            "description": "Unique key for idempotent requests. If provided, ensures that identical requests with the same key will only be processed once.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FilterRequestPartyProviderDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "404": {
+            "description": "Party not found"
+          },
+          "400": {
+            "description": "Invalid filter request"
+          },
+          "200": {
+            "description": "Successfully retrieved filtered party providers",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginationResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/parties/{partyId}/party-group-memberships": {
+      "post": {
+        "tags": [
+          "Party Group Memberships"
+        ],
+        "summary": "Create party group membership for a party",
+        "description": "Create a new party group membership associated with a specific party",
+        "operationId": "createPartyGroupMembership",
+        "parameters": [
+          {
+            "name": "partyId",
+            "in": "path",
+            "description": "Unique identifier of the party",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "X-Idempotency-Key",
+            "in": "header",
+            "description": "Unique key for idempotent requests. If provided, ensures that identical requests with the same key will only be processed once.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PartyGroupMembershipDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "400": {
+            "description": "Invalid party group membership data"
+          },
+          "404": {
+            "description": "Party not found"
+          },
+          "201": {
+            "description": "Party group membership successfully created",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PartyGroupMembershipDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/parties/{partyId}/party-group-memberships/filter": {
+      "post": {
+        "tags": [
+          "Party Group Memberships"
+        ],
+        "summary": "Filter party group memberships for a party",
+        "description": "Retrieve a paginated list of party group memberships associated with a specific party based on filtering criteria",
+        "operationId": "filterPartyGroupMemberships",
+        "parameters": [
+          {
+            "name": "partyId",
+            "in": "path",
+            "description": "Unique identifier of the party",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "X-Idempotency-Key",
+            "in": "header",
+            "description": "Unique key for idempotent requests. If provided, ensures that identical requests with the same key will only be processed once.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FilterRequestPartyGroupMembershipDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "404": {
+            "description": "Party not found"
+          },
+          "400": {
+            "description": "Invalid filter request"
+          },
+          "200": {
+            "description": "Successfully retrieved filtered party group memberships",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginationResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/parties/{partyId}/party-economic-activities": {
+      "post": {
+        "tags": [
+          "Party Economic Activities"
+        ],
+        "summary": "Create party economic activity for a party",
+        "description": "Create a new party economic activity associated with a specific party",
+        "operationId": "createPartyEconomicActivity",
+        "parameters": [
+          {
+            "name": "partyId",
+            "in": "path",
+            "description": "Unique identifier of the party",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "X-Idempotency-Key",
+            "in": "header",
+            "description": "Unique key for idempotent requests. If provided, ensures that identical requests with the same key will only be processed once.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PartyEconomicActivityDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "404": {
+            "description": "Party not found"
+          },
+          "201": {
+            "description": "Party economic activity successfully created",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PartyEconomicActivityDTO"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid party economic activity data"
+          }
+        }
+      }
+    },
+    "/api/v1/parties/{partyId}/party-economic-activities/filter": {
+      "post": {
+        "tags": [
+          "Party Economic Activities"
+        ],
+        "summary": "Filter party economic activities for a party",
+        "description": "Retrieve a paginated list of party economic activities associated with a specific party based on filtering criteria",
+        "operationId": "filterPartyEconomicActivities",
+        "parameters": [
+          {
+            "name": "partyId",
+            "in": "path",
+            "description": "Unique identifier of the party",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "X-Idempotency-Key",
+            "in": "header",
+            "description": "Unique key for idempotent requests. If provided, ensures that identical requests with the same key will only be processed once.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FilterRequestPartyEconomicActivityDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "404": {
+            "description": "Party not found"
+          },
+          "400": {
+            "description": "Invalid filter request"
+          },
+          "200": {
+            "description": "Successfully retrieved filtered party economic activities",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginationResponse"
+                }
+              }
+            }
           }
         }
       }
@@ -2472,9 +2970,6 @@
           "required": true
         },
         "responses": {
-          "400": {
-            "description": "Invalid natural person data"
-          },
           "404": {
             "description": "Party not found"
           },
@@ -2487,6 +2982,9 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "Invalid natural person data"
           }
         }
       }
@@ -2534,6 +3032,9 @@
           "404": {
             "description": "Party not found"
           },
+          "400": {
+            "description": "Invalid filter request"
+          },
           "200": {
             "description": "Successfully retrieved filtered natural persons",
             "content": {
@@ -2543,9 +3044,6 @@
                 }
               }
             }
-          },
-          "400": {
-            "description": "Invalid filter request"
           }
         }
       }
@@ -2590,6 +3088,9 @@
           "required": true
         },
         "responses": {
+          "404": {
+            "description": "Party not found"
+          },
           "201": {
             "description": "Legal entity successfully created",
             "content": {
@@ -2599,9 +3100,6 @@
                 }
               }
             }
-          },
-          "404": {
-            "description": "Party not found"
           },
           "400": {
             "description": "Invalid legal entity data"
@@ -2652,6 +3150,9 @@
           "404": {
             "description": "Party not found"
           },
+          "400": {
+            "description": "Invalid filter request"
+          },
           "200": {
             "description": "Successfully retrieved filtered legal entities",
             "content": {
@@ -2661,9 +3162,6 @@
                 }
               }
             }
-          },
-          "400": {
-            "description": "Invalid filter request"
           }
         }
       }
@@ -2767,6 +3265,12 @@
           "required": true
         },
         "responses": {
+          "404": {
+            "description": "Party not found"
+          },
+          "400": {
+            "description": "Invalid filter request"
+          },
           "200": {
             "description": "Successfully retrieved filtered identity documents",
             "content": {
@@ -2776,12 +3280,6 @@
                 }
               }
             }
-          },
-          "404": {
-            "description": "Party not found"
-          },
-          "400": {
-            "description": "Invalid filter request"
           }
         }
       }
@@ -2885,6 +3383,12 @@
           "required": true
         },
         "responses": {
+          "404": {
+            "description": "Party not found"
+          },
+          "400": {
+            "description": "Invalid filter request"
+          },
           "200": {
             "description": "Successfully retrieved filtered phone contacts",
             "content": {
@@ -2894,12 +3398,6 @@
                 }
               }
             }
-          },
-          "404": {
-            "description": "Party not found"
-          },
-          "400": {
-            "description": "Invalid filter request"
           }
         }
       }
@@ -2944,6 +3442,9 @@
           "required": true
         },
         "responses": {
+          "404": {
+            "description": "Party not found"
+          },
           "201": {
             "description": "Email contact successfully created",
             "content": {
@@ -2953,9 +3454,6 @@
                 }
               }
             }
-          },
-          "404": {
-            "description": "Party not found"
           },
           "400": {
             "description": "Invalid email contact data"
@@ -3003,6 +3501,12 @@
           "required": true
         },
         "responses": {
+          "404": {
+            "description": "Party not found"
+          },
+          "400": {
+            "description": "Invalid filter request"
+          },
           "200": {
             "description": "Successfully retrieved filtered email contacts",
             "content": {
@@ -3012,12 +3516,6 @@
                 }
               }
             }
-          },
-          "404": {
-            "description": "Party not found"
-          },
-          "400": {
-            "description": "Invalid filter request"
           }
         }
       }
@@ -3062,11 +3560,11 @@
           "required": true
         },
         "responses": {
-          "400": {
-            "description": "Invalid consent data"
-          },
           "404": {
             "description": "Party not found"
+          },
+          "400": {
+            "description": "Invalid consent data"
           },
           "201": {
             "description": "Consent successfully created",
@@ -3124,6 +3622,9 @@
           "404": {
             "description": "Party not found"
           },
+          "400": {
+            "description": "Invalid filter request"
+          },
           "200": {
             "description": "Successfully retrieved filtered consents",
             "content": {
@@ -3133,9 +3634,6 @@
                 }
               }
             }
-          },
-          "400": {
-            "description": "Invalid filter request"
           }
         }
       }
@@ -3180,6 +3678,12 @@
           "required": true
         },
         "responses": {
+          "400": {
+            "description": "Invalid address data"
+          },
+          "404": {
+            "description": "Party not found"
+          },
           "201": {
             "description": "Address successfully created",
             "content": {
@@ -3189,12 +3693,6 @@
                 }
               }
             }
-          },
-          "400": {
-            "description": "Invalid address data"
-          },
-          "404": {
-            "description": "Party not found"
           }
         }
       }
@@ -3239,6 +3737,12 @@
           "required": true
         },
         "responses": {
+          "404": {
+            "description": "Party not found"
+          },
+          "400": {
+            "description": "Invalid filter request"
+          },
           "200": {
             "description": "Successfully retrieved filtered addresses",
             "content": {
@@ -3248,12 +3752,6 @@
                 }
               }
             }
-          },
-          "404": {
-            "description": "Party not found"
-          },
-          "400": {
-            "description": "Invalid filter request"
           }
         }
       }
@@ -3307,6 +3805,95 @@
   },
   "components": {
     "schemas": {
+      "PartyDTO": {
+        "required": [
+          "partyKind"
+        ],
+        "type": "object",
+        "properties": {
+          "partyId": {
+            "type": "integer",
+            "format": "int64",
+            "readOnly": true
+          },
+          "partyKind": {
+            "type": "string",
+            "enum": [
+              "INDIVIDUAL",
+              "ORGANIZATION"
+            ]
+          },
+          "preferredLanguage": {
+            "maxLength": 10,
+            "minLength": 0,
+            "type": "string"
+          },
+          "sourceSystem": {
+            "maxLength": 100,
+            "minLength": 0,
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "PartyRelationshipDTO": {
+        "required": [
+          "fromPartyId",
+          "relationshipTypeId",
+          "toPartyId"
+        ],
+        "type": "object",
+        "properties": {
+          "partyRelationshipId": {
+            "type": "integer",
+            "format": "int64",
+            "readOnly": true
+          },
+          "fromPartyId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "toPartyId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "relationshipTypeId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "notes": {
+            "maxLength": 500,
+            "minLength": 0,
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
       "PoliticallyExposedPersonDTO": {
         "required": [
           "partyId",
@@ -3463,6 +4050,52 @@
           }
         }
       },
+      "PartyGroupMembershipDTO": {
+        "required": [
+          "groupId",
+          "partyId"
+        ],
+        "type": "object",
+        "properties": {
+          "partyGroupMembershipId": {
+            "type": "integer",
+            "format": "int64",
+            "readOnly": true
+          },
+          "groupId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "partyId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "notes": {
+            "maxLength": 1000,
+            "minLength": 0,
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
       "PartyEconomicActivityDTO": {
         "required": [
           "economicActivityId",
@@ -3504,95 +4137,6 @@
           },
           "isPrimary": {
             "type": "boolean"
-          },
-          "createdAt": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "updatedAt": {
-            "type": "string",
-            "format": "date-time"
-          }
-        }
-      },
-      "PartyDTO": {
-        "required": [
-          "partyKind"
-        ],
-        "type": "object",
-        "properties": {
-          "partyId": {
-            "type": "integer",
-            "format": "int64",
-            "readOnly": true
-          },
-          "partyKind": {
-            "type": "string",
-            "enum": [
-              "INDIVIDUAL",
-              "ORGANIZATION"
-            ]
-          },
-          "preferredLanguage": {
-            "maxLength": 10,
-            "minLength": 0,
-            "type": "string"
-          },
-          "sourceSystem": {
-            "maxLength": 100,
-            "minLength": 0,
-            "type": "string"
-          },
-          "createdAt": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "updatedAt": {
-            "type": "string",
-            "format": "date-time"
-          }
-        }
-      },
-      "PartyRelationshipDTO": {
-        "required": [
-          "fromPartyId",
-          "relationshipTypeId",
-          "toPartyId"
-        ],
-        "type": "object",
-        "properties": {
-          "partyRelationshipId": {
-            "type": "integer",
-            "format": "int64",
-            "readOnly": true
-          },
-          "fromPartyId": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "toPartyId": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "relationshipTypeId": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "startDate": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "endDate": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "active": {
-            "type": "boolean"
-          },
-          "notes": {
-            "maxLength": 500,
-            "minLength": 0,
-            "type": "string"
           },
           "createdAt": {
             "type": "string",
@@ -4108,14 +4652,14 @@
         },
         "description": "Filter options for customizing filter behavior"
       },
-      "FilterRequestPoliticallyExposedPersonDTO": {
+      "FilterRequestPartyRelationshipDTO": {
         "required": [
           "pagination"
         ],
         "type": "object",
         "properties": {
           "filters": {
-            "$ref": "#/components/schemas/PoliticallyExposedPersonDTO"
+            "$ref": "#/components/schemas/PartyRelationshipDTO"
           },
           "rangeFilters": {
             "$ref": "#/components/schemas/RangeFilter"
@@ -4127,7 +4671,7 @@
             "$ref": "#/components/schemas/FilterOptions"
           }
         },
-        "description": "Filter criteria for politically exposed persons"
+        "description": "Filter criteria for party relationships"
       },
       "PaginationRequest": {
         "type": "object",
@@ -4216,6 +4760,27 @@
         },
         "description": "Represents a paginated response containing a list of items and pagination metadata."
       },
+      "FilterRequestPoliticallyExposedPersonDTO": {
+        "required": [
+          "pagination"
+        ],
+        "type": "object",
+        "properties": {
+          "filters": {
+            "$ref": "#/components/schemas/PoliticallyExposedPersonDTO"
+          },
+          "rangeFilters": {
+            "$ref": "#/components/schemas/RangeFilter"
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/PaginationRequest"
+          },
+          "options": {
+            "$ref": "#/components/schemas/FilterOptions"
+          }
+        },
+        "description": "Filter criteria for politically exposed persons"
+      },
       "FilterRequestPartyStatusDTO": {
         "required": [
           "pagination"
@@ -4258,6 +4823,27 @@
         },
         "description": "Filter criteria for party providers"
       },
+      "FilterRequestPartyGroupMembershipDTO": {
+        "required": [
+          "pagination"
+        ],
+        "type": "object",
+        "properties": {
+          "filters": {
+            "$ref": "#/components/schemas/PartyGroupMembershipDTO"
+          },
+          "rangeFilters": {
+            "$ref": "#/components/schemas/RangeFilter"
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/PaginationRequest"
+          },
+          "options": {
+            "$ref": "#/components/schemas/FilterOptions"
+          }
+        },
+        "description": "Filter criteria for party group memberships"
+      },
       "FilterRequestPartyEconomicActivityDTO": {
         "required": [
           "pagination"
@@ -4278,27 +4864,6 @@
           }
         },
         "description": "Filter criteria for party economic activities"
-      },
-      "FilterRequestPartyRelationshipDTO": {
-        "required": [
-          "pagination"
-        ],
-        "type": "object",
-        "properties": {
-          "filters": {
-            "$ref": "#/components/schemas/PartyRelationshipDTO"
-          },
-          "rangeFilters": {
-            "$ref": "#/components/schemas/RangeFilter"
-          },
-          "pagination": {
-            "$ref": "#/components/schemas/PaginationRequest"
-          },
-          "options": {
-            "$ref": "#/components/schemas/FilterOptions"
-          }
-        },
-        "description": "Filter criteria for party relationships"
       },
       "FilterRequestNaturalPersonDTO": {
         "required": [

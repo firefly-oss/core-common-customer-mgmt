@@ -37,10 +37,12 @@ class EmailContactServiceImplTest {
     private EmailContactDTO emailContactDTO;
     private EmailContact emailContact;
     private Long emailContactId;
+    private Long partyId;
 
     @BeforeEach
     void setUp() {
         emailContactId = 1L;
+        partyId = 1L;
         
         emailContact = new EmailContact();
         emailContact.setEmailContactId(emailContactId);
@@ -61,15 +63,15 @@ class EmailContactServiceImplTest {
         
         // Create a spy of the service to mock the filterEmailContacts method
         EmailContactServiceImpl spyService = spy(emailContactService);
-        doReturn(Mono.just(mockResponse)).when(spyService).filterEmailContacts(filterRequest);
+        doReturn(Mono.just(mockResponse)).when(spyService).filterEmailContacts(partyId, filterRequest);
 
         // Act & Assert
-        StepVerifier.create(spyService.filterEmailContacts(filterRequest))
+        StepVerifier.create(spyService.filterEmailContacts(partyId, filterRequest))
                 .expectNext(mockResponse)
                 .verifyComplete();
 
         // Verify that filterEmailContacts was called
-        verify(spyService).filterEmailContacts(filterRequest);
+        verify(spyService).filterEmailContacts(partyId, filterRequest);
     }
 
     @Test
@@ -80,7 +82,7 @@ class EmailContactServiceImplTest {
         when(emailContactMapper.toDTO(emailContact)).thenReturn(emailContactDTO);
 
         // Act & Assert
-        StepVerifier.create(emailContactService.createEmailContact(emailContactDTO))
+        StepVerifier.create(emailContactService.createEmailContact(partyId, emailContactDTO))
                 .expectNext(emailContactDTO)
                 .verifyComplete();
 
@@ -96,7 +98,7 @@ class EmailContactServiceImplTest {
         when(emailContactRepository.save(emailContact)).thenReturn(Mono.error(new RuntimeException("Database error")));
 
         // Act & Assert
-        StepVerifier.create(emailContactService.createEmailContact(emailContactDTO))
+        StepVerifier.create(emailContactService.createEmailContact(partyId, emailContactDTO))
                 .expectErrorMatches(throwable -> throwable instanceof RuntimeException && 
                         throwable.getMessage().equals("Database error"))
                 .verify();
@@ -121,7 +123,7 @@ class EmailContactServiceImplTest {
         when(emailContactMapper.toDTO(updatedEmailContact)).thenReturn(emailContactDTO);
 
         // Act & Assert
-        StepVerifier.create(emailContactService.updateEmailContact(emailContactId, updateDTO))
+        StepVerifier.create(emailContactService.updateEmailContact(partyId, emailContactId, updateDTO))
                 .expectNext(emailContactDTO)
                 .verifyComplete();
 
@@ -137,7 +139,7 @@ class EmailContactServiceImplTest {
         when(emailContactRepository.findById(emailContactId)).thenReturn(Mono.empty());
 
         // Act & Assert
-        StepVerifier.create(emailContactService.updateEmailContact(emailContactId, emailContactDTO))
+        StepVerifier.create(emailContactService.updateEmailContact(partyId, emailContactId, emailContactDTO))
                 .expectErrorMatches(throwable -> throwable instanceof RuntimeException && 
                         throwable.getMessage().equals("Email contact not found with ID: " + emailContactId))
                 .verify();
@@ -154,7 +156,7 @@ class EmailContactServiceImplTest {
         when(emailContactRepository.deleteById(emailContactId)).thenReturn(Mono.empty());
 
         // Act & Assert
-        StepVerifier.create(emailContactService.deleteEmailContact(emailContactId))
+        StepVerifier.create(emailContactService.deleteEmailContact(partyId, emailContactId))
                 .verifyComplete();
 
         verify(emailContactRepository).findById(emailContactId);
@@ -167,7 +169,7 @@ class EmailContactServiceImplTest {
         when(emailContactRepository.findById(emailContactId)).thenReturn(Mono.empty());
 
         // Act & Assert
-        StepVerifier.create(emailContactService.deleteEmailContact(emailContactId))
+        StepVerifier.create(emailContactService.deleteEmailContact(partyId, emailContactId))
                 .expectErrorMatches(throwable -> throwable instanceof RuntimeException && 
                         throwable.getMessage().equals("Email contact not found with ID: " + emailContactId))
                 .verify();
@@ -183,7 +185,7 @@ class EmailContactServiceImplTest {
         when(emailContactRepository.deleteById(emailContactId)).thenReturn(Mono.error(new RuntimeException("Delete failed")));
 
         // Act & Assert
-        StepVerifier.create(emailContactService.deleteEmailContact(emailContactId))
+        StepVerifier.create(emailContactService.deleteEmailContact(partyId, emailContactId))
                 .expectErrorMatches(throwable -> throwable instanceof RuntimeException && 
                         throwable.getMessage().equals("Delete failed"))
                 .verify();
@@ -199,7 +201,7 @@ class EmailContactServiceImplTest {
         when(emailContactMapper.toDTO(emailContact)).thenReturn(emailContactDTO);
 
         // Act & Assert
-        StepVerifier.create(emailContactService.getEmailContactById(emailContactId))
+        StepVerifier.create(emailContactService.getEmailContactById(partyId, emailContactId))
                 .expectNext(emailContactDTO)
                 .verifyComplete();
 
@@ -213,7 +215,7 @@ class EmailContactServiceImplTest {
         when(emailContactRepository.findById(emailContactId)).thenReturn(Mono.empty());
 
         // Act & Assert
-        StepVerifier.create(emailContactService.getEmailContactById(emailContactId))
+        StepVerifier.create(emailContactService.getEmailContactById(partyId, emailContactId))
                 .expectErrorMatches(throwable -> throwable instanceof RuntimeException && 
                         throwable.getMessage().equals("Email contact not found with ID: " + emailContactId))
                 .verify();
@@ -228,7 +230,7 @@ class EmailContactServiceImplTest {
         when(emailContactRepository.findById(emailContactId)).thenReturn(Mono.error(new RuntimeException("Database connection failed")));
 
         // Act & Assert
-        StepVerifier.create(emailContactService.getEmailContactById(emailContactId))
+        StepVerifier.create(emailContactService.getEmailContactById(partyId, emailContactId))
                 .expectErrorMatches(throwable -> throwable instanceof RuntimeException && 
                         throwable.getMessage().equals("Database connection failed"))
                 .verify();

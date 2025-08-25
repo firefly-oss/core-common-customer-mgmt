@@ -24,7 +24,7 @@ public class PartyRelationshipServiceImpl implements PartyRelationshipService {
     private PartyRelationshipMapper mapper;
 
     @Override
-    public Mono<PaginationResponse<PartyRelationshipDTO>> filterPartyRelationships(FilterRequest<PartyRelationshipDTO> filterRequest) {
+    public Mono<PaginationResponse<PartyRelationshipDTO>> filterPartyRelationships(Long partyId, FilterRequest<PartyRelationshipDTO> filterRequest) {
         return FilterUtils
                 .createFilter(
                         PartyRelationship.class,
@@ -34,7 +34,7 @@ public class PartyRelationshipServiceImpl implements PartyRelationshipService {
     }
 
     @Override
-    public Mono<PartyRelationshipDTO> createPartyRelationship(PartyRelationshipDTO partyRelationshipDTO) {
+    public Mono<PartyRelationshipDTO> createPartyRelationship(Long partyId, PartyRelationshipDTO partyRelationshipDTO) {
         return Mono.just(partyRelationshipDTO)
                 .map(mapper::toEntity)
                 .flatMap(repository::save)
@@ -42,7 +42,7 @@ public class PartyRelationshipServiceImpl implements PartyRelationshipService {
     }
 
     @Override
-    public Mono<PartyRelationshipDTO> updatePartyRelationship(Long partyRelationshipId, PartyRelationshipDTO partyRelationshipDTO) {
+    public Mono<PartyRelationshipDTO> updatePartyRelationship(Long partyId, Long partyRelationshipId, PartyRelationshipDTO partyRelationshipDTO) {
         return repository.findById(partyRelationshipId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Party relationship not found with ID: " + partyRelationshipId)))
                 .flatMap(existingPartyRelationship -> {
@@ -54,14 +54,14 @@ public class PartyRelationshipServiceImpl implements PartyRelationshipService {
     }
 
     @Override
-    public Mono<Void> deletePartyRelationship(Long partyRelationshipId) {
+    public Mono<Void> deletePartyRelationship(Long partyId, Long partyRelationshipId) {
         return repository.findById(partyRelationshipId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Party relationship not found with ID: " + partyRelationshipId)))
                 .flatMap(partyRelationship -> repository.deleteById(partyRelationshipId));
     }
 
     @Override
-    public Mono<PartyRelationshipDTO> getPartyRelationshipById(Long partyRelationshipId) {
+    public Mono<PartyRelationshipDTO> getPartyRelationshipById(Long partyId, Long partyRelationshipId) {
         return repository.findById(partyRelationshipId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Party relationship not found with ID: " + partyRelationshipId)))
                 .map(mapper::toDTO);

@@ -37,10 +37,12 @@ class PhoneContactServiceImplTest {
     private PhoneContactDTO phoneContactDTO;
     private PhoneContact phoneContact;
     private Long phoneContactId;
+    private Long partyId;
 
     @BeforeEach
     void setUp() {
         phoneContactId = 1L;
+        partyId = 1L;
         
         phoneContact = new PhoneContact();
         phoneContact.setPhoneContactId(phoneContactId);
@@ -61,15 +63,15 @@ class PhoneContactServiceImplTest {
         
         // Create a spy of the service to mock the filterPhoneContacts method
         PhoneContactServiceImpl spyService = spy(phoneContactService);
-        doReturn(Mono.just(mockResponse)).when(spyService).filterPhoneContacts(filterRequest);
+        doReturn(Mono.just(mockResponse)).when(spyService).filterPhoneContacts(partyId, filterRequest);
 
         // Act & Assert
-        StepVerifier.create(spyService.filterPhoneContacts(filterRequest))
+        StepVerifier.create(spyService.filterPhoneContacts(partyId, filterRequest))
                 .expectNext(mockResponse)
                 .verifyComplete();
 
         // Verify that filterPhoneContacts was called
-        verify(spyService).filterPhoneContacts(filterRequest);
+        verify(spyService).filterPhoneContacts(partyId, filterRequest);
     }
 
     @Test
@@ -80,7 +82,7 @@ class PhoneContactServiceImplTest {
         when(phoneContactMapper.toDTO(phoneContact)).thenReturn(phoneContactDTO);
 
         // Act & Assert
-        StepVerifier.create(phoneContactService.createPhoneContact(phoneContactDTO))
+        StepVerifier.create(phoneContactService.createPhoneContact(partyId, phoneContactDTO))
                 .expectNext(phoneContactDTO)
                 .verifyComplete();
 
@@ -96,7 +98,7 @@ class PhoneContactServiceImplTest {
         when(phoneContactRepository.save(phoneContact)).thenReturn(Mono.error(new RuntimeException("Database error")));
 
         // Act & Assert
-        StepVerifier.create(phoneContactService.createPhoneContact(phoneContactDTO))
+        StepVerifier.create(phoneContactService.createPhoneContact(partyId, phoneContactDTO))
                 .expectErrorMatches(throwable -> throwable instanceof RuntimeException && 
                         throwable.getMessage().equals("Database error"))
                 .verify();
@@ -121,7 +123,7 @@ class PhoneContactServiceImplTest {
         when(phoneContactMapper.toDTO(updatedPhoneContact)).thenReturn(phoneContactDTO);
 
         // Act & Assert
-        StepVerifier.create(phoneContactService.updatePhoneContact(phoneContactId, updateDTO))
+        StepVerifier.create(phoneContactService.updatePhoneContact(partyId, phoneContactId, updateDTO))
                 .expectNext(phoneContactDTO)
                 .verifyComplete();
 
@@ -137,7 +139,7 @@ class PhoneContactServiceImplTest {
         when(phoneContactRepository.findById(phoneContactId)).thenReturn(Mono.empty());
 
         // Act & Assert
-        StepVerifier.create(phoneContactService.updatePhoneContact(phoneContactId, phoneContactDTO))
+        StepVerifier.create(phoneContactService.updatePhoneContact(partyId, phoneContactId, phoneContactDTO))
                 .expectErrorMatches(throwable -> throwable instanceof RuntimeException && 
                         throwable.getMessage().equals("Phone contact not found with ID: " + phoneContactId))
                 .verify();
@@ -154,7 +156,7 @@ class PhoneContactServiceImplTest {
         when(phoneContactRepository.deleteById(phoneContactId)).thenReturn(Mono.empty());
 
         // Act & Assert
-        StepVerifier.create(phoneContactService.deletePhoneContact(phoneContactId))
+        StepVerifier.create(phoneContactService.deletePhoneContact(partyId, phoneContactId))
                 .verifyComplete();
 
         verify(phoneContactRepository).findById(phoneContactId);
@@ -167,7 +169,7 @@ class PhoneContactServiceImplTest {
         when(phoneContactRepository.findById(phoneContactId)).thenReturn(Mono.empty());
 
         // Act & Assert
-        StepVerifier.create(phoneContactService.deletePhoneContact(phoneContactId))
+        StepVerifier.create(phoneContactService.deletePhoneContact(partyId, phoneContactId))
                 .expectErrorMatches(throwable -> throwable instanceof RuntimeException && 
                         throwable.getMessage().equals("Phone contact not found with ID: " + phoneContactId))
                 .verify();
@@ -183,7 +185,7 @@ class PhoneContactServiceImplTest {
         when(phoneContactRepository.deleteById(phoneContactId)).thenReturn(Mono.error(new RuntimeException("Delete failed")));
 
         // Act & Assert
-        StepVerifier.create(phoneContactService.deletePhoneContact(phoneContactId))
+        StepVerifier.create(phoneContactService.deletePhoneContact(partyId, phoneContactId))
                 .expectErrorMatches(throwable -> throwable instanceof RuntimeException && 
                         throwable.getMessage().equals("Delete failed"))
                 .verify();
@@ -199,7 +201,7 @@ class PhoneContactServiceImplTest {
         when(phoneContactMapper.toDTO(phoneContact)).thenReturn(phoneContactDTO);
 
         // Act & Assert
-        StepVerifier.create(phoneContactService.getPhoneContactById(phoneContactId))
+        StepVerifier.create(phoneContactService.getPhoneContactById(partyId, phoneContactId))
                 .expectNext(phoneContactDTO)
                 .verifyComplete();
 
@@ -213,7 +215,7 @@ class PhoneContactServiceImplTest {
         when(phoneContactRepository.findById(phoneContactId)).thenReturn(Mono.empty());
 
         // Act & Assert
-        StepVerifier.create(phoneContactService.getPhoneContactById(phoneContactId))
+        StepVerifier.create(phoneContactService.getPhoneContactById(partyId, phoneContactId))
                 .expectErrorMatches(throwable -> throwable instanceof RuntimeException && 
                         throwable.getMessage().equals("Phone contact not found with ID: " + phoneContactId))
                 .verify();
@@ -228,7 +230,7 @@ class PhoneContactServiceImplTest {
         when(phoneContactRepository.findById(phoneContactId)).thenReturn(Mono.error(new RuntimeException("Database connection failed")));
 
         // Act & Assert
-        StepVerifier.create(phoneContactService.getPhoneContactById(phoneContactId))
+        StepVerifier.create(phoneContactService.getPhoneContactById(partyId, phoneContactId))
                 .expectErrorMatches(throwable -> throwable instanceof RuntimeException && 
                         throwable.getMessage().equals("Database connection failed"))
                 .verify();

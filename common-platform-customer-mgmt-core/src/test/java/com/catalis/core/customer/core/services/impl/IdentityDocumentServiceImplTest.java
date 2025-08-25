@@ -37,10 +37,12 @@ class IdentityDocumentServiceImplTest {
     private IdentityDocumentDTO identityDocumentDTO;
     private IdentityDocument identityDocument;
     private Long identityDocumentId;
+    private Long partyId;
 
     @BeforeEach
     void setUp() {
         identityDocumentId = 1L;
+        partyId = 1L;
         
         identityDocument = new IdentityDocument();
         identityDocument.setIdentityDocumentId(identityDocumentId);
@@ -61,15 +63,15 @@ class IdentityDocumentServiceImplTest {
         
         // Create a spy of the service to mock the filterIdentityDocuments method
         IdentityDocumentServiceImpl spyService = spy(identityDocumentService);
-        doReturn(Mono.just(mockResponse)).when(spyService).filterIdentityDocuments(filterRequest);
+        doReturn(Mono.just(mockResponse)).when(spyService).filterIdentityDocuments(partyId, filterRequest);
 
         // Act & Assert
-        StepVerifier.create(spyService.filterIdentityDocuments(filterRequest))
+        StepVerifier.create(spyService.filterIdentityDocuments(partyId, filterRequest))
                 .expectNext(mockResponse)
                 .verifyComplete();
 
         // Verify that filterIdentityDocuments was called
-        verify(spyService).filterIdentityDocuments(filterRequest);
+        verify(spyService).filterIdentityDocuments(partyId, filterRequest);
     }
 
     @Test
@@ -80,7 +82,7 @@ class IdentityDocumentServiceImplTest {
         when(identityDocumentMapper.toDTO(identityDocument)).thenReturn(identityDocumentDTO);
 
         // Act & Assert
-        StepVerifier.create(identityDocumentService.createIdentityDocument(identityDocumentDTO))
+        StepVerifier.create(identityDocumentService.createIdentityDocument(partyId, identityDocumentDTO))
                 .expectNext(identityDocumentDTO)
                 .verifyComplete();
 
@@ -96,7 +98,7 @@ class IdentityDocumentServiceImplTest {
         when(identityDocumentRepository.save(identityDocument)).thenReturn(Mono.error(new RuntimeException("Database error")));
 
         // Act & Assert
-        StepVerifier.create(identityDocumentService.createIdentityDocument(identityDocumentDTO))
+        StepVerifier.create(identityDocumentService.createIdentityDocument(partyId, identityDocumentDTO))
                 .expectErrorMatches(throwable -> throwable instanceof RuntimeException && 
                         throwable.getMessage().equals("Database error"))
                 .verify();
@@ -121,7 +123,7 @@ class IdentityDocumentServiceImplTest {
         when(identityDocumentMapper.toDTO(updatedIdentityDocument)).thenReturn(identityDocumentDTO);
 
         // Act & Assert
-        StepVerifier.create(identityDocumentService.updateIdentityDocument(identityDocumentId, updateDTO))
+        StepVerifier.create(identityDocumentService.updateIdentityDocument(partyId, identityDocumentId, updateDTO))
                 .expectNext(identityDocumentDTO)
                 .verifyComplete();
 
@@ -137,7 +139,7 @@ class IdentityDocumentServiceImplTest {
         when(identityDocumentRepository.findById(identityDocumentId)).thenReturn(Mono.empty());
 
         // Act & Assert
-        StepVerifier.create(identityDocumentService.updateIdentityDocument(identityDocumentId, identityDocumentDTO))
+        StepVerifier.create(identityDocumentService.updateIdentityDocument(partyId, identityDocumentId, identityDocumentDTO))
                 .expectErrorMatches(throwable -> throwable instanceof RuntimeException && 
                         throwable.getMessage().equals("Identity document not found with ID: " + identityDocumentId))
                 .verify();
@@ -154,7 +156,7 @@ class IdentityDocumentServiceImplTest {
         when(identityDocumentRepository.deleteById(identityDocumentId)).thenReturn(Mono.empty());
 
         // Act & Assert
-        StepVerifier.create(identityDocumentService.deleteIdentityDocument(identityDocumentId))
+        StepVerifier.create(identityDocumentService.deleteIdentityDocument(partyId, identityDocumentId))
                 .verifyComplete();
 
         verify(identityDocumentRepository).findById(identityDocumentId);
@@ -167,7 +169,7 @@ class IdentityDocumentServiceImplTest {
         when(identityDocumentRepository.findById(identityDocumentId)).thenReturn(Mono.empty());
 
         // Act & Assert
-        StepVerifier.create(identityDocumentService.deleteIdentityDocument(identityDocumentId))
+        StepVerifier.create(identityDocumentService.deleteIdentityDocument(partyId, identityDocumentId))
                 .expectErrorMatches(throwable -> throwable instanceof RuntimeException && 
                         throwable.getMessage().equals("Identity document not found with ID: " + identityDocumentId))
                 .verify();
@@ -183,7 +185,7 @@ class IdentityDocumentServiceImplTest {
         when(identityDocumentRepository.deleteById(identityDocumentId)).thenReturn(Mono.error(new RuntimeException("Delete failed")));
 
         // Act & Assert
-        StepVerifier.create(identityDocumentService.deleteIdentityDocument(identityDocumentId))
+        StepVerifier.create(identityDocumentService.deleteIdentityDocument(partyId, identityDocumentId))
                 .expectErrorMatches(throwable -> throwable instanceof RuntimeException && 
                         throwable.getMessage().equals("Delete failed"))
                 .verify();
@@ -199,7 +201,7 @@ class IdentityDocumentServiceImplTest {
         when(identityDocumentMapper.toDTO(identityDocument)).thenReturn(identityDocumentDTO);
 
         // Act & Assert
-        StepVerifier.create(identityDocumentService.getIdentityDocumentById(identityDocumentId))
+        StepVerifier.create(identityDocumentService.getIdentityDocumentById(partyId, identityDocumentId))
                 .expectNext(identityDocumentDTO)
                 .verifyComplete();
 
@@ -213,7 +215,7 @@ class IdentityDocumentServiceImplTest {
         when(identityDocumentRepository.findById(identityDocumentId)).thenReturn(Mono.empty());
 
         // Act & Assert
-        StepVerifier.create(identityDocumentService.getIdentityDocumentById(identityDocumentId))
+        StepVerifier.create(identityDocumentService.getIdentityDocumentById(partyId, identityDocumentId))
                 .expectErrorMatches(throwable -> throwable instanceof RuntimeException && 
                         throwable.getMessage().equals("Identity document not found with ID: " + identityDocumentId))
                 .verify();
@@ -228,7 +230,7 @@ class IdentityDocumentServiceImplTest {
         when(identityDocumentRepository.findById(identityDocumentId)).thenReturn(Mono.error(new RuntimeException("Database connection failed")));
 
         // Act & Assert
-        StepVerifier.create(identityDocumentService.getIdentityDocumentById(identityDocumentId))
+        StepVerifier.create(identityDocumentService.getIdentityDocumentById(partyId, identityDocumentId))
                 .expectErrorMatches(throwable -> throwable instanceof RuntimeException && 
                         throwable.getMessage().equals("Database connection failed"))
                 .verify();

@@ -24,7 +24,7 @@ public class PartyEconomicActivityServiceImpl implements PartyEconomicActivitySe
     private PartyEconomicActivityMapper mapper;
 
     @Override
-    public Mono<PaginationResponse<PartyEconomicActivityDTO>> filterPartyEconomicActivities(FilterRequest<PartyEconomicActivityDTO> filterRequest) {
+    public Mono<PaginationResponse<PartyEconomicActivityDTO>> filterPartyEconomicActivities(Long partyId, FilterRequest<PartyEconomicActivityDTO> filterRequest) {
         return FilterUtils
                 .createFilter(
                         PartyEconomicActivity.class,
@@ -34,7 +34,7 @@ public class PartyEconomicActivityServiceImpl implements PartyEconomicActivitySe
     }
 
     @Override
-    public Mono<PartyEconomicActivityDTO> createPartyEconomicActivity(PartyEconomicActivityDTO partyEconomicActivityDTO) {
+    public Mono<PartyEconomicActivityDTO> createPartyEconomicActivity(Long partyId, PartyEconomicActivityDTO partyEconomicActivityDTO) {
         return Mono.just(partyEconomicActivityDTO)
                 .map(mapper::toEntity)
                 .flatMap(repository::save)
@@ -42,7 +42,7 @@ public class PartyEconomicActivityServiceImpl implements PartyEconomicActivitySe
     }
 
     @Override
-    public Mono<PartyEconomicActivityDTO> updatePartyEconomicActivity(Long partyEconomicActivityId, PartyEconomicActivityDTO partyEconomicActivityDTO) {
+    public Mono<PartyEconomicActivityDTO> updatePartyEconomicActivity(Long partyId, Long partyEconomicActivityId, PartyEconomicActivityDTO partyEconomicActivityDTO) {
         return repository.findById(partyEconomicActivityId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Party economic activity not found with ID: " + partyEconomicActivityId)))
                 .flatMap(existingPartyEconomicActivity -> {
@@ -54,14 +54,14 @@ public class PartyEconomicActivityServiceImpl implements PartyEconomicActivitySe
     }
 
     @Override
-    public Mono<Void> deletePartyEconomicActivity(Long partyEconomicActivityId) {
+    public Mono<Void> deletePartyEconomicActivity(Long partyId, Long partyEconomicActivityId) {
         return repository.findById(partyEconomicActivityId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Party economic activity not found with ID: " + partyEconomicActivityId)))
                 .flatMap(partyEconomicActivity -> repository.deleteById(partyEconomicActivityId));
     }
 
     @Override
-    public Mono<PartyEconomicActivityDTO> getPartyEconomicActivityById(Long partyEconomicActivityId) {
+    public Mono<PartyEconomicActivityDTO> getPartyEconomicActivityById(Long partyId, Long partyEconomicActivityId) {
         return repository.findById(partyEconomicActivityId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Party economic activity not found with ID: " + partyEconomicActivityId)))
                 .map(mapper::toDTO);

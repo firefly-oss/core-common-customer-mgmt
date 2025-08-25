@@ -37,10 +37,12 @@ class PartyEconomicActivityServiceImplTest {
     private PartyEconomicActivityDTO partyEconomicActivityDTO;
     private PartyEconomicActivity partyEconomicActivity;
     private Long partyEconomicActivityId;
+    private Long partyId;
 
     @BeforeEach
     void setUp() {
         partyEconomicActivityId = 1L;
+        partyId = 1L;
         
         partyEconomicActivity = new PartyEconomicActivity();
         partyEconomicActivity.setPartyEconomicActivityId(partyEconomicActivityId);
@@ -61,15 +63,15 @@ class PartyEconomicActivityServiceImplTest {
         
         // Create a spy of the service to mock the filterPartyEconomicActivities method
         PartyEconomicActivityServiceImpl spyService = spy(partyEconomicActivityService);
-        doReturn(Mono.just(mockResponse)).when(spyService).filterPartyEconomicActivities(filterRequest);
+        doReturn(Mono.just(mockResponse)).when(spyService).filterPartyEconomicActivities(partyId, filterRequest);
 
         // Act & Assert
-        StepVerifier.create(spyService.filterPartyEconomicActivities(filterRequest))
+        StepVerifier.create(spyService.filterPartyEconomicActivities(partyId, filterRequest))
                 .expectNext(mockResponse)
                 .verifyComplete();
 
         // Verify that filterPartyEconomicActivities was called
-        verify(spyService).filterPartyEconomicActivities(filterRequest);
+        verify(spyService).filterPartyEconomicActivities(partyId, filterRequest);
     }
 
     @Test
@@ -80,7 +82,7 @@ class PartyEconomicActivityServiceImplTest {
         when(partyEconomicActivityMapper.toDTO(partyEconomicActivity)).thenReturn(partyEconomicActivityDTO);
 
         // Act & Assert
-        StepVerifier.create(partyEconomicActivityService.createPartyEconomicActivity(partyEconomicActivityDTO))
+        StepVerifier.create(partyEconomicActivityService.createPartyEconomicActivity(partyId, partyEconomicActivityDTO))
                 .expectNext(partyEconomicActivityDTO)
                 .verifyComplete();
 
@@ -96,7 +98,7 @@ class PartyEconomicActivityServiceImplTest {
         when(partyEconomicActivityRepository.save(partyEconomicActivity)).thenReturn(Mono.error(new RuntimeException("Database error")));
 
         // Act & Assert
-        StepVerifier.create(partyEconomicActivityService.createPartyEconomicActivity(partyEconomicActivityDTO))
+        StepVerifier.create(partyEconomicActivityService.createPartyEconomicActivity(partyId, partyEconomicActivityDTO))
                 .expectErrorMatches(throwable -> throwable instanceof RuntimeException && 
                         throwable.getMessage().equals("Database error"))
                 .verify();
@@ -121,7 +123,7 @@ class PartyEconomicActivityServiceImplTest {
         when(partyEconomicActivityMapper.toDTO(updatedPartyEconomicActivity)).thenReturn(partyEconomicActivityDTO);
 
         // Act & Assert
-        StepVerifier.create(partyEconomicActivityService.updatePartyEconomicActivity(partyEconomicActivityId, updateDTO))
+        StepVerifier.create(partyEconomicActivityService.updatePartyEconomicActivity(partyId, partyEconomicActivityId, updateDTO))
                 .expectNext(partyEconomicActivityDTO)
                 .verifyComplete();
 
@@ -137,7 +139,7 @@ class PartyEconomicActivityServiceImplTest {
         when(partyEconomicActivityRepository.findById(partyEconomicActivityId)).thenReturn(Mono.empty());
 
         // Act & Assert
-        StepVerifier.create(partyEconomicActivityService.updatePartyEconomicActivity(partyEconomicActivityId, partyEconomicActivityDTO))
+        StepVerifier.create(partyEconomicActivityService.updatePartyEconomicActivity(partyId, partyEconomicActivityId, partyEconomicActivityDTO))
                 .expectErrorMatches(throwable -> throwable instanceof RuntimeException && 
                         throwable.getMessage().equals("Party economic activity not found with ID: " + partyEconomicActivityId))
                 .verify();
@@ -154,7 +156,7 @@ class PartyEconomicActivityServiceImplTest {
         when(partyEconomicActivityRepository.deleteById(partyEconomicActivityId)).thenReturn(Mono.empty());
 
         // Act & Assert
-        StepVerifier.create(partyEconomicActivityService.deletePartyEconomicActivity(partyEconomicActivityId))
+        StepVerifier.create(partyEconomicActivityService.deletePartyEconomicActivity(partyId, partyEconomicActivityId))
                 .verifyComplete();
 
         verify(partyEconomicActivityRepository).findById(partyEconomicActivityId);
@@ -167,7 +169,7 @@ class PartyEconomicActivityServiceImplTest {
         when(partyEconomicActivityRepository.findById(partyEconomicActivityId)).thenReturn(Mono.empty());
 
         // Act & Assert
-        StepVerifier.create(partyEconomicActivityService.deletePartyEconomicActivity(partyEconomicActivityId))
+        StepVerifier.create(partyEconomicActivityService.deletePartyEconomicActivity(partyId, partyEconomicActivityId))
                 .expectErrorMatches(throwable -> throwable instanceof RuntimeException && 
                         throwable.getMessage().equals("Party economic activity not found with ID: " + partyEconomicActivityId))
                 .verify();
@@ -183,7 +185,7 @@ class PartyEconomicActivityServiceImplTest {
         when(partyEconomicActivityRepository.deleteById(partyEconomicActivityId)).thenReturn(Mono.error(new RuntimeException("Delete failed")));
 
         // Act & Assert
-        StepVerifier.create(partyEconomicActivityService.deletePartyEconomicActivity(partyEconomicActivityId))
+        StepVerifier.create(partyEconomicActivityService.deletePartyEconomicActivity(partyId, partyEconomicActivityId))
                 .expectErrorMatches(throwable -> throwable instanceof RuntimeException && 
                         throwable.getMessage().equals("Delete failed"))
                 .verify();
@@ -199,7 +201,7 @@ class PartyEconomicActivityServiceImplTest {
         when(partyEconomicActivityMapper.toDTO(partyEconomicActivity)).thenReturn(partyEconomicActivityDTO);
 
         // Act & Assert
-        StepVerifier.create(partyEconomicActivityService.getPartyEconomicActivityById(partyEconomicActivityId))
+        StepVerifier.create(partyEconomicActivityService.getPartyEconomicActivityById(partyId, partyEconomicActivityId))
                 .expectNext(partyEconomicActivityDTO)
                 .verifyComplete();
 
@@ -213,7 +215,7 @@ class PartyEconomicActivityServiceImplTest {
         when(partyEconomicActivityRepository.findById(partyEconomicActivityId)).thenReturn(Mono.empty());
 
         // Act & Assert
-        StepVerifier.create(partyEconomicActivityService.getPartyEconomicActivityById(partyEconomicActivityId))
+        StepVerifier.create(partyEconomicActivityService.getPartyEconomicActivityById(partyId, partyEconomicActivityId))
                 .expectErrorMatches(throwable -> throwable instanceof RuntimeException && 
                         throwable.getMessage().equals("Party economic activity not found with ID: " + partyEconomicActivityId))
                 .verify();
@@ -228,7 +230,7 @@ class PartyEconomicActivityServiceImplTest {
         when(partyEconomicActivityRepository.findById(partyEconomicActivityId)).thenReturn(Mono.error(new RuntimeException("Database connection failed")));
 
         // Act & Assert
-        StepVerifier.create(partyEconomicActivityService.getPartyEconomicActivityById(partyEconomicActivityId))
+        StepVerifier.create(partyEconomicActivityService.getPartyEconomicActivityById(partyId, partyEconomicActivityId))
                 .expectErrorMatches(throwable -> throwable instanceof RuntimeException && 
                         throwable.getMessage().equals("Database connection failed"))
                 .verify();

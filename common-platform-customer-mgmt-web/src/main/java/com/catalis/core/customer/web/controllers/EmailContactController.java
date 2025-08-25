@@ -59,7 +59,7 @@ public class EmailContactController {
             @PathVariable Long partyId,
             @Parameter(description = "Filter criteria for email contacts", required = true)
             @Valid @RequestBody FilterRequest<EmailContactDTO> filterRequest) {
-        return emailContactService.filterEmailContacts(filterRequest)
+        return emailContactService.filterEmailContacts(partyId, filterRequest)
                 .map(ResponseEntity::ok);
     }
 
@@ -90,7 +90,7 @@ public class EmailContactController {
             @PathVariable Long partyId,
             @Parameter(description = "Email contact data to create", required = true)
             @Valid @RequestBody EmailContactDTO emailContactDTO) {
-        return emailContactService.createEmailContact(emailContactDTO)
+        return emailContactService.createEmailContact(partyId, emailContactDTO)
                 .map(emailContact -> ResponseEntity.status(HttpStatus.CREATED).body(emailContact));
     }
 
@@ -116,7 +116,7 @@ public class EmailContactController {
             @PathVariable Long partyId,
             @Parameter(description = "Unique identifier of the email contact", required = true)
             @PathVariable Long emailContactId) {
-        return emailContactService.getEmailContactById(emailContactId)
+        return emailContactService.getEmailContactById(partyId, emailContactId)
                 .map(ResponseEntity::ok);
     }
 
@@ -149,7 +149,7 @@ public class EmailContactController {
             @PathVariable Long emailContactId,
             @Parameter(description = "Updated email contact data", required = true)
             @Valid @RequestBody EmailContactDTO emailContactDTO) {
-        return emailContactService.updateEmailContact(emailContactId, emailContactDTO)
+        return emailContactService.updateEmailContact(partyId, emailContactId, emailContactDTO)
                 .map(ResponseEntity::ok);
     }
 
@@ -174,7 +174,7 @@ public class EmailContactController {
             @PathVariable Long partyId,
             @Parameter(description = "Unique identifier of the email contact", required = true)
             @PathVariable Long emailContactId) {
-        return emailContactService.deleteEmailContact(emailContactId)
+        return emailContactService.deleteEmailContact(partyId, emailContactId)
                 .then(Mono.just(ResponseEntity.noContent().build()));
     }
 }

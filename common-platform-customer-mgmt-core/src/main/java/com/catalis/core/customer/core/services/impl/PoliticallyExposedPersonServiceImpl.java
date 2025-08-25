@@ -24,7 +24,7 @@ public class PoliticallyExposedPersonServiceImpl implements PoliticallyExposedPe
     private PoliticallyExposedPersonMapper mapper;
 
     @Override
-    public Mono<PaginationResponse<PoliticallyExposedPersonDTO>> filterPoliticallyExposedPersons(FilterRequest<PoliticallyExposedPersonDTO> filterRequest) {
+    public Mono<PaginationResponse<PoliticallyExposedPersonDTO>> filterPoliticallyExposedPersons(Long partyId, FilterRequest<PoliticallyExposedPersonDTO> filterRequest) {
         return FilterUtils
                 .createFilter(
                         PoliticallyExposedPerson.class,
@@ -34,7 +34,7 @@ public class PoliticallyExposedPersonServiceImpl implements PoliticallyExposedPe
     }
 
     @Override
-    public Mono<PoliticallyExposedPersonDTO> createPoliticallyExposedPerson(PoliticallyExposedPersonDTO politicallyExposedPersonDTO) {
+    public Mono<PoliticallyExposedPersonDTO> createPoliticallyExposedPerson(Long partyId, PoliticallyExposedPersonDTO politicallyExposedPersonDTO) {
         return Mono.just(politicallyExposedPersonDTO)
                 .map(mapper::toEntity)
                 .flatMap(repository::save)
@@ -42,7 +42,7 @@ public class PoliticallyExposedPersonServiceImpl implements PoliticallyExposedPe
     }
 
     @Override
-    public Mono<PoliticallyExposedPersonDTO> updatePoliticallyExposedPerson(Long politicallyExposedPersonId, PoliticallyExposedPersonDTO politicallyExposedPersonDTO) {
+    public Mono<PoliticallyExposedPersonDTO> updatePoliticallyExposedPerson(Long partyId, Long politicallyExposedPersonId, PoliticallyExposedPersonDTO politicallyExposedPersonDTO) {
         return repository.findById(politicallyExposedPersonId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Politically exposed person not found with ID: " + politicallyExposedPersonId)))
                 .flatMap(existingPoliticallyExposedPerson -> {
@@ -54,14 +54,14 @@ public class PoliticallyExposedPersonServiceImpl implements PoliticallyExposedPe
     }
 
     @Override
-    public Mono<Void> deletePoliticallyExposedPerson(Long politicallyExposedPersonId) {
+    public Mono<Void> deletePoliticallyExposedPerson(Long partyId, Long politicallyExposedPersonId) {
         return repository.findById(politicallyExposedPersonId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Politically exposed person not found with ID: " + politicallyExposedPersonId)))
                 .flatMap(politicallyExposedPerson -> repository.deleteById(politicallyExposedPersonId));
     }
 
     @Override
-    public Mono<PoliticallyExposedPersonDTO> getPoliticallyExposedPersonById(Long politicallyExposedPersonId) {
+    public Mono<PoliticallyExposedPersonDTO> getPoliticallyExposedPersonById(Long partyId, Long politicallyExposedPersonId) {
         return repository.findById(politicallyExposedPersonId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Politically exposed person not found with ID: " + politicallyExposedPersonId)))
                 .map(mapper::toDTO);

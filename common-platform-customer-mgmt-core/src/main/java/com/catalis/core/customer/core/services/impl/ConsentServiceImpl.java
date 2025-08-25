@@ -24,7 +24,7 @@ public class ConsentServiceImpl implements ConsentService {
     private ConsentMapper mapper;
 
     @Override
-    public Mono<PaginationResponse<ConsentDTO>> filterConsents(FilterRequest<ConsentDTO> filterRequest) {
+    public Mono<PaginationResponse<ConsentDTO>> filterConsents(Long partyId, FilterRequest<ConsentDTO> filterRequest) {
         return FilterUtils
                 .createFilter(
                         Consent.class,
@@ -34,7 +34,7 @@ public class ConsentServiceImpl implements ConsentService {
     }
 
     @Override
-    public Mono<ConsentDTO> createConsent(ConsentDTO consentDTO) {
+    public Mono<ConsentDTO> createConsent(Long partyId, ConsentDTO consentDTO) {
         return Mono.just(consentDTO)
                 .map(mapper::toEntity)
                 .flatMap(repository::save)
@@ -42,7 +42,7 @@ public class ConsentServiceImpl implements ConsentService {
     }
 
     @Override
-    public Mono<ConsentDTO> updateConsent(Long consentId, ConsentDTO consentDTO) {
+    public Mono<ConsentDTO> updateConsent(Long partyId, Long consentId, ConsentDTO consentDTO) {
         return repository.findById(consentId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Consent not found with ID: " + consentId)))
                 .flatMap(existingConsent -> {
@@ -54,14 +54,14 @@ public class ConsentServiceImpl implements ConsentService {
     }
 
     @Override
-    public Mono<Void> deleteConsent(Long consentId) {
+    public Mono<Void> deleteConsent(Long partyId, Long consentId) {
         return repository.findById(consentId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Consent not found with ID: " + consentId)))
                 .flatMap(consent -> repository.deleteById(consentId));
     }
 
     @Override
-    public Mono<ConsentDTO> getConsentById(Long consentId) {
+    public Mono<ConsentDTO> getConsentById(Long partyId, Long consentId) {
         return repository.findById(consentId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Consent not found with ID: " + consentId)))
                 .map(mapper::toDTO);

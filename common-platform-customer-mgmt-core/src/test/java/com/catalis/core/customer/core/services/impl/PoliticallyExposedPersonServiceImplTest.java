@@ -37,10 +37,12 @@ class PoliticallyExposedPersonServiceImplTest {
     private PoliticallyExposedPersonDTO politicallyExposedPersonDTO;
     private PoliticallyExposedPerson politicallyExposedPerson;
     private Long politicallyExposedPersonId;
+    private Long partyId;
 
     @BeforeEach
     void setUp() {
         politicallyExposedPersonId = 1L;
+        partyId = 1L;
         
         politicallyExposedPerson = new PoliticallyExposedPerson();
         politicallyExposedPerson.setPepId(politicallyExposedPersonId);
@@ -61,15 +63,15 @@ class PoliticallyExposedPersonServiceImplTest {
         
         // Create a spy of the service to mock the filterPoliticallyExposedPersons method
         PoliticallyExposedPersonServiceImpl spyService = spy(politicallyExposedPersonService);
-        doReturn(Mono.just(mockResponse)).when(spyService).filterPoliticallyExposedPersons(filterRequest);
+        doReturn(Mono.just(mockResponse)).when(spyService).filterPoliticallyExposedPersons(partyId, filterRequest);
 
         // Act & Assert
-        StepVerifier.create(spyService.filterPoliticallyExposedPersons(filterRequest))
+        StepVerifier.create(spyService.filterPoliticallyExposedPersons(partyId, filterRequest))
                 .expectNext(mockResponse)
                 .verifyComplete();
 
         // Verify that filterPoliticallyExposedPersons was called
-        verify(spyService).filterPoliticallyExposedPersons(filterRequest);
+        verify(spyService).filterPoliticallyExposedPersons(partyId, filterRequest);
     }
 
     @Test
@@ -80,7 +82,7 @@ class PoliticallyExposedPersonServiceImplTest {
         when(politicallyExposedPersonMapper.toDTO(politicallyExposedPerson)).thenReturn(politicallyExposedPersonDTO);
 
         // Act & Assert
-        StepVerifier.create(politicallyExposedPersonService.createPoliticallyExposedPerson(politicallyExposedPersonDTO))
+        StepVerifier.create(politicallyExposedPersonService.createPoliticallyExposedPerson(partyId, politicallyExposedPersonDTO))
                 .expectNext(politicallyExposedPersonDTO)
                 .verifyComplete();
 
@@ -96,7 +98,7 @@ class PoliticallyExposedPersonServiceImplTest {
         when(politicallyExposedPersonRepository.save(politicallyExposedPerson)).thenReturn(Mono.error(new RuntimeException("Database error")));
 
         // Act & Assert
-        StepVerifier.create(politicallyExposedPersonService.createPoliticallyExposedPerson(politicallyExposedPersonDTO))
+        StepVerifier.create(politicallyExposedPersonService.createPoliticallyExposedPerson(partyId, politicallyExposedPersonDTO))
                 .expectErrorMatches(throwable -> throwable instanceof RuntimeException && 
                         throwable.getMessage().equals("Database error"))
                 .verify();
@@ -121,7 +123,7 @@ class PoliticallyExposedPersonServiceImplTest {
         when(politicallyExposedPersonMapper.toDTO(updatedPoliticallyExposedPerson)).thenReturn(politicallyExposedPersonDTO);
 
         // Act & Assert
-        StepVerifier.create(politicallyExposedPersonService.updatePoliticallyExposedPerson(politicallyExposedPersonId, updateDTO))
+        StepVerifier.create(politicallyExposedPersonService.updatePoliticallyExposedPerson(partyId, politicallyExposedPersonId, updateDTO))
                 .expectNext(politicallyExposedPersonDTO)
                 .verifyComplete();
 
@@ -137,7 +139,7 @@ class PoliticallyExposedPersonServiceImplTest {
         when(politicallyExposedPersonRepository.findById(politicallyExposedPersonId)).thenReturn(Mono.empty());
 
         // Act & Assert
-        StepVerifier.create(politicallyExposedPersonService.updatePoliticallyExposedPerson(politicallyExposedPersonId, politicallyExposedPersonDTO))
+        StepVerifier.create(politicallyExposedPersonService.updatePoliticallyExposedPerson(partyId, politicallyExposedPersonId, politicallyExposedPersonDTO))
                 .expectErrorMatches(throwable -> throwable instanceof RuntimeException && 
                         throwable.getMessage().equals("Politically exposed person not found with ID: " + politicallyExposedPersonId))
                 .verify();
@@ -154,7 +156,7 @@ class PoliticallyExposedPersonServiceImplTest {
         when(politicallyExposedPersonRepository.deleteById(politicallyExposedPersonId)).thenReturn(Mono.empty());
 
         // Act & Assert
-        StepVerifier.create(politicallyExposedPersonService.deletePoliticallyExposedPerson(politicallyExposedPersonId))
+        StepVerifier.create(politicallyExposedPersonService.deletePoliticallyExposedPerson(partyId, politicallyExposedPersonId))
                 .verifyComplete();
 
         verify(politicallyExposedPersonRepository).findById(politicallyExposedPersonId);
@@ -167,7 +169,7 @@ class PoliticallyExposedPersonServiceImplTest {
         when(politicallyExposedPersonRepository.findById(politicallyExposedPersonId)).thenReturn(Mono.empty());
 
         // Act & Assert
-        StepVerifier.create(politicallyExposedPersonService.deletePoliticallyExposedPerson(politicallyExposedPersonId))
+        StepVerifier.create(politicallyExposedPersonService.deletePoliticallyExposedPerson(partyId, politicallyExposedPersonId))
                 .expectErrorMatches(throwable -> throwable instanceof RuntimeException && 
                         throwable.getMessage().equals("Politically exposed person not found with ID: " + politicallyExposedPersonId))
                 .verify();
@@ -183,7 +185,7 @@ class PoliticallyExposedPersonServiceImplTest {
         when(politicallyExposedPersonRepository.deleteById(politicallyExposedPersonId)).thenReturn(Mono.error(new RuntimeException("Delete failed")));
 
         // Act & Assert
-        StepVerifier.create(politicallyExposedPersonService.deletePoliticallyExposedPerson(politicallyExposedPersonId))
+        StepVerifier.create(politicallyExposedPersonService.deletePoliticallyExposedPerson(partyId, politicallyExposedPersonId))
                 .expectErrorMatches(throwable -> throwable instanceof RuntimeException && 
                         throwable.getMessage().equals("Delete failed"))
                 .verify();
@@ -199,7 +201,7 @@ class PoliticallyExposedPersonServiceImplTest {
         when(politicallyExposedPersonMapper.toDTO(politicallyExposedPerson)).thenReturn(politicallyExposedPersonDTO);
 
         // Act & Assert
-        StepVerifier.create(politicallyExposedPersonService.getPoliticallyExposedPersonById(politicallyExposedPersonId))
+        StepVerifier.create(politicallyExposedPersonService.getPoliticallyExposedPersonById(partyId, politicallyExposedPersonId))
                 .expectNext(politicallyExposedPersonDTO)
                 .verifyComplete();
 
@@ -213,7 +215,7 @@ class PoliticallyExposedPersonServiceImplTest {
         when(politicallyExposedPersonRepository.findById(politicallyExposedPersonId)).thenReturn(Mono.empty());
 
         // Act & Assert
-        StepVerifier.create(politicallyExposedPersonService.getPoliticallyExposedPersonById(politicallyExposedPersonId))
+        StepVerifier.create(politicallyExposedPersonService.getPoliticallyExposedPersonById(partyId, politicallyExposedPersonId))
                 .expectErrorMatches(throwable -> throwable instanceof RuntimeException && 
                         throwable.getMessage().equals("Politically exposed person not found with ID: " + politicallyExposedPersonId))
                 .verify();
@@ -228,7 +230,7 @@ class PoliticallyExposedPersonServiceImplTest {
         when(politicallyExposedPersonRepository.findById(politicallyExposedPersonId)).thenReturn(Mono.error(new RuntimeException("Database connection failed")));
 
         // Act & Assert
-        StepVerifier.create(politicallyExposedPersonService.getPoliticallyExposedPersonById(politicallyExposedPersonId))
+        StepVerifier.create(politicallyExposedPersonService.getPoliticallyExposedPersonById(partyId, politicallyExposedPersonId))
                 .expectErrorMatches(throwable -> throwable instanceof RuntimeException && 
                         throwable.getMessage().equals("Database connection failed"))
                 .verify();

@@ -24,7 +24,7 @@ public class PartyStatusServiceImpl implements PartyStatusService {
     private PartyStatusMapper mapper;
 
     @Override
-    public Mono<PaginationResponse<PartyStatusDTO>> filterPartyStatuses(FilterRequest<PartyStatusDTO> filterRequest) {
+    public Mono<PaginationResponse<PartyStatusDTO>> filterPartyStatuses(Long partyId, FilterRequest<PartyStatusDTO> filterRequest) {
         return FilterUtils
                 .createFilter(
                         PartyStatus.class,
@@ -34,7 +34,7 @@ public class PartyStatusServiceImpl implements PartyStatusService {
     }
 
     @Override
-    public Mono<PartyStatusDTO> createPartyStatus(PartyStatusDTO partyStatusDTO) {
+    public Mono<PartyStatusDTO> createPartyStatus(Long partyId, PartyStatusDTO partyStatusDTO) {
         return Mono.just(partyStatusDTO)
                 .map(mapper::toEntity)
                 .flatMap(repository::save)
@@ -42,7 +42,7 @@ public class PartyStatusServiceImpl implements PartyStatusService {
     }
 
     @Override
-    public Mono<PartyStatusDTO> updatePartyStatus(Long partyStatusId, PartyStatusDTO partyStatusDTO) {
+    public Mono<PartyStatusDTO> updatePartyStatus(Long partyId, Long partyStatusId, PartyStatusDTO partyStatusDTO) {
         return repository.findById(partyStatusId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Party status not found with ID: " + partyStatusId)))
                 .flatMap(existingPartyStatus -> {
@@ -54,14 +54,14 @@ public class PartyStatusServiceImpl implements PartyStatusService {
     }
 
     @Override
-    public Mono<Void> deletePartyStatus(Long partyStatusId) {
+    public Mono<Void> deletePartyStatus(Long partyId, Long partyStatusId) {
         return repository.findById(partyStatusId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Party status not found with ID: " + partyStatusId)))
                 .flatMap(partyStatus -> repository.deleteById(partyStatusId));
     }
 
     @Override
-    public Mono<PartyStatusDTO> getPartyStatusById(Long partyStatusId) {
+    public Mono<PartyStatusDTO> getPartyStatusById(Long partyId, Long partyStatusId) {
         return repository.findById(partyStatusId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Party status not found with ID: " + partyStatusId)))
                 .map(mapper::toDTO);
