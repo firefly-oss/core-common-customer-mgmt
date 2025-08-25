@@ -46,6 +46,7 @@ class NaturalPersonServiceImplTest {
         naturalPerson.setNaturalPersonId(naturalPersonId);
         naturalPerson.setCreatedAt(LocalDateTime.now());
         naturalPerson.setUpdatedAt(LocalDateTime.now());
+        naturalPerson.setPartyId(1L);
 
         naturalPersonDTO = new NaturalPersonDTO();
         naturalPersonDTO.setNaturalPersonId(naturalPersonId);
@@ -61,15 +62,15 @@ class NaturalPersonServiceImplTest {
         
         // Create a spy of the service to mock the filterNaturalPersons method
         NaturalPersonServiceImpl spyService = spy(naturalPersonService);
-        doReturn(Mono.just(mockResponse)).when(spyService).filterNaturalPersons(filterRequest);
+        doReturn(Mono.just(mockResponse)).when(spyService).filterNaturalPersons(1L, filterRequest);
 
         // Act & Assert
-        StepVerifier.create(spyService.filterNaturalPersons(filterRequest))
+        StepVerifier.create(spyService.filterNaturalPersons(1L, filterRequest))
                 .expectNext(mockResponse)
                 .verifyComplete();
 
         // Verify that filterNaturalPersons was called
-        verify(spyService).filterNaturalPersons(filterRequest);
+        verify(spyService).filterNaturalPersons(1L, filterRequest);
     }
 
     @Test
@@ -80,7 +81,7 @@ class NaturalPersonServiceImplTest {
         when(naturalPersonMapper.toDTO(naturalPerson)).thenReturn(naturalPersonDTO);
 
         // Act & Assert
-        StepVerifier.create(naturalPersonService.createNaturalPerson(naturalPersonDTO))
+        StepVerifier.create(naturalPersonService.createNaturalPerson(1L, naturalPersonDTO))
                 .expectNext(naturalPersonDTO)
                 .verifyComplete();
 
@@ -96,7 +97,7 @@ class NaturalPersonServiceImplTest {
         when(naturalPersonRepository.save(naturalPerson)).thenReturn(Mono.error(new RuntimeException("Database error")));
 
         // Act & Assert
-        StepVerifier.create(naturalPersonService.createNaturalPerson(naturalPersonDTO))
+        StepVerifier.create(naturalPersonService.createNaturalPerson(1L, naturalPersonDTO))
                 .expectErrorMatches(throwable -> throwable instanceof RuntimeException && 
                         throwable.getMessage().equals("Database error"))
                 .verify();
@@ -121,7 +122,7 @@ class NaturalPersonServiceImplTest {
         when(naturalPersonMapper.toDTO(updatedNaturalPerson)).thenReturn(naturalPersonDTO);
 
         // Act & Assert
-        StepVerifier.create(naturalPersonService.updateNaturalPerson(naturalPersonId, updateDTO))
+        StepVerifier.create(naturalPersonService.updateNaturalPerson(1L, naturalPersonId, updateDTO))
                 .expectNext(naturalPersonDTO)
                 .verifyComplete();
 
@@ -137,7 +138,7 @@ class NaturalPersonServiceImplTest {
         when(naturalPersonRepository.findById(naturalPersonId)).thenReturn(Mono.empty());
 
         // Act & Assert
-        StepVerifier.create(naturalPersonService.updateNaturalPerson(naturalPersonId, naturalPersonDTO))
+        StepVerifier.create(naturalPersonService.updateNaturalPerson(1L, naturalPersonId, naturalPersonDTO))
                 .expectErrorMatches(throwable -> throwable instanceof RuntimeException && 
                         throwable.getMessage().equals("Natural person not found with ID: " + naturalPersonId))
                 .verify();
@@ -154,7 +155,7 @@ class NaturalPersonServiceImplTest {
         when(naturalPersonRepository.deleteById(naturalPersonId)).thenReturn(Mono.empty());
 
         // Act & Assert
-        StepVerifier.create(naturalPersonService.deleteNaturalPerson(naturalPersonId))
+        StepVerifier.create(naturalPersonService.deleteNaturalPerson(1L, naturalPersonId))
                 .verifyComplete();
 
         verify(naturalPersonRepository).findById(naturalPersonId);
@@ -167,7 +168,7 @@ class NaturalPersonServiceImplTest {
         when(naturalPersonRepository.findById(naturalPersonId)).thenReturn(Mono.empty());
 
         // Act & Assert
-        StepVerifier.create(naturalPersonService.deleteNaturalPerson(naturalPersonId))
+        StepVerifier.create(naturalPersonService.deleteNaturalPerson(1L, naturalPersonId))
                 .expectErrorMatches(throwable -> throwable instanceof RuntimeException && 
                         throwable.getMessage().equals("Natural person not found with ID: " + naturalPersonId))
                 .verify();
@@ -183,7 +184,7 @@ class NaturalPersonServiceImplTest {
         when(naturalPersonRepository.deleteById(naturalPersonId)).thenReturn(Mono.error(new RuntimeException("Delete failed")));
 
         // Act & Assert
-        StepVerifier.create(naturalPersonService.deleteNaturalPerson(naturalPersonId))
+        StepVerifier.create(naturalPersonService.deleteNaturalPerson(1L, naturalPersonId))
                 .expectErrorMatches(throwable -> throwable instanceof RuntimeException && 
                         throwable.getMessage().equals("Delete failed"))
                 .verify();
@@ -199,7 +200,7 @@ class NaturalPersonServiceImplTest {
         when(naturalPersonMapper.toDTO(naturalPerson)).thenReturn(naturalPersonDTO);
 
         // Act & Assert
-        StepVerifier.create(naturalPersonService.getNaturalPersonById(naturalPersonId))
+        StepVerifier.create(naturalPersonService.getNaturalPersonById(1L, naturalPersonId))
                 .expectNext(naturalPersonDTO)
                 .verifyComplete();
 
@@ -213,7 +214,7 @@ class NaturalPersonServiceImplTest {
         when(naturalPersonRepository.findById(naturalPersonId)).thenReturn(Mono.empty());
 
         // Act & Assert
-        StepVerifier.create(naturalPersonService.getNaturalPersonById(naturalPersonId))
+        StepVerifier.create(naturalPersonService.getNaturalPersonById(1L, naturalPersonId))
                 .expectErrorMatches(throwable -> throwable instanceof RuntimeException && 
                         throwable.getMessage().equals("Natural person not found with ID: " + naturalPersonId))
                 .verify();
@@ -228,7 +229,7 @@ class NaturalPersonServiceImplTest {
         when(naturalPersonRepository.findById(naturalPersonId)).thenReturn(Mono.error(new RuntimeException("Database connection failed")));
 
         // Act & Assert
-        StepVerifier.create(naturalPersonService.getNaturalPersonById(naturalPersonId))
+        StepVerifier.create(naturalPersonService.getNaturalPersonById(1L, naturalPersonId))
                 .expectErrorMatches(throwable -> throwable instanceof RuntimeException && 
                         throwable.getMessage().equals("Database connection failed"))
                 .verify();

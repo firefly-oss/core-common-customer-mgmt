@@ -46,6 +46,7 @@ class AddressServiceImplTest {
         address.setAddressId(addressId);
         address.setCreatedAt(LocalDateTime.now());
         address.setUpdatedAt(LocalDateTime.now());
+        address.setPartyId(1L);
 
         addressDTO = new AddressDTO();
         addressDTO.setAddressId(addressId);
@@ -61,15 +62,15 @@ class AddressServiceImplTest {
         
         // Create a spy of the service to mock the filterAddresses method
         AddressServiceImpl spyService = spy(addressService);
-        doReturn(Mono.just(mockResponse)).when(spyService).filterAddresses(filterRequest);
+        doReturn(Mono.just(mockResponse)).when(spyService).filterAddresses(1L, filterRequest);
 
         // Act & Assert
-        StepVerifier.create(spyService.filterAddresses(filterRequest))
+        StepVerifier.create(spyService.filterAddresses(1L, filterRequest))
                 .expectNext(mockResponse)
                 .verifyComplete();
 
         // Verify that filterAddresses was called
-        verify(spyService).filterAddresses(filterRequest);
+        verify(spyService).filterAddresses(1L, filterRequest);
     }
 
     @Test
@@ -80,7 +81,7 @@ class AddressServiceImplTest {
         when(addressMapper.toDTO(address)).thenReturn(addressDTO);
 
         // Act & Assert
-        StepVerifier.create(addressService.createAddress(addressDTO))
+        StepVerifier.create(addressService.createAddress(1L, addressDTO))
                 .expectNext(addressDTO)
                 .verifyComplete();
 
@@ -96,7 +97,7 @@ class AddressServiceImplTest {
         when(addressRepository.save(address)).thenReturn(Mono.error(new RuntimeException("Database error")));
 
         // Act & Assert
-        StepVerifier.create(addressService.createAddress(addressDTO))
+        StepVerifier.create(addressService.createAddress(1L, addressDTO))
                 .expectErrorMatches(throwable -> throwable instanceof RuntimeException && 
                         throwable.getMessage().equals("Database error"))
                 .verify();
@@ -121,7 +122,7 @@ class AddressServiceImplTest {
         when(addressMapper.toDTO(updatedAddress)).thenReturn(addressDTO);
 
         // Act & Assert
-        StepVerifier.create(addressService.updateAddress(addressId, updateDTO))
+        StepVerifier.create(addressService.updateAddress(1L, addressId, updateDTO))
                 .expectNext(addressDTO)
                 .verifyComplete();
 
@@ -137,7 +138,7 @@ class AddressServiceImplTest {
         when(addressRepository.findById(addressId)).thenReturn(Mono.empty());
 
         // Act & Assert
-        StepVerifier.create(addressService.updateAddress(addressId, addressDTO))
+        StepVerifier.create(addressService.updateAddress(1L, addressId, addressDTO))
                 .expectErrorMatches(throwable -> throwable instanceof RuntimeException && 
                         throwable.getMessage().equals("Address not found with ID: " + addressId))
                 .verify();
@@ -154,7 +155,7 @@ class AddressServiceImplTest {
         when(addressRepository.deleteById(addressId)).thenReturn(Mono.empty());
 
         // Act & Assert
-        StepVerifier.create(addressService.deleteAddress(addressId))
+        StepVerifier.create(addressService.deleteAddress(1L, addressId))
                 .verifyComplete();
 
         verify(addressRepository).findById(addressId);
@@ -167,7 +168,7 @@ class AddressServiceImplTest {
         when(addressRepository.findById(addressId)).thenReturn(Mono.empty());
 
         // Act & Assert
-        StepVerifier.create(addressService.deleteAddress(addressId))
+        StepVerifier.create(addressService.deleteAddress(1L, addressId))
                 .expectErrorMatches(throwable -> throwable instanceof RuntimeException && 
                         throwable.getMessage().equals("Address not found with ID: " + addressId))
                 .verify();
@@ -183,7 +184,7 @@ class AddressServiceImplTest {
         when(addressRepository.deleteById(addressId)).thenReturn(Mono.error(new RuntimeException("Delete failed")));
 
         // Act & Assert
-        StepVerifier.create(addressService.deleteAddress(addressId))
+        StepVerifier.create(addressService.deleteAddress(1L, addressId))
                 .expectErrorMatches(throwable -> throwable instanceof RuntimeException && 
                         throwable.getMessage().equals("Delete failed"))
                 .verify();
@@ -199,7 +200,7 @@ class AddressServiceImplTest {
         when(addressMapper.toDTO(address)).thenReturn(addressDTO);
 
         // Act & Assert
-        StepVerifier.create(addressService.getAddressById(addressId))
+        StepVerifier.create(addressService.getAddressById(1L, addressId))
                 .expectNext(addressDTO)
                 .verifyComplete();
 
@@ -213,7 +214,7 @@ class AddressServiceImplTest {
         when(addressRepository.findById(addressId)).thenReturn(Mono.empty());
 
         // Act & Assert
-        StepVerifier.create(addressService.getAddressById(addressId))
+        StepVerifier.create(addressService.getAddressById(1L, addressId))
                 .expectErrorMatches(throwable -> throwable instanceof RuntimeException && 
                         throwable.getMessage().equals("Address not found with ID: " + addressId))
                 .verify();
@@ -228,7 +229,7 @@ class AddressServiceImplTest {
         when(addressRepository.findById(addressId)).thenReturn(Mono.error(new RuntimeException("Database connection failed")));
 
         // Act & Assert
-        StepVerifier.create(addressService.getAddressById(addressId))
+        StepVerifier.create(addressService.getAddressById(1L, addressId))
                 .expectErrorMatches(throwable -> throwable instanceof RuntimeException && 
                         throwable.getMessage().equals("Database connection failed"))
                 .verify();
