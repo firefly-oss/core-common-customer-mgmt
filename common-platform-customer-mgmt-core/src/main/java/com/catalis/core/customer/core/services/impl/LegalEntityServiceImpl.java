@@ -46,6 +46,10 @@ public class LegalEntityServiceImpl implements LegalEntityService {
         return repository.findById(legalEntityId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Legal entity not found with ID: " + legalEntityId)))
                 .flatMap(existingLegalEntity -> {
+                    // Validate that the natural person belongs to the specified party
+                    if (!partyId.equals(existingLegalEntity.getPartyId())) {
+                        return Mono.error(new RuntimeException("Legal entity with ID " + legalEntityId + " does not belong to party " + partyId));
+                    }
                     mapper.updateEntityFromDto(legalEntityDTO, existingLegalEntity);
                     return repository.save(existingLegalEntity);
                 })

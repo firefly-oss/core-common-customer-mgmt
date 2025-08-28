@@ -1,8 +1,10 @@
 package com.catalis.core.customer.core.mappers;
 
 import com.catalis.core.customer.interfaces.dtos.AddressDTO;
+import com.catalis.core.customer.interfaces.dtos.NaturalPersonDTO;
 import com.catalis.core.customer.models.entities.Address;
-import org.mapstruct.Mapper;
+import com.catalis.core.customer.models.entities.NaturalPerson;
+import org.mapstruct.*;
 
 /**
  * MapStruct mapper for converting between Address entity and AddressDTO.
@@ -25,4 +27,9 @@ public interface AddressMapper {
      * @return the converted Address entity
      */
     Address toEntity(AddressDTO addressDTO);
+
+    @Mapping(target = "createdAt", ignore = true)
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    void updateEntityFromDto(AddressDTO dto, @MappingTarget Address entity);
+
 }

@@ -54,10 +54,8 @@ public class AddressServiceImpl implements AddressService {
                     if (!partyId.equals(existingAddress.getPartyId())) {
                         return Mono.error(new RuntimeException("Address with ID " + addressId + " does not belong to party " + partyId));
                     }
-                    Address updatedAddress = mapper.toEntity(addressDTO);
-                    updatedAddress.setAddressId(addressId);
-                    updatedAddress.setPartyId(partyId); // Ensure party relationship is maintained
-                    return repository.save(updatedAddress);
+                    mapper.updateEntityFromDto(addressDTO, existingAddress);
+                    return repository.save(existingAddress);
                 })
                 .map(mapper::toDTO);
     }
