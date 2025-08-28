@@ -54,4 +54,12 @@ public interface LegalEntityService {
      *         or an empty Mono if the legal entity does not exist
      */
     Mono<LegalEntityDTO> getLegalEntityById(Long partyId, Long legalEntityId);
+    
+    /**
+     * Retrieves the legal entity associated with a specific party.
+     *
+     * @param partyId the unique identifier of the party
+     * @return a Mono emitting the LegalEntityDTO object belonging to the specified party
+     */
+    Mono<LegalEntityDTO> getLegalEntityByPartyId(Long partyId);
 }

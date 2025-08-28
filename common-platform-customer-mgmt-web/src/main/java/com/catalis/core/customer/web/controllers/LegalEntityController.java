@@ -94,6 +94,30 @@ public class LegalEntityController {
                 .map(legalEntity -> ResponseEntity.status(HttpStatus.CREATED).body(legalEntity));
     }
 
+    @GetMapping
+    @Operation(
+        summary = "Get legal entity by party ID",
+        description = "Retrieve the legal entity associated with a specific party"
+    )
+    @ApiResponses({
+        @ApiResponse(
+            responseCode = "200", 
+            description = "Legal entity found",
+            content = @Content(schema = @Schema(implementation = LegalEntityDTO.class))
+        ),
+        @ApiResponse(
+            responseCode = "404", 
+            description = "Party not found",
+            content = @Content
+        )
+    })
+    public Mono<ResponseEntity<LegalEntityDTO>> getLegalEntityByPartyId(
+            @Parameter(description = "Unique identifier of the party", required = true)
+            @PathVariable Long partyId) {
+        return legalEntityService.getLegalEntityByPartyId(partyId)
+                .map(ResponseEntity::ok);
+    }
+
     @GetMapping("/{legalEntityId}")
     @Operation(
         summary = "Get legal entity by ID",

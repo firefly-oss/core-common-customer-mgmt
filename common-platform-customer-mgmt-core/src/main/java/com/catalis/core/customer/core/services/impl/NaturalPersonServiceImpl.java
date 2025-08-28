@@ -54,10 +54,8 @@ public class NaturalPersonServiceImpl implements NaturalPersonService {
                     if (!partyId.equals(existingNaturalPerson.getPartyId())) {
                         return Mono.error(new RuntimeException("Natural person with ID " + naturalPersonId + " does not belong to party " + partyId));
                     }
-                    NaturalPerson updatedNaturalPerson = mapper.toEntity(naturalPersonDTO);
-                    updatedNaturalPerson.setNaturalPersonId(naturalPersonId);
-                    updatedNaturalPerson.setPartyId(partyId); // Ensure party relationship is maintained
-                    return repository.save(updatedNaturalPerson);
+                    mapper.updateEntityFromDto(naturalPersonDTO, existingNaturalPerson);
+                    return repository.save(existingNaturalPerson);
                 })
                 .map(mapper::toDTO);
     }
@@ -86,5 +84,12 @@ public class NaturalPersonServiceImpl implements NaturalPersonService {
                     }
                     return Mono.just(mapper.toDTO(naturalPerson));
                 });
+    }
+
+    @Override
+    public Mono<NaturalPersonDTO> getNaturalPersonByPartyId(Long partyId) {
+        return repository.findByPartyId(partyId)
+                .map(mapper::toDTO)
+                .next();
     }
 }

@@ -94,6 +94,30 @@ public class NaturalPersonController {
                 .map(naturalPerson -> ResponseEntity.status(HttpStatus.CREATED).body(naturalPerson));
     }
 
+    @GetMapping
+    @Operation(
+        summary = "Get natural person by party ID",
+        description = "Retrieve the natural person associated with a specific party"
+    )
+    @ApiResponses({
+        @ApiResponse(
+            responseCode = "200",
+            description = "Natural person found",
+            content = @Content(schema = @Schema(implementation = NaturalPersonDTO.class))
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Party not found",
+            content = @Content
+        )
+    })
+    public Mono<ResponseEntity<NaturalPersonDTO>> getNaturalPersonByPartyId(
+            @Parameter(description = "Unique identifier of the party", required = true)
+            @PathVariable Long partyId) {
+        return naturalPersonService.getNaturalPersonByPartyId(partyId)
+                .map(ResponseEntity::ok);
+    }
+
     @GetMapping("/{naturalPersonId}")
     @Operation(
         summary = "Get natural person by ID",

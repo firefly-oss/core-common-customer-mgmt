@@ -113,13 +113,10 @@ class NaturalPersonServiceImplTest {
         NaturalPersonDTO updateDTO = new NaturalPersonDTO();
         updateDTO.setNaturalPersonId(null);
         
-        NaturalPerson updatedNaturalPerson = new NaturalPerson();
-        updatedNaturalPerson.setNaturalPersonId(naturalPersonId);
-        
         when(naturalPersonRepository.findById(naturalPersonId)).thenReturn(Mono.just(naturalPerson));
-        when(naturalPersonMapper.toEntity(updateDTO)).thenReturn(updatedNaturalPerson);
-        when(naturalPersonRepository.save(updatedNaturalPerson)).thenReturn(Mono.just(updatedNaturalPerson));
-        when(naturalPersonMapper.toDTO(updatedNaturalPerson)).thenReturn(naturalPersonDTO);
+        doNothing().when(naturalPersonMapper).updateEntityFromDto(updateDTO, naturalPerson);
+        when(naturalPersonRepository.save(naturalPerson)).thenReturn(Mono.just(naturalPerson));
+        when(naturalPersonMapper.toDTO(naturalPerson)).thenReturn(naturalPersonDTO);
 
         // Act & Assert
         StepVerifier.create(naturalPersonService.updateNaturalPerson(1L, naturalPersonId, updateDTO))
@@ -127,9 +124,9 @@ class NaturalPersonServiceImplTest {
                 .verifyComplete();
 
         verify(naturalPersonRepository).findById(naturalPersonId);
-        verify(naturalPersonMapper).toEntity(updateDTO);
-        verify(naturalPersonRepository).save(updatedNaturalPerson);
-        verify(naturalPersonMapper).toDTO(updatedNaturalPerson);
+        verify(naturalPersonMapper).updateEntityFromDto(updateDTO, naturalPerson);
+        verify(naturalPersonRepository).save(naturalPerson);
+        verify(naturalPersonMapper).toDTO(naturalPerson);
     }
 
     @Test

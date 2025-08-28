@@ -55,4 +55,12 @@ public interface NaturalPersonService {
      *         or an empty Mono if the natural person does not exist or doesn't belong to the party
      */
     Mono<NaturalPersonDTO> getNaturalPersonById(Long partyId, Long naturalPersonId);
+    
+    /**
+     * Retrieves the natural person associated with a specific party.
+     *
+     * @param partyId the unique identifier of the party
+     * @return a Mono emitting the NaturalPersonDTO object belonging to the specified party
+     */
+    Mono<NaturalPersonDTO> getNaturalPersonByPartyId(Long partyId);
 }

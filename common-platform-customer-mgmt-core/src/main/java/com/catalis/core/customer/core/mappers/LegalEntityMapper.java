@@ -1,8 +1,10 @@
 package com.catalis.core.customer.core.mappers;
 
 import com.catalis.core.customer.interfaces.dtos.LegalEntityDTO;
+import com.catalis.core.customer.interfaces.dtos.NaturalPersonDTO;
 import com.catalis.core.customer.models.entities.LegalEntity;
-import org.mapstruct.Mapper;
+import com.catalis.core.customer.models.entities.NaturalPerson;
+import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
 /**
@@ -28,4 +30,8 @@ public interface LegalEntityMapper {
      * @return the converted LegalEntity entity
      */
     LegalEntity toEntity(LegalEntityDTO legalEntityDTO);
+
+    @Mapping(target = "createdAt", ignore = true)
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    void updateEntityFromDto(LegalEntityDTO dto, @MappingTarget LegalEntity entity);
 }

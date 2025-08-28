@@ -2,7 +2,7 @@ package com.catalis.core.customer.core.mappers;
 
 import com.catalis.core.customer.interfaces.dtos.NaturalPersonDTO;
 import com.catalis.core.customer.models.entities.NaturalPerson;
-import org.mapstruct.Mapper;
+import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
 /**
@@ -28,4 +28,9 @@ public interface NaturalPersonMapper {
      * @return the converted NaturalPerson entity
      */
     NaturalPerson toEntity(NaturalPersonDTO naturalPersonDTO);
+
+    @Mapping(target = "createdAt", ignore = true)
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    void updateEntityFromDto(NaturalPersonDTO dto, @MappingTarget NaturalPerson entity);
+
 }

@@ -46,9 +46,8 @@ public class LegalEntityServiceImpl implements LegalEntityService {
         return repository.findById(legalEntityId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Legal entity not found with ID: " + legalEntityId)))
                 .flatMap(existingLegalEntity -> {
-                    LegalEntity updatedLegalEntity = mapper.toEntity(legalEntityDTO);
-                    updatedLegalEntity.setLegalEntityId(legalEntityId);
-                    return repository.save(updatedLegalEntity);
+                    mapper.updateEntityFromDto(legalEntityDTO, existingLegalEntity);
+                    return repository.save(existingLegalEntity);
                 })
                 .map(mapper::toDTO);
     }
@@ -65,5 +64,12 @@ public class LegalEntityServiceImpl implements LegalEntityService {
         return repository.findById(legalEntityId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Legal entity not found with ID: " + legalEntityId)))
                 .map(mapper::toDTO);
+    }
+
+    @Override
+    public Mono<LegalEntityDTO> getLegalEntityByPartyId(Long partyId) {
+        return repository.findByPartyId(partyId)
+                .map(mapper::toDTO)
+                .next();
     }
 }
