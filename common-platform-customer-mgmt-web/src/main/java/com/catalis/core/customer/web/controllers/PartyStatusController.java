@@ -120,7 +120,7 @@ public class PartyStatusController {
                 .map(ResponseEntity::ok);
     }
 
-    @PutMapping("/{partyStatusId}")
+    @PutMapping
     @Operation(
         summary = "Update party status",
         description = "Update an existing party status associated with a party"
@@ -145,11 +145,9 @@ public class PartyStatusController {
     public Mono<ResponseEntity<PartyStatusDTO>> updatePartyStatus(
             @Parameter(description = "Unique identifier of the party", required = true)
             @PathVariable Long partyId,
-            @Parameter(description = "Unique identifier of the party status", required = true)
-            @PathVariable Long partyStatusId,
             @Parameter(description = "Updated party status data", required = true)
             @Valid @RequestBody PartyStatusDTO partyStatusDTO) {
-        return partyStatusService.updatePartyStatus(partyId, partyStatusId, partyStatusDTO)
+        return partyStatusService.updatePartyStatus(partyId, partyStatusDTO)
                 .map(ResponseEntity::ok);
     }
 

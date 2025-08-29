@@ -46,12 +46,16 @@ public class EmailContactServiceImpl implements EmailContactService {
         return repository.findById(emailContactId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Email contact not found with ID: " + emailContactId)))
                 .flatMap(existingEmailContact -> {
-                    EmailContact updatedEmailContact = mapper.toEntity(emailContactDTO);
-                    updatedEmailContact.setEmailContactId(emailContactId);
-                    return repository.save(updatedEmailContact);
+                    // Validate that the natural person belongs to the specified party
+                    if (!partyId.equals(existingEmailContact.getPartyId())) {
+                        return Mono.error(new RuntimeException("Email contact with ID " + emailContactId + " does not belong to party " + partyId));
+                    }
+                    mapper.updateEntityFromDto(emailContactDTO, existingEmailContact);
+                    return repository.save(existingEmailContact);
                 })
                 .map(mapper::toDTO);
     }
+
 
     @Override
     public Mono<Void> deleteEmailContact(Long partyId, Long emailContactId) {

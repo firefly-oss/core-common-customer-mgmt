@@ -46,9 +46,12 @@ public class PhoneContactServiceImpl implements PhoneContactService {
         return repository.findById(phoneContactId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Phone contact not found with ID: " + phoneContactId)))
                 .flatMap(existingPhoneContact -> {
-                    PhoneContact updatedPhoneContact = mapper.toEntity(phoneContactDTO);
-                    updatedPhoneContact.setPhoneContactId(phoneContactId);
-                    return repository.save(updatedPhoneContact);
+                    // Validate that the natural person belongs to the specified party
+                    if (!partyId.equals(existingPhoneContact.getPartyId())) {
+                        return Mono.error(new RuntimeException("Phone contact with ID " + phoneContactId + " does not belong to party " + partyId));
+                    }
+                    mapper.updateEntityFromDto(phoneContactDTO, existingPhoneContact);
+                    return repository.save(existingPhoneContact);
                 })
                 .map(mapper::toDTO);
     }

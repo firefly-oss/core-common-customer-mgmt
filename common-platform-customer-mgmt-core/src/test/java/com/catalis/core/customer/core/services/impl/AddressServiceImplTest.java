@@ -113,13 +113,13 @@ class AddressServiceImplTest {
         AddressDTO updateDTO = new AddressDTO();
         updateDTO.setAddressId(null);
         
-        Address updatedAddress = new Address();
-        updatedAddress.setAddressId(addressId);
+        // Set up the existing address with the correct partyId for validation
+        address.setPartyId(1L);
         
         when(addressRepository.findById(addressId)).thenReturn(Mono.just(address));
-        when(addressMapper.toEntity(updateDTO)).thenReturn(updatedAddress);
-        when(addressRepository.save(updatedAddress)).thenReturn(Mono.just(updatedAddress));
-        when(addressMapper.toDTO(updatedAddress)).thenReturn(addressDTO);
+        doNothing().when(addressMapper).updateEntityFromDto(updateDTO, address);
+        when(addressRepository.save(address)).thenReturn(Mono.just(address));
+        when(addressMapper.toDTO(address)).thenReturn(addressDTO);
 
         // Act & Assert
         StepVerifier.create(addressService.updateAddress(1L, addressId, updateDTO))
@@ -127,9 +127,9 @@ class AddressServiceImplTest {
                 .verifyComplete();
 
         verify(addressRepository).findById(addressId);
-        verify(addressMapper).toEntity(updateDTO);
-        verify(addressRepository).save(updatedAddress);
-        verify(addressMapper).toDTO(updatedAddress);
+        verify(addressMapper).updateEntityFromDto(updateDTO, address);
+        verify(addressRepository).save(address);
+        verify(addressMapper).toDTO(address);
     }
 
     @Test

@@ -3,6 +3,8 @@ package com.catalis.core.customer.web.controllers;
 import com.catalis.common.core.filters.FilterRequest;
 import com.catalis.common.core.queries.PaginationResponse;
 import com.catalis.core.customer.core.services.PhoneContactService;
+import com.catalis.core.customer.interfaces.dtos.OnCreate;
+import com.catalis.core.customer.interfaces.dtos.OnUpdate;
 import com.catalis.core.customer.interfaces.dtos.PhoneContactDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -89,7 +91,7 @@ public class PhoneContactController {
             @Parameter(description = "Unique identifier of the party", required = true)
             @PathVariable Long partyId,
             @Parameter(description = "Phone contact data to create", required = true)
-            @Valid @RequestBody PhoneContactDTO phoneContactDTO) {
+            @Validated(OnCreate.class) @RequestBody PhoneContactDTO phoneContactDTO) {
         return phoneContactService.createPhoneContact(partyId, phoneContactDTO)
                 .map(phoneContact -> ResponseEntity.status(HttpStatus.CREATED).body(phoneContact));
     }
@@ -148,7 +150,7 @@ public class PhoneContactController {
             @Parameter(description = "Unique identifier of the phone contact", required = true)
             @PathVariable Long phoneContactId,
             @Parameter(description = "Updated phone contact data", required = true)
-            @Valid @RequestBody PhoneContactDTO phoneContactDTO) {
+            @Validated(OnUpdate.class) @RequestBody PhoneContactDTO phoneContactDTO) {
         return phoneContactService.updatePhoneContact(partyId, phoneContactId, phoneContactDTO)
                 .map(ResponseEntity::ok);
     }

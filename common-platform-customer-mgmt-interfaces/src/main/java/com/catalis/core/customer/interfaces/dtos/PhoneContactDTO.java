@@ -31,12 +31,12 @@ public class PhoneContactDTO {
     @NotNull(message = "Party ID is required")
     private Long partyId;
     
-    @NotBlank(message = "Phone number is required")
+    @NotBlank(groups = OnCreate.class, message = "Phone number is required")
     @Pattern(regexp = "^[\\+]?[1-9]\\d{1,14}$", message = "Phone number must be a valid format")
     @Size(max = 20, message = "Phone number must not exceed 20 characters")
     private String phoneNumber;
     
-    @NotNull(message = "Phone kind is required")
+    @NotNull(groups = OnCreate.class, message = "Phone kind is required")
     private PhoneKind phoneKind;
     
     private Boolean isPrimary;

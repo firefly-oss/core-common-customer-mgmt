@@ -4,6 +4,8 @@ import com.catalis.common.core.filters.FilterRequest;
 import com.catalis.common.core.queries.PaginationResponse;
 import com.catalis.core.customer.core.services.EmailContactService;
 import com.catalis.core.customer.interfaces.dtos.EmailContactDTO;
+import com.catalis.core.customer.interfaces.dtos.OnCreate;
+import com.catalis.core.customer.interfaces.dtos.OnUpdate;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -89,7 +91,7 @@ public class EmailContactController {
             @Parameter(description = "Unique identifier of the party", required = true)
             @PathVariable Long partyId,
             @Parameter(description = "Email contact data to create", required = true)
-            @Valid @RequestBody EmailContactDTO emailContactDTO) {
+            @Validated(OnCreate.class) @RequestBody EmailContactDTO emailContactDTO) {
         return emailContactService.createEmailContact(partyId, emailContactDTO)
                 .map(emailContact -> ResponseEntity.status(HttpStatus.CREATED).body(emailContact));
     }
@@ -148,7 +150,7 @@ public class EmailContactController {
             @Parameter(description = "Unique identifier of the email contact", required = true)
             @PathVariable Long emailContactId,
             @Parameter(description = "Updated email contact data", required = true)
-            @Valid @RequestBody EmailContactDTO emailContactDTO) {
+            @Validated(OnUpdate.class) @RequestBody EmailContactDTO emailContactDTO) {
         return emailContactService.updateEmailContact(partyId, emailContactId, emailContactDTO)
                 .map(ResponseEntity::ok);
     }

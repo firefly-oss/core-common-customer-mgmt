@@ -114,13 +114,13 @@ class PhoneContactServiceImplTest {
         PhoneContactDTO updateDTO = new PhoneContactDTO();
         updateDTO.setPhoneContactId(null);
         
-        PhoneContact updatedPhoneContact = new PhoneContact();
-        updatedPhoneContact.setPhoneContactId(phoneContactId);
+        // Set up the existing phone contact with the correct partyId for validation
+        phoneContact.setPartyId(partyId);
         
         when(phoneContactRepository.findById(phoneContactId)).thenReturn(Mono.just(phoneContact));
-        when(phoneContactMapper.toEntity(updateDTO)).thenReturn(updatedPhoneContact);
-        when(phoneContactRepository.save(updatedPhoneContact)).thenReturn(Mono.just(updatedPhoneContact));
-        when(phoneContactMapper.toDTO(updatedPhoneContact)).thenReturn(phoneContactDTO);
+        doNothing().when(phoneContactMapper).updateEntityFromDto(updateDTO, phoneContact);
+        when(phoneContactRepository.save(phoneContact)).thenReturn(Mono.just(phoneContact));
+        when(phoneContactMapper.toDTO(phoneContact)).thenReturn(phoneContactDTO);
 
         // Act & Assert
         StepVerifier.create(phoneContactService.updatePhoneContact(partyId, phoneContactId, updateDTO))
@@ -128,9 +128,9 @@ class PhoneContactServiceImplTest {
                 .verifyComplete();
 
         verify(phoneContactRepository).findById(phoneContactId);
-        verify(phoneContactMapper).toEntity(updateDTO);
-        verify(phoneContactRepository).save(updatedPhoneContact);
-        verify(phoneContactMapper).toDTO(updatedPhoneContact);
+        verify(phoneContactMapper).updateEntityFromDto(updateDTO, phoneContact);
+        verify(phoneContactRepository).save(phoneContact);
+        verify(phoneContactMapper).toDTO(phoneContact);
     }
 
     @Test

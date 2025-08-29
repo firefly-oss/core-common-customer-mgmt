@@ -1,8 +1,10 @@
 package com.catalis.core.customer.core.mappers;
 
 import com.catalis.core.customer.interfaces.dtos.EmailContactDTO;
+import com.catalis.core.customer.interfaces.dtos.LegalEntityDTO;
 import com.catalis.core.customer.models.entities.EmailContact;
-import org.mapstruct.Mapper;
+import com.catalis.core.customer.models.entities.LegalEntity;
+import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
 /**
@@ -28,4 +30,16 @@ public interface EmailContactMapper {
      * @return the converted EmailContact entity
      */
     EmailContact toEntity(EmailContactDTO emailContactDTO);
+
+    /**
+     * Updates the specified EmailContact entity with the non-null properties of the given EmailContactDTO.
+     * This method ignores the "createdAt" property during the mapping process.
+     *
+     * @param dto the EmailContactDTO containing updated values
+     * @param entity the EmailContact entity to update
+     */
+    @Mapping(target = "createdAt", ignore = true)
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    void updateEntityFromDto(EmailContactDTO dto, @MappingTarget EmailContact entity);
+
 }

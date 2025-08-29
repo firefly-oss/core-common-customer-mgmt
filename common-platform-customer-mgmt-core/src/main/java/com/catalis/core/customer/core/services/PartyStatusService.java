@@ -31,11 +31,10 @@ public interface PartyStatusService {
      * Updates an existing party status with updated information.
      *
      * @param partyId the unique identifier of the party that owns the party status
-     * @param partyStatusId the unique identifier of the party status to be updated
      * @param partyStatusDTO the data transfer object containing the updated details of the party status
      * @return a reactive Mono containing the updated PartyStatusDTO
      */
-    Mono<PartyStatusDTO> updatePartyStatus(Long partyId, Long partyStatusId, PartyStatusDTO partyStatusDTO);
+    Mono<PartyStatusDTO> updatePartyStatus(Long partyId, PartyStatusDTO partyStatusDTO);
     
     /**
      * Deletes a party status identified by its unique ID, validating party ownership.

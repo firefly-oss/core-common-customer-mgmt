@@ -114,13 +114,13 @@ class EmailContactServiceImplTest {
         EmailContactDTO updateDTO = new EmailContactDTO();
         updateDTO.setEmailContactId(null);
         
-        EmailContact updatedEmailContact = new EmailContact();
-        updatedEmailContact.setEmailContactId(emailContactId);
+        // Set up the existing email contact with the correct partyId for validation
+        emailContact.setPartyId(partyId);
         
         when(emailContactRepository.findById(emailContactId)).thenReturn(Mono.just(emailContact));
-        when(emailContactMapper.toEntity(updateDTO)).thenReturn(updatedEmailContact);
-        when(emailContactRepository.save(updatedEmailContact)).thenReturn(Mono.just(updatedEmailContact));
-        when(emailContactMapper.toDTO(updatedEmailContact)).thenReturn(emailContactDTO);
+        doNothing().when(emailContactMapper).updateEntityFromDto(updateDTO, emailContact);
+        when(emailContactRepository.save(emailContact)).thenReturn(Mono.just(emailContact));
+        when(emailContactMapper.toDTO(emailContact)).thenReturn(emailContactDTO);
 
         // Act & Assert
         StepVerifier.create(emailContactService.updateEmailContact(partyId, emailContactId, updateDTO))
@@ -128,9 +128,9 @@ class EmailContactServiceImplTest {
                 .verifyComplete();
 
         verify(emailContactRepository).findById(emailContactId);
-        verify(emailContactMapper).toEntity(updateDTO);
-        verify(emailContactRepository).save(updatedEmailContact);
-        verify(emailContactMapper).toDTO(updatedEmailContact);
+        verify(emailContactMapper).updateEntityFromDto(updateDTO, emailContact);
+        verify(emailContactRepository).save(emailContact);
+        verify(emailContactMapper).toDTO(emailContact);
     }
 
     @Test

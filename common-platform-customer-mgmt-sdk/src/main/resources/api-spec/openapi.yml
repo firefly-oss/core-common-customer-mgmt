@@ -231,6 +231,9 @@
           }
         ],
         "responses": {
+          "404": {
+            "description": "Party relationship or party not found"
+          },
           "200": {
             "description": "Party relationship found",
             "content": {
@@ -240,9 +243,6 @@
                 }
               }
             }
-          },
-          "404": {
-            "description": "Party relationship or party not found"
           }
         }
       },
@@ -295,9 +295,6 @@
           "required": true
         },
         "responses": {
-          "404": {
-            "description": "Party relationship or party not found"
-          },
           "200": {
             "description": "Party relationship successfully updated",
             "content": {
@@ -307,6 +304,9 @@
                 }
               }
             }
+          },
+          "404": {
+            "description": "Party relationship or party not found"
           },
           "400": {
             "description": "Invalid party relationship data"
@@ -343,11 +343,11 @@
           }
         ],
         "responses": {
-          "404": {
-            "description": "Party relationship or party not found"
-          },
           "204": {
             "description": "Party relationship successfully deleted"
+          },
+          "404": {
+            "description": "Party relationship or party not found"
           }
         }
       }
@@ -383,9 +383,6 @@
           }
         ],
         "responses": {
-          "404": {
-            "description": "Politically exposed person or party not found"
-          },
           "200": {
             "description": "Politically exposed person found",
             "content": {
@@ -395,6 +392,9 @@
                 }
               }
             }
+          },
+          "404": {
+            "description": "Politically exposed person or party not found"
           }
         }
       },
@@ -457,11 +457,11 @@
               }
             }
           },
-          "404": {
-            "description": "Politically exposed person or party not found"
-          },
           "400": {
             "description": "Invalid politically exposed person data"
+          },
+          "404": {
+            "description": "Politically exposed person or party not found"
           }
         }
       },
@@ -504,52 +504,7 @@
         }
       }
     },
-    "/api/v1/parties/{partyId}/party-statuses/{partyStatusId}": {
-      "get": {
-        "tags": [
-          "Party Statuses"
-        ],
-        "summary": "Get party status by ID",
-        "description": "Retrieve a specific party status associated with a party by its unique identifier",
-        "operationId": "getPartyStatusById",
-        "parameters": [
-          {
-            "name": "partyId",
-            "in": "path",
-            "description": "Unique identifier of the party",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          },
-          {
-            "name": "partyStatusId",
-            "in": "path",
-            "description": "Unique identifier of the party status",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "404": {
-            "description": "Party status or party not found"
-          },
-          "200": {
-            "description": "Party status found",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/PartyStatusDTO"
-                }
-              }
-            }
-          }
-        }
-      },
+    "/api/v1/parties/{partyId}/party-statuses": {
       "put": {
         "tags": [
           "Party Statuses"
@@ -562,16 +517,6 @@
             "name": "partyId",
             "in": "path",
             "description": "Unique identifier of the party",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          },
-          {
-            "name": "partyStatusId",
-            "in": "path",
-            "description": "Unique identifier of the party status",
             "required": true,
             "schema": {
               "type": "integer",
@@ -599,12 +544,6 @@
           "required": true
         },
         "responses": {
-          "400": {
-            "description": "Invalid party status data"
-          },
-          "404": {
-            "description": "Party status or party not found"
-          },
           "200": {
             "description": "Party status successfully updated",
             "content": {
@@ -614,16 +553,22 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "Invalid party status data"
+          },
+          "404": {
+            "description": "Party status or party not found"
           }
         }
       },
-      "delete": {
+      "post": {
         "tags": [
           "Party Statuses"
         ],
-        "summary": "Delete party status",
-        "description": "Delete a party status associated with a party from the system",
-        "operationId": "deletePartyStatus",
+        "summary": "Create party status for a party",
+        "description": "Create a new party status associated with a specific party",
+        "operationId": "createPartyStatus",
         "parameters": [
           {
             "name": "partyId",
@@ -636,22 +581,41 @@
             }
           },
           {
-            "name": "partyStatusId",
-            "in": "path",
-            "description": "Unique identifier of the party status",
-            "required": true,
+            "name": "X-Idempotency-Key",
+            "in": "header",
+            "description": "Unique key for idempotent requests. If provided, ensures that identical requests with the same key will only be processed once.",
+            "required": false,
             "schema": {
-              "type": "integer",
-              "format": "int64"
+              "type": "string"
             }
           }
         ],
-        "responses": {
-          "404": {
-            "description": "Party status or party not found"
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PartyStatusDTO"
+              }
+            }
           },
-          "204": {
-            "description": "Party status successfully deleted"
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Party status successfully created",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PartyStatusDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Party not found"
+          },
+          "400": {
+            "description": "Invalid party status data"
           }
         }
       }
@@ -761,11 +725,11 @@
               }
             }
           },
-          "404": {
-            "description": "Party provider or party not found"
-          },
           "400": {
             "description": "Invalid party provider data"
+          },
+          "404": {
+            "description": "Party provider or party not found"
           }
         }
       },
@@ -903,9 +867,6 @@
           "required": true
         },
         "responses": {
-          "400": {
-            "description": "Invalid party group membership data"
-          },
           "200": {
             "description": "Party group membership successfully updated",
             "content": {
@@ -918,6 +879,9 @@
           },
           "404": {
             "description": "Party group membership or party not found"
+          },
+          "400": {
+            "description": "Invalid party group membership data"
           }
         }
       },
@@ -1065,11 +1029,11 @@
               }
             }
           },
-          "404": {
-            "description": "Party economic activity or party not found"
-          },
           "400": {
             "description": "Invalid party economic activity data"
+          },
+          "404": {
+            "description": "Party economic activity or party not found"
           }
         }
       },
@@ -1207,6 +1171,9 @@
           "required": true
         },
         "responses": {
+          "400": {
+            "description": "Invalid natural person data"
+          },
           "200": {
             "description": "Natural person successfully updated",
             "content": {
@@ -1219,9 +1186,6 @@
           },
           "404": {
             "description": "Natural person or party not found"
-          },
-          "400": {
-            "description": "Invalid natural person data"
           }
         }
       },
@@ -1295,6 +1259,9 @@
           }
         ],
         "responses": {
+          "404": {
+            "description": "Legal entity or party not found"
+          },
           "200": {
             "description": "Legal entity found",
             "content": {
@@ -1304,9 +1271,6 @@
                 }
               }
             }
-          },
-          "404": {
-            "description": "Legal entity or party not found"
           }
         }
       },
@@ -1369,11 +1333,11 @@
               }
             }
           },
-          "400": {
-            "description": "Invalid legal entity data"
-          },
           "404": {
             "description": "Legal entity or party not found"
+          },
+          "400": {
+            "description": "Invalid legal entity data"
           }
         }
       },
@@ -1407,11 +1371,11 @@
           }
         ],
         "responses": {
-          "204": {
-            "description": "Legal entity successfully deleted"
-          },
           "404": {
             "description": "Legal entity or party not found"
+          },
+          "204": {
+            "description": "Legal entity successfully deleted"
           }
         }
       }
@@ -1447,9 +1411,6 @@
           }
         ],
         "responses": {
-          "404": {
-            "description": "Identity document or party not found"
-          },
           "200": {
             "description": "Identity document found",
             "content": {
@@ -1459,6 +1420,9 @@
                 }
               }
             }
+          },
+          "404": {
+            "description": "Identity document or party not found"
           }
         }
       },
@@ -1511,9 +1475,6 @@
           "required": true
         },
         "responses": {
-          "400": {
-            "description": "Invalid identity document data"
-          },
           "200": {
             "description": "Identity document successfully updated",
             "content": {
@@ -1523,6 +1484,9 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "Invalid identity document data"
           },
           "404": {
             "description": "Identity document or party not found"
@@ -1599,6 +1563,9 @@
           }
         ],
         "responses": {
+          "404": {
+            "description": "Phone contact or party not found"
+          },
           "200": {
             "description": "Phone contact found",
             "content": {
@@ -1608,9 +1575,6 @@
                 }
               }
             }
-          },
-          "404": {
-            "description": "Phone contact or party not found"
           }
         }
       },
@@ -1663,6 +1627,9 @@
           "required": true
         },
         "responses": {
+          "404": {
+            "description": "Phone contact or party not found"
+          },
           "400": {
             "description": "Invalid phone contact data"
           },
@@ -1675,9 +1642,6 @@
                 }
               }
             }
-          },
-          "404": {
-            "description": "Phone contact or party not found"
           }
         }
       },
@@ -1711,11 +1675,11 @@
           }
         ],
         "responses": {
-          "204": {
-            "description": "Phone contact successfully deleted"
-          },
           "404": {
             "description": "Phone contact or party not found"
+          },
+          "204": {
+            "description": "Phone contact successfully deleted"
           }
         }
       }
@@ -1751,6 +1715,9 @@
           }
         ],
         "responses": {
+          "404": {
+            "description": "Email contact or party not found"
+          },
           "200": {
             "description": "Email contact found",
             "content": {
@@ -1760,9 +1727,6 @@
                 }
               }
             }
-          },
-          "404": {
-            "description": "Email contact or party not found"
           }
         }
       },
@@ -1815,6 +1779,12 @@
           "required": true
         },
         "responses": {
+          "404": {
+            "description": "Email contact or party not found"
+          },
+          "400": {
+            "description": "Invalid email contact data"
+          },
           "200": {
             "description": "Email contact successfully updated",
             "content": {
@@ -1824,12 +1794,6 @@
                 }
               }
             }
-          },
-          "400": {
-            "description": "Invalid email contact data"
-          },
-          "404": {
-            "description": "Email contact or party not found"
           }
         }
       },
@@ -1863,11 +1827,11 @@
           }
         ],
         "responses": {
-          "204": {
-            "description": "Email contact successfully deleted"
-          },
           "404": {
             "description": "Email contact or party not found"
+          },
+          "204": {
+            "description": "Email contact successfully deleted"
           }
         }
       }
@@ -1903,6 +1867,9 @@
           }
         ],
         "responses": {
+          "404": {
+            "description": "Consent or party not found"
+          },
           "200": {
             "description": "Consent found",
             "content": {
@@ -1912,9 +1879,6 @@
                 }
               }
             }
-          },
-          "404": {
-            "description": "Consent or party not found"
           }
         }
       },
@@ -1967,6 +1931,9 @@
           "required": true
         },
         "responses": {
+          "400": {
+            "description": "Invalid consent data"
+          },
           "200": {
             "description": "Consent successfully updated",
             "content": {
@@ -1976,9 +1943,6 @@
                 }
               }
             }
-          },
-          "400": {
-            "description": "Invalid consent data"
           },
           "404": {
             "description": "Consent or party not found"
@@ -2262,12 +2226,6 @@
           "required": true
         },
         "responses": {
-          "404": {
-            "description": "Party not found"
-          },
-          "400": {
-            "description": "Invalid party relationship data"
-          },
           "201": {
             "description": "Party relationship successfully created",
             "content": {
@@ -2277,6 +2235,12 @@
                 }
               }
             }
+          },
+          "404": {
+            "description": "Party not found"
+          },
+          "400": {
+            "description": "Invalid party relationship data"
           }
         }
       }
@@ -2321,12 +2285,6 @@
           "required": true
         },
         "responses": {
-          "404": {
-            "description": "Party not found"
-          },
-          "400": {
-            "description": "Invalid filter request"
-          },
           "200": {
             "description": "Successfully retrieved filtered party relationships",
             "content": {
@@ -2336,6 +2294,12 @@
                 }
               }
             }
+          },
+          "404": {
+            "description": "Party not found"
+          },
+          "400": {
+            "description": "Invalid filter request"
           }
         }
       }
@@ -2380,6 +2344,9 @@
           "required": true
         },
         "responses": {
+          "400": {
+            "description": "Invalid politically exposed person data"
+          },
           "404": {
             "description": "Party not found"
           },
@@ -2392,9 +2359,6 @@
                 }
               }
             }
-          },
-          "400": {
-            "description": "Invalid politically exposed person data"
           }
         }
       }
@@ -2458,65 +2422,6 @@
         }
       }
     },
-    "/api/v1/parties/{partyId}/party-statuses": {
-      "post": {
-        "tags": [
-          "Party Statuses"
-        ],
-        "summary": "Create party status for a party",
-        "description": "Create a new party status associated with a specific party",
-        "operationId": "createPartyStatus",
-        "parameters": [
-          {
-            "name": "partyId",
-            "in": "path",
-            "description": "Unique identifier of the party",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          },
-          {
-            "name": "X-Idempotency-Key",
-            "in": "header",
-            "description": "Unique key for idempotent requests. If provided, ensures that identical requests with the same key will only be processed once.",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/PartyStatusDTO"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "404": {
-            "description": "Party not found"
-          },
-          "400": {
-            "description": "Invalid party status data"
-          },
-          "201": {
-            "description": "Party status successfully created",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/PartyStatusDTO"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/api/v1/parties/{partyId}/party-statuses/filter": {
       "post": {
         "tags": [
@@ -2557,12 +2462,6 @@
           "required": true
         },
         "responses": {
-          "404": {
-            "description": "Party not found"
-          },
-          "400": {
-            "description": "Invalid filter request"
-          },
           "200": {
             "description": "Successfully retrieved filtered party statuses",
             "content": {
@@ -2572,6 +2471,12 @@
                 }
               }
             }
+          },
+          "404": {
+            "description": "Party not found"
+          },
+          "400": {
+            "description": "Invalid filter request"
           }
         }
       }
@@ -2616,6 +2521,9 @@
           "required": true
         },
         "responses": {
+          "400": {
+            "description": "Invalid party provider data"
+          },
           "404": {
             "description": "Party not found"
           },
@@ -2628,9 +2536,6 @@
                 }
               }
             }
-          },
-          "400": {
-            "description": "Invalid party provider data"
           }
         }
       }
@@ -2675,12 +2580,6 @@
           "required": true
         },
         "responses": {
-          "404": {
-            "description": "Party not found"
-          },
-          "400": {
-            "description": "Invalid filter request"
-          },
           "200": {
             "description": "Successfully retrieved filtered party providers",
             "content": {
@@ -2690,6 +2589,12 @@
                 }
               }
             }
+          },
+          "404": {
+            "description": "Party not found"
+          },
+          "400": {
+            "description": "Invalid filter request"
           }
         }
       }
@@ -2734,9 +2639,6 @@
           "required": true
         },
         "responses": {
-          "400": {
-            "description": "Invalid party group membership data"
-          },
           "404": {
             "description": "Party not found"
           },
@@ -2749,6 +2651,9 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "Invalid party group membership data"
           }
         }
       }
@@ -2911,12 +2816,6 @@
           "required": true
         },
         "responses": {
-          "404": {
-            "description": "Party not found"
-          },
-          "400": {
-            "description": "Invalid filter request"
-          },
           "200": {
             "description": "Successfully retrieved filtered party economic activities",
             "content": {
@@ -2926,6 +2825,12 @@
                 }
               }
             }
+          },
+          "404": {
+            "description": "Party not found"
+          },
+          "400": {
+            "description": "Invalid filter request"
           }
         }
       }
@@ -3005,8 +2910,8 @@
           "required": true
         },
         "responses": {
-          "404": {
-            "description": "Party not found"
+          "400": {
+            "description": "Invalid natural person data"
           },
           "201": {
             "description": "Natural person successfully created",
@@ -3018,8 +2923,8 @@
               }
             }
           },
-          "400": {
-            "description": "Invalid natural person data"
+          "404": {
+            "description": "Party not found"
           }
         }
       }
@@ -3161,6 +3066,9 @@
           "404": {
             "description": "Party not found"
           },
+          "400": {
+            "description": "Invalid legal entity data"
+          },
           "201": {
             "description": "Legal entity successfully created",
             "content": {
@@ -3170,9 +3078,6 @@
                 }
               }
             }
-          },
-          "400": {
-            "description": "Invalid legal entity data"
           }
         }
       }
@@ -3217,12 +3122,6 @@
           "required": true
         },
         "responses": {
-          "404": {
-            "description": "Party not found"
-          },
-          "400": {
-            "description": "Invalid filter request"
-          },
           "200": {
             "description": "Successfully retrieved filtered legal entities",
             "content": {
@@ -3232,6 +3131,12 @@
                 }
               }
             }
+          },
+          "404": {
+            "description": "Party not found"
+          },
+          "400": {
+            "description": "Invalid filter request"
           }
         }
       }
@@ -3279,9 +3184,6 @@
           "404": {
             "description": "Party not found"
           },
-          "400": {
-            "description": "Invalid identity document data"
-          },
           "201": {
             "description": "Identity document successfully created",
             "content": {
@@ -3291,6 +3193,9 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "Invalid identity document data"
           }
         }
       }
@@ -3571,12 +3476,6 @@
           "required": true
         },
         "responses": {
-          "404": {
-            "description": "Party not found"
-          },
-          "400": {
-            "description": "Invalid filter request"
-          },
           "200": {
             "description": "Successfully retrieved filtered email contacts",
             "content": {
@@ -3586,6 +3485,12 @@
                 }
               }
             }
+          },
+          "404": {
+            "description": "Party not found"
+          },
+          "400": {
+            "description": "Invalid filter request"
           }
         }
       }
@@ -3630,6 +3535,9 @@
           "required": true
         },
         "responses": {
+          "400": {
+            "description": "Invalid consent data"
+          },
           "404": {
             "description": "Party not found"
           },
@@ -3642,9 +3550,6 @@
                 }
               }
             }
-          },
-          "400": {
-            "description": "Invalid consent data"
           }
         }
       }
@@ -3748,9 +3653,6 @@
           "required": true
         },
         "responses": {
-          "400": {
-            "description": "Invalid address data"
-          },
           "201": {
             "description": "Address successfully created",
             "content": {
@@ -3760,6 +3662,9 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "Invalid address data"
           },
           "404": {
             "description": "Party not found"
@@ -3807,12 +3712,6 @@
           "required": true
         },
         "responses": {
-          "404": {
-            "description": "Party not found"
-          },
-          "400": {
-            "description": "Invalid filter request"
-          },
           "200": {
             "description": "Successfully retrieved filtered addresses",
             "content": {
@@ -3822,6 +3721,12 @@
                 }
               }
             }
+          },
+          "404": {
+            "description": "Party not found"
+          },
+          "400": {
+            "description": "Invalid filter request"
           }
         }
       }
@@ -3856,6 +3761,9 @@
           "required": true
         },
         "responses": {
+          "400": {
+            "description": "Invalid filter request"
+          },
           "200": {
             "description": "Successfully retrieved filtered parties",
             "content": {
@@ -3865,9 +3773,91 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/api/v1/parties/{partyId}/party-statuses/{partyStatusId}": {
+      "get": {
+        "tags": [
+          "Party Statuses"
+        ],
+        "summary": "Get party status by ID",
+        "description": "Retrieve a specific party status associated with a party by its unique identifier",
+        "operationId": "getPartyStatusById",
+        "parameters": [
+          {
+            "name": "partyId",
+            "in": "path",
+            "description": "Unique identifier of the party",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
           },
-          "400": {
-            "description": "Invalid filter request"
+          {
+            "name": "partyStatusId",
+            "in": "path",
+            "description": "Unique identifier of the party status",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Party status found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PartyStatusDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Party status or party not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Party Statuses"
+        ],
+        "summary": "Delete party status",
+        "description": "Delete a party status associated with a party from the system",
+        "operationId": "deletePartyStatus",
+        "parameters": [
+          {
+            "name": "partyId",
+            "in": "path",
+            "description": "Unique identifier of the party",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "partyStatusId",
+            "in": "path",
+            "description": "Unique identifier of the party status",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Party status successfully deleted"
+          },
+          "404": {
+            "description": "Party status or party not found"
           }
         }
       }
@@ -4220,6 +4210,7 @@
       },
       "NaturalPersonDTO": {
         "required": [
+          "familyName1",
           "givenName",
           "partyId"
         ],

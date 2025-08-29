@@ -42,13 +42,17 @@ public class PartyStatusServiceImpl implements PartyStatusService {
     }
 
     @Override
-    public Mono<PartyStatusDTO> updatePartyStatus(Long partyId, Long partyStatusId, PartyStatusDTO partyStatusDTO) {
-        return repository.findById(partyStatusId)
-                .switchIfEmpty(Mono.error(new RuntimeException("Party status not found with ID: " + partyStatusId)))
+    public Mono<PartyStatusDTO> updatePartyStatus(Long partyId, PartyStatusDTO partyStatusDTO) {
+        return repository.findByPartyId(partyId)
+                .switchIfEmpty(Mono.error(new RuntimeException("Party status not found for party ID: " + partyId)))
                 .flatMap(existingPartyStatus -> {
-                    PartyStatus updatedPartyStatus = mapper.toEntity(partyStatusDTO);
-                    updatedPartyStatus.setPartyStatusId(partyStatusId);
-                    return repository.save(updatedPartyStatus);
+                    // Validate that the natural person belongs to the specified party
+                    if (!partyId.equals(existingPartyStatus.getPartyId())) {
+                        return Mono.error(new RuntimeException("Status with ID " + existingPartyStatus.getPartyStatusId() + " does not belong to party " + partyId));
+                    }
+                    mapper.updateEntityFromDto(partyStatusDTO, existingPartyStatus);
+                    return repository.save(existingPartyStatus);
+
                 })
                 .map(mapper::toDTO);
     }

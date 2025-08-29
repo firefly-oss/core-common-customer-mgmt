@@ -1,8 +1,10 @@
 package com.catalis.core.customer.core.mappers;
 
 import com.catalis.core.customer.interfaces.dtos.PartyStatusDTO;
+import com.catalis.core.customer.interfaces.dtos.PhoneContactDTO;
 import com.catalis.core.customer.models.entities.PartyStatus;
-import org.mapstruct.Mapper;
+import com.catalis.core.customer.models.entities.PhoneContact;
+import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
 /**
@@ -28,4 +30,15 @@ public interface PartyStatusMapper {
      * @return the converted PartyStatus entity
      */
     PartyStatus toEntity(PartyStatusDTO partyStatusDTO);
+
+    /**
+     * Updates the specified PartyStatus entity with the non-null properties of the given PartyStatusDTO.
+     * This method ignores the "createdAt" property during the mapping process.
+     *
+     * @param dto the PartyStatusDTO containing updated values
+     * @param entity the PartyStatus entity to update
+     */
+    @Mapping(target = "createdAt", ignore = true)
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    void updateEntityFromDto(PartyStatusDTO dto, @MappingTarget PartyStatus entity);
 }

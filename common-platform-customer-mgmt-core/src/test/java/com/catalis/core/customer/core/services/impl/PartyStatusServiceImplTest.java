@@ -112,39 +112,39 @@ class PartyStatusServiceImplTest {
     void updatePartyStatus_ShouldReturnUpdatedPartyStatusDTO_WhenPartyStatusExists() {
         // Arrange
         PartyStatusDTO updateDTO = new PartyStatusDTO();
-        updateDTO.setPartyStatusId(null);
+        updateDTO.setPartyStatusId(partyStatusId);
         
-        PartyStatus updatedPartyStatus = new PartyStatus();
-        updatedPartyStatus.setPartyStatusId(partyStatusId);
+        // Set up the existing party status with the correct partyId for validation
+        partyStatus.setPartyId(partyId);
         
-        when(partyStatusRepository.findById(partyStatusId)).thenReturn(Mono.just(partyStatus));
-        when(partyStatusMapper.toEntity(updateDTO)).thenReturn(updatedPartyStatus);
-        when(partyStatusRepository.save(updatedPartyStatus)).thenReturn(Mono.just(updatedPartyStatus));
-        when(partyStatusMapper.toDTO(updatedPartyStatus)).thenReturn(partyStatusDTO);
+        when(partyStatusRepository.findByPartyId(partyId)).thenReturn(Mono.just(partyStatus));
+        doNothing().when(partyStatusMapper).updateEntityFromDto(updateDTO, partyStatus);
+        when(partyStatusRepository.save(partyStatus)).thenReturn(Mono.just(partyStatus));
+        when(partyStatusMapper.toDTO(partyStatus)).thenReturn(partyStatusDTO);
 
         // Act & Assert
-        StepVerifier.create(partyStatusService.updatePartyStatus(partyId, partyStatusId, updateDTO))
+        StepVerifier.create(partyStatusService.updatePartyStatus(partyId, updateDTO))
                 .expectNext(partyStatusDTO)
                 .verifyComplete();
 
-        verify(partyStatusRepository).findById(partyStatusId);
-        verify(partyStatusMapper).toEntity(updateDTO);
-        verify(partyStatusRepository).save(updatedPartyStatus);
-        verify(partyStatusMapper).toDTO(updatedPartyStatus);
+        verify(partyStatusRepository).findByPartyId(partyId);
+        verify(partyStatusMapper).updateEntityFromDto(updateDTO, partyStatus);
+        verify(partyStatusRepository).save(partyStatus);
+        verify(partyStatusMapper).toDTO(partyStatus);
     }
 
     @Test
     void updatePartyStatus_ShouldReturnError_WhenPartyStatusNotFound() {
         // Arrange
-        when(partyStatusRepository.findById(partyStatusId)).thenReturn(Mono.empty());
+        when(partyStatusRepository.findByPartyId(partyId)).thenReturn(Mono.empty());
 
         // Act & Assert
-        StepVerifier.create(partyStatusService.updatePartyStatus(partyId, partyStatusId, partyStatusDTO))
+        StepVerifier.create(partyStatusService.updatePartyStatus(partyId, partyStatusDTO))
                 .expectErrorMatches(throwable -> throwable instanceof RuntimeException && 
-                        throwable.getMessage().equals("Party status not found with ID: " + partyStatusId))
+                        throwable.getMessage().equals("Party status not found for party ID: " + partyId))
                 .verify();
 
-        verify(partyStatusRepository).findById(partyStatusId);
+        verify(partyStatusRepository).findByPartyId(partyId);
         verify(partyStatusMapper, never()).toEntity(any());
         verify(partyStatusRepository, never()).save(any());
     }

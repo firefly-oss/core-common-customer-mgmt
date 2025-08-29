@@ -114,13 +114,13 @@ class LegalEntityServiceImplTest {
         LegalEntityDTO updateDTO = new LegalEntityDTO();
         updateDTO.setLegalEntityId(null);
         
-        LegalEntity updatedLegalEntity = new LegalEntity();
-        updatedLegalEntity.setLegalEntityId(legalEntityId);
+        // Set up the existing legal entity with the correct partyId for validation
+        legalEntity.setPartyId(partyId);
         
         when(legalEntityRepository.findById(legalEntityId)).thenReturn(Mono.just(legalEntity));
-        when(legalEntityMapper.toEntity(updateDTO)).thenReturn(updatedLegalEntity);
-        when(legalEntityRepository.save(updatedLegalEntity)).thenReturn(Mono.just(updatedLegalEntity));
-        when(legalEntityMapper.toDTO(updatedLegalEntity)).thenReturn(legalEntityDTO);
+        doNothing().when(legalEntityMapper).updateEntityFromDto(updateDTO, legalEntity);
+        when(legalEntityRepository.save(legalEntity)).thenReturn(Mono.just(legalEntity));
+        when(legalEntityMapper.toDTO(legalEntity)).thenReturn(legalEntityDTO);
 
         // Act & Assert
         StepVerifier.create(legalEntityService.updateLegalEntity(partyId, legalEntityId, updateDTO))
@@ -128,9 +128,9 @@ class LegalEntityServiceImplTest {
                 .verifyComplete();
 
         verify(legalEntityRepository).findById(legalEntityId);
-        verify(legalEntityMapper).toEntity(updateDTO);
-        verify(legalEntityRepository).save(updatedLegalEntity);
-        verify(legalEntityMapper).toDTO(updatedLegalEntity);
+        verify(legalEntityMapper).updateEntityFromDto(updateDTO, legalEntity);
+        verify(legalEntityRepository).save(legalEntity);
+        verify(legalEntityMapper).toDTO(legalEntity);
     }
 
     @Test
