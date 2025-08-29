@@ -421,7 +421,7 @@ Once the application is running, access the interactive API documentation at:
 
 ```
 src/
-├── main/java/com/catalis/core/customer/
+├── main/java/com/firefly/core/customer/
 │   ├── core/           # Business logic and services
 │   ├── interfaces/     # Enums and interfaces
 │   ├── models/         # Entity definitions
