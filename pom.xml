@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.catalis</groupId>
+        <groupId>com.firefly</groupId>
         <artifactId>lib-parent-pom</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
@@ -31,27 +31,27 @@
         <dependencies>
             <!-- Internal modules -->
             <dependency>
-                <groupId>com.catalis</groupId>
+                <groupId>com.firefly</groupId>
                 <artifactId>common-platform-customer-mgmt-interfaces</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.catalis</groupId>
+                <groupId>com.firefly</groupId>
                 <artifactId>common-platform-customer-mgmt-models</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.catalis</groupId>
+                <groupId>com.firefly</groupId>
                 <artifactId>common-platform-customer-mgmt-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.catalis</groupId>
+                <groupId>com.firefly</groupId>
                 <artifactId>common-platform-customer-mgmt-web</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.catalis</groupId>
+                <groupId>com.firefly</groupId>
                 <artifactId>common-platform-customer-mgmt-sdk</artifactId>
                 <version>${project.version}</version>
             </dependency>

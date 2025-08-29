@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.catalis</groupId>
+        <groupId>com.firefly</groupId>
         <artifactId>common-platform-customer-mgmt</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
@@ -28,7 +28,7 @@
     <dependencies>
         <!-- Web module for OpenAPI spec -->
         <dependency>
-            <groupId>com.catalis</groupId>
+            <groupId>com.firefly</groupId>
             <artifactId>common-platform-customer-mgmt-web</artifactId>
             <scope>provided</scope>
         </dependency>
@@ -111,9 +111,9 @@
                             <generatorName>java</generatorName>
                             <library>webclient</library>
                             <output>${generated-sources-dir}</output>
-                            <apiPackage>com.catalis.core.customer.sdk.api</apiPackage>
-                            <modelPackage>com.catalis.core.customer.sdk.model</modelPackage>
-                            <invokerPackage>com.catalis.core.customer.sdk.invoker</invokerPackage>
+                            <apiPackage>com.firefly.core.customer.sdk.api</apiPackage>
+                            <modelPackage>com.firefly.core.customer.sdk.model</modelPackage>
+                            <invokerPackage>com.firefly.core.customer.sdk.invoker</invokerPackage>
                             <configOptions>
                                 <java20>true</java20>
                                 <useTags>true</useTags>
