@@ -4,6 +4,7 @@ import com.firefly.common.core.filters.FilterRequest;
 import com.firefly.common.core.queries.PaginationResponse;
 import com.firefly.core.customer.interfaces.dtos.PartyDTO;
 import reactor.core.publisher.Mono;
+import java.util.UUID;
 
 /**
  * Service interface for managing parties.
@@ -32,7 +33,7 @@ public interface PartyService {
      * @param partyDTO the data transfer object containing the updated details of the party
      * @return a reactive Mono containing the updated PartyDTO
      */
-    Mono<PartyDTO> updateParty(Long partyId, PartyDTO partyDTO);
+    Mono<PartyDTO> updateParty(UUID partyId, PartyDTO partyDTO);
     
     /**
      * Deletes a party identified by its unique ID.
@@ -40,7 +41,7 @@ public interface PartyService {
      * @param partyId the unique identifier of the party to be deleted
      * @return a Mono that completes when the party is successfully deleted or errors if the deletion fails
      */
-    Mono<Void> deleteParty(Long partyId);
+    Mono<Void> deleteParty(UUID partyId);
     
     /**
      * Retrieves a party by its unique identifier.
@@ -49,5 +50,5 @@ public interface PartyService {
      * @return a Mono emitting the {@link PartyDTO} representing the party if found,
      *         or an empty Mono if the party does not exist
      */
-    Mono<PartyDTO> getPartyById(Long partyId);
+    Mono<PartyDTO> getPartyById(UUID partyId);
 }

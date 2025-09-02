@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
+import java.util.UUID;
 
 @Service
 @Transactional
@@ -42,7 +43,7 @@ public class PartyServiceImpl implements PartyService {
     }
 
     @Override
-    public Mono<PartyDTO> updateParty(Long partyId, PartyDTO partyDTO) {
+    public Mono<PartyDTO> updateParty(UUID partyId, PartyDTO partyDTO) {
         return repository.findById(partyId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Party not found with ID: " + partyId)))
                 .flatMap(existingParty -> {
@@ -54,14 +55,14 @@ public class PartyServiceImpl implements PartyService {
     }
 
     @Override
-    public Mono<Void> deleteParty(Long partyId) {
+    public Mono<Void> deleteParty(UUID partyId) {
         return repository.findById(partyId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Party not found with ID: " + partyId)))
                 .flatMap(party -> repository.deleteById(partyId));
     }
 
     @Override
-    public Mono<PartyDTO> getPartyById(Long partyId) {
+    public Mono<PartyDTO> getPartyById(UUID partyId) {
         return repository.findById(partyId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Party not found with ID: " + partyId)))
                 .map(mapper::toDTO);

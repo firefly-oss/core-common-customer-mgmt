@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
+import java.util.UUID;
 
 @Service
 @Transactional
@@ -34,7 +35,7 @@ public class LegalEntityServiceImpl implements LegalEntityService {
     }
 
     @Override
-    public Mono<LegalEntityDTO> createLegalEntity(Long partyId, LegalEntityDTO legalEntityDTO) {
+    public Mono<LegalEntityDTO> createLegalEntity(UUID partyId, LegalEntityDTO legalEntityDTO) {
         return Mono.just(legalEntityDTO)
                 .map(mapper::toEntity)
                 .flatMap(repository::save)
@@ -42,7 +43,7 @@ public class LegalEntityServiceImpl implements LegalEntityService {
     }
 
     @Override
-    public Mono<LegalEntityDTO> updateLegalEntity(Long partyId, Long legalEntityId, LegalEntityDTO legalEntityDTO) {
+    public Mono<LegalEntityDTO> updateLegalEntity(UUID partyId, UUID legalEntityId, LegalEntityDTO legalEntityDTO) {
         return repository.findById(legalEntityId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Legal entity not found with ID: " + legalEntityId)))
                 .flatMap(existingLegalEntity -> {
@@ -57,21 +58,21 @@ public class LegalEntityServiceImpl implements LegalEntityService {
     }
 
     @Override
-    public Mono<Void> deleteLegalEntity(Long partyId, Long legalEntityId) {
+    public Mono<Void> deleteLegalEntity(UUID partyId, UUID legalEntityId) {
         return repository.findById(legalEntityId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Legal entity not found with ID: " + legalEntityId)))
                 .flatMap(legalEntity -> repository.deleteById(legalEntityId));
     }
 
     @Override
-    public Mono<LegalEntityDTO> getLegalEntityById(Long partyId, Long legalEntityId) {
+    public Mono<LegalEntityDTO> getLegalEntityById(UUID partyId, UUID legalEntityId) {
         return repository.findById(legalEntityId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Legal entity not found with ID: " + legalEntityId)))
                 .map(mapper::toDTO);
     }
 
     @Override
-    public Mono<LegalEntityDTO> getLegalEntityByPartyId(Long partyId) {
+    public Mono<LegalEntityDTO> getLegalEntityByPartyId(UUID partyId) {
         return repository.findByPartyId(partyId)
                 .map(mapper::toDTO)
                 .next();

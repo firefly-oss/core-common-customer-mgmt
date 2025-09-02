@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 import jakarta.validation.Valid;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/parties/{partyId}/natural-persons")
@@ -56,7 +57,7 @@ public class NaturalPersonController {
     })
     public Mono<ResponseEntity<PaginationResponse<NaturalPersonDTO>>> filterNaturalPersons(
             @Parameter(description = "Unique identifier of the party", required = true)
-            @PathVariable Long partyId,
+            @PathVariable UUID partyId,
             @Parameter(description = "Filter criteria for natural persons", required = true)
             @Valid @RequestBody FilterRequest<NaturalPersonDTO> filterRequest) {
         return naturalPersonService.filterNaturalPersons(partyId, filterRequest)
@@ -87,7 +88,7 @@ public class NaturalPersonController {
     })
     public Mono<ResponseEntity<NaturalPersonDTO>> createNaturalPerson(
             @Parameter(description = "Unique identifier of the party", required = true)
-            @PathVariable Long partyId,
+            @PathVariable UUID partyId,
             @Parameter(description = "Natural person data to create", required = true)
             @Valid @RequestBody NaturalPersonDTO naturalPersonDTO) {
         return naturalPersonService.createNaturalPerson(partyId, naturalPersonDTO)
@@ -113,7 +114,7 @@ public class NaturalPersonController {
     })
     public Mono<ResponseEntity<NaturalPersonDTO>> getNaturalPersonByPartyId(
             @Parameter(description = "Unique identifier of the party", required = true)
-            @PathVariable Long partyId) {
+            @PathVariable UUID partyId) {
         return naturalPersonService.getNaturalPersonByPartyId(partyId)
                 .map(ResponseEntity::ok);
     }
@@ -137,9 +138,9 @@ public class NaturalPersonController {
     })
     public Mono<ResponseEntity<NaturalPersonDTO>> getNaturalPersonById(
             @Parameter(description = "Unique identifier of the party", required = true)
-            @PathVariable Long partyId,
+            @PathVariable UUID partyId,
             @Parameter(description = "Unique identifier of the natural person", required = true)
-            @PathVariable Long naturalPersonId) {
+            @PathVariable UUID naturalPersonId) {
         return naturalPersonService.getNaturalPersonById(partyId, naturalPersonId)
                 .map(ResponseEntity::ok);
     }
@@ -168,9 +169,9 @@ public class NaturalPersonController {
     })
     public Mono<ResponseEntity<NaturalPersonDTO>> updateNaturalPerson(
             @Parameter(description = "Unique identifier of the party", required = true)
-            @PathVariable Long partyId,
+            @PathVariable UUID partyId,
             @Parameter(description = "Unique identifier of the natural person", required = true)
-            @PathVariable Long naturalPersonId,
+            @PathVariable UUID naturalPersonId,
             @Parameter(description = "Updated natural person data", required = true)
             @Valid @RequestBody NaturalPersonDTO naturalPersonDTO) {
         return naturalPersonService.updateNaturalPerson(partyId, naturalPersonId, naturalPersonDTO)
@@ -195,9 +196,9 @@ public class NaturalPersonController {
     })
     public Mono<ResponseEntity<Void>> deleteNaturalPerson(
             @Parameter(description = "Unique identifier of the party", required = true)
-            @PathVariable Long partyId,
+            @PathVariable UUID partyId,
             @Parameter(description = "Unique identifier of the natural person", required = true)
-            @PathVariable Long naturalPersonId) {
+            @PathVariable UUID naturalPersonId) {
         return naturalPersonService.deleteNaturalPerson(partyId, naturalPersonId)
                 .then(Mono.just(ResponseEntity.noContent().build()));
     }

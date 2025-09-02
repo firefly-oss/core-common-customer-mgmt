@@ -19,6 +19,7 @@ import jakarta.validation.constraints.Pattern;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 /**
  * Data Transfer Object for Natural Person entity representing individual customers.
@@ -32,11 +33,11 @@ import java.time.LocalDateTime;
 public class NaturalPersonDTO {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private Long naturalPersonId;
+    private UUID naturalPersonId;
 
     @FilterableId
     @NotNull(message = "Party ID is required")
-    private Long partyId;
+    private UUID partyId;
 
     @Size(max = 50, message = "Title must not exceed 50 characters")
     private String title;
@@ -62,10 +63,10 @@ public class NaturalPersonDTO {
     private String birthPlace;
 
     @FilterableId
-    private Long birthCountryId;
+    private UUID birthCountryId;
 
     @FilterableId
-    private Long nationalityCountryId;
+    private UUID nationalityCountryId;
     
     private Gender gender;
     private MaritalStatus maritalStatus;

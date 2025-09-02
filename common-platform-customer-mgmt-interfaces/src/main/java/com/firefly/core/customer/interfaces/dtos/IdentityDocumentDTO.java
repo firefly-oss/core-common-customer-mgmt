@@ -12,6 +12,7 @@ import jakarta.validation.constraints.Size;
 import jakarta.validation.constraints.Future;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 /**
  * Data Transfer Object for Identity Document entity representing identity documents for parties.
@@ -24,19 +25,19 @@ import java.time.LocalDateTime;
 public class IdentityDocumentDTO {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private Long identityDocumentId;
+    private UUID identityDocumentId;
 
     @FilterableId
     @NotNull(message = "Party ID is required")
-    private Long partyId;
+    private UUID partyId;
 
     @FilterableId
     @NotNull(message = "Identity document category ID is required")
-    private Long identityDocumentCategoryId;
+    private UUID identityDocumentCategoryId;
 
     @FilterableId
     @NotNull(message = "Identity document type ID is required")
-    private Long identityDocumentTypeId;
+    private UUID identityDocumentTypeId;
 
     @NotBlank(message = "Document number is required")
     @Size(max = 100, message = "Document number must not exceed 100 characters")
@@ -44,7 +45,7 @@ public class IdentityDocumentDTO {
 
     @FilterableId
     @NotNull(message = "Issuing country ID is required")
-    private Long issuingCountryId;
+    private UUID issuingCountryId;
     
     private LocalDateTime issueDate;
     

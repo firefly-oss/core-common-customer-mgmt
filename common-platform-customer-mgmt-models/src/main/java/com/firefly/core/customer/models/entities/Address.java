@@ -10,6 +10,7 @@ import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 /**
  * Address entity representing addresses for parties.
@@ -24,10 +25,10 @@ public class Address {
 
     @Id
     @Column("address_id")
-    private Long addressId;
+    private UUID addressId;
 
     @Column("party_id")
-    private Long partyId;
+    private UUID partyId;
 
     @Column("address_kind")
     private AddressKind addressKind;
@@ -48,7 +49,7 @@ public class Address {
     private String postalCode;
 
     @Column("country_id")
-    private Long countryId;
+    private UUID countryId;
 
     @Column("is_primary")
     private Boolean isPrimary;

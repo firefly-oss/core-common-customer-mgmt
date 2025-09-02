@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 import jakarta.validation.Valid;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/parties/{partyId}/party-providers")
@@ -56,7 +57,7 @@ public class PartyProviderController {
     })
     public Mono<ResponseEntity<PaginationResponse<PartyProviderDTO>>> filterPartyProviders(
             @Parameter(description = "Unique identifier of the party", required = true)
-            @PathVariable Long partyId,
+            @PathVariable UUID partyId,
             @Parameter(description = "Filter criteria for party providers", required = true)
             @Valid @RequestBody FilterRequest<PartyProviderDTO> filterRequest) {
         return partyProviderService.filterPartyProviders(partyId, filterRequest)
@@ -87,7 +88,7 @@ public class PartyProviderController {
     })
     public Mono<ResponseEntity<PartyProviderDTO>> createPartyProvider(
             @Parameter(description = "Unique identifier of the party", required = true)
-            @PathVariable Long partyId,
+            @PathVariable UUID partyId,
             @Parameter(description = "Party provider data to create", required = true)
             @Valid @RequestBody PartyProviderDTO partyProviderDTO) {
         return partyProviderService.createPartyProvider(partyId, partyProviderDTO)
@@ -113,9 +114,9 @@ public class PartyProviderController {
     })
     public Mono<ResponseEntity<PartyProviderDTO>> getPartyProviderById(
             @Parameter(description = "Unique identifier of the party", required = true)
-            @PathVariable Long partyId,
+            @PathVariable UUID partyId,
             @Parameter(description = "Unique identifier of the party provider", required = true)
-            @PathVariable Long partyProviderId) {
+            @PathVariable UUID partyProviderId) {
         return partyProviderService.getPartyProviderById(partyId, partyProviderId)
                 .map(ResponseEntity::ok);
     }
@@ -144,9 +145,9 @@ public class PartyProviderController {
     })
     public Mono<ResponseEntity<PartyProviderDTO>> updatePartyProvider(
             @Parameter(description = "Unique identifier of the party", required = true)
-            @PathVariable Long partyId,
+            @PathVariable UUID partyId,
             @Parameter(description = "Unique identifier of the party provider", required = true)
-            @PathVariable Long partyProviderId,
+            @PathVariable UUID partyProviderId,
             @Parameter(description = "Updated party provider data", required = true)
             @Valid @RequestBody PartyProviderDTO partyProviderDTO) {
         return partyProviderService.updatePartyProvider(partyId, partyProviderId, partyProviderDTO)
@@ -171,9 +172,9 @@ public class PartyProviderController {
     })
     public Mono<ResponseEntity<Void>> deletePartyProvider(
             @Parameter(description = "Unique identifier of the party", required = true)
-            @PathVariable Long partyId,
+            @PathVariable UUID partyId,
             @Parameter(description = "Unique identifier of the party provider", required = true)
-            @PathVariable Long partyProviderId) {
+            @PathVariable UUID partyProviderId) {
         return partyProviderService.deletePartyProvider(partyId, partyProviderId)
                 .then(Mono.just(ResponseEntity.noContent().build()));
     }

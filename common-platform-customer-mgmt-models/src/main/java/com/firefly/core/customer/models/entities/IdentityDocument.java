@@ -9,6 +9,7 @@ import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 /**
  * Identity Document entity representing identity documents for parties.
@@ -23,22 +24,22 @@ public class IdentityDocument {
 
     @Id
     @Column("identity_document_id")
-    private Long identityDocumentId;
+    private UUID identityDocumentId;
 
     @Column("party_id")
-    private Long partyId;
+    private UUID partyId;
 
     @Column("identity_document_category_id")
-    private Long identityDocumentCategoryId;
+    private UUID identityDocumentCategoryId;
 
     @Column("identity_document_type_id")
-    private Long identityDocumentTypeId;
+    private UUID identityDocumentTypeId;
 
     @Column("document_number")
     private String documentNumber;
 
     @Column("issuing_country_id")
-    private Long issuingCountryId;
+    private UUID issuingCountryId;
 
     @Column("issue_date")
     private LocalDateTime issueDate;

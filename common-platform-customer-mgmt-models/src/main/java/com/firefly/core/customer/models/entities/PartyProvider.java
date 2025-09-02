@@ -10,6 +10,7 @@ import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 /**
  * Party Provider entity representing external system mappings for parties.
@@ -24,10 +25,10 @@ public class PartyProvider {
 
     @Id
     @Column("party_provider_id")
-    private Long partyProviderId;
+    private UUID partyProviderId;
 
     @Column("party_id")
-    private Long partyId;
+    private UUID partyId;
 
     @Column("provider_name")
     private String providerName;

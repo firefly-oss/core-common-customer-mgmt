@@ -21,6 +21,7 @@ import java.time.LocalDateTime;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
+import java.util.UUID;
 
 @ExtendWith(MockitoExtension.class)
 class EmailContactServiceImplTest {
@@ -36,13 +37,13 @@ class EmailContactServiceImplTest {
 
     private EmailContactDTO emailContactDTO;
     private EmailContact emailContact;
-    private Long emailContactId;
-    private Long partyId;
+    private UUID emailContactId;
+    private UUID partyId;
 
     @BeforeEach
     void setUp() {
-        emailContactId = 1L;
-        partyId = 1L;
+        emailContactId = UUID.fromString("123e4567-e89b-12d3-a456-426614174001");
+        partyId = UUID.fromString("123e4567-e89b-12d3-a456-426614174001");
         
         emailContact = new EmailContact();
         emailContact.setEmailContactId(emailContactId);
@@ -175,7 +176,7 @@ class EmailContactServiceImplTest {
                 .verify();
 
         verify(emailContactRepository).findById(emailContactId);
-        verify(emailContactRepository, never()).deleteById(any(Long.class));
+        verify(emailContactRepository, never()).deleteById(any(UUID.class));
     }
 
     @Test

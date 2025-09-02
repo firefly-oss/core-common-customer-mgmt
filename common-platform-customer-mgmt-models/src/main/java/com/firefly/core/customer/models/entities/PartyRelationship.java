@@ -9,6 +9,7 @@ import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 /**
  * Party Relationship entity representing relationships between parties.
@@ -23,16 +24,16 @@ public class PartyRelationship {
 
     @Id
     @Column("party_relationship_id")
-    private Long partyRelationshipId;
+    private UUID partyRelationshipId;
 
     @Column("from_party_id")
-    private Long fromPartyId;
+    private UUID fromPartyId;
 
     @Column("to_party_id")
-    private Long toPartyId;
+    private UUID toPartyId;
 
     @Column("relationship_type_id")
-    private Long relationshipTypeId;
+    private UUID relationshipTypeId;
 
     @Column("start_date")
     private LocalDateTime startDate;

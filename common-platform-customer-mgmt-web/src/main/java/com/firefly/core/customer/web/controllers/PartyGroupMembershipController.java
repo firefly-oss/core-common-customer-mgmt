@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 import jakarta.validation.Valid;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/parties/{partyId}/party-group-memberships")
@@ -56,7 +57,7 @@ public class PartyGroupMembershipController {
     })
     public Mono<ResponseEntity<PaginationResponse<PartyGroupMembershipDTO>>> filterPartyGroupMemberships(
             @Parameter(description = "Unique identifier of the party", required = true)
-            @PathVariable Long partyId,
+            @PathVariable UUID partyId,
             @Parameter(description = "Filter criteria for party group memberships", required = true)
             @Valid @RequestBody FilterRequest<PartyGroupMembershipDTO> filterRequest) {
         return partyGroupMembershipService.filterPartyGroupMemberships(partyId, filterRequest)
@@ -87,7 +88,7 @@ public class PartyGroupMembershipController {
     })
     public Mono<ResponseEntity<PartyGroupMembershipDTO>> createPartyGroupMembership(
             @Parameter(description = "Unique identifier of the party", required = true)
-            @PathVariable Long partyId,
+            @PathVariable UUID partyId,
             @Parameter(description = "Party group membership data to create", required = true)
             @Valid @RequestBody PartyGroupMembershipDTO partyGroupMembershipDTO) {
         return partyGroupMembershipService.createPartyGroupMembership(partyId, partyGroupMembershipDTO)
@@ -113,9 +114,9 @@ public class PartyGroupMembershipController {
     })
     public Mono<ResponseEntity<PartyGroupMembershipDTO>> getPartyGroupMembershipById(
             @Parameter(description = "Unique identifier of the party", required = true)
-            @PathVariable Long partyId,
+            @PathVariable UUID partyId,
             @Parameter(description = "Unique identifier of the party group membership", required = true)
-            @PathVariable Long partyGroupMembershipId) {
+            @PathVariable UUID partyGroupMembershipId) {
         return partyGroupMembershipService.getPartyGroupMembershipById(partyId, partyGroupMembershipId)
                 .map(ResponseEntity::ok);
     }
@@ -144,9 +145,9 @@ public class PartyGroupMembershipController {
     })
     public Mono<ResponseEntity<PartyGroupMembershipDTO>> updatePartyGroupMembership(
             @Parameter(description = "Unique identifier of the party", required = true)
-            @PathVariable Long partyId,
+            @PathVariable UUID partyId,
             @Parameter(description = "Unique identifier of the party group membership", required = true)
-            @PathVariable Long partyGroupMembershipId,
+            @PathVariable UUID partyGroupMembershipId,
             @Parameter(description = "Updated party group membership data", required = true)
             @Valid @RequestBody PartyGroupMembershipDTO partyGroupMembershipDTO) {
         return partyGroupMembershipService.updatePartyGroupMembership(partyId, partyGroupMembershipId, partyGroupMembershipDTO)
@@ -171,9 +172,9 @@ public class PartyGroupMembershipController {
     })
     public Mono<ResponseEntity<Void>> deletePartyGroupMembership(
             @Parameter(description = "Unique identifier of the party", required = true)
-            @PathVariable Long partyId,
+            @PathVariable UUID partyId,
             @Parameter(description = "Unique identifier of the party group membership", required = true)
-            @PathVariable Long partyGroupMembershipId) {
+            @PathVariable UUID partyGroupMembershipId) {
         return partyGroupMembershipService.deletePartyGroupMembership(partyId, partyGroupMembershipId)
                 .then(Mono.just(ResponseEntity.noContent().build()));
     }

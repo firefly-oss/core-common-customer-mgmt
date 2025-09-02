@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
+import java.util.UUID;
 
 @Service
 @Transactional
@@ -24,7 +25,7 @@ public class PartyStatusServiceImpl implements PartyStatusService {
     private PartyStatusMapper mapper;
 
     @Override
-    public Mono<PaginationResponse<PartyStatusDTO>> filterPartyStatuses(Long partyId, FilterRequest<PartyStatusDTO> filterRequest) {
+    public Mono<PaginationResponse<PartyStatusDTO>> filterPartyStatuses(UUID partyId, FilterRequest<PartyStatusDTO> filterRequest) {
         return FilterUtils
                 .createFilter(
                         PartyStatus.class,
@@ -34,7 +35,7 @@ public class PartyStatusServiceImpl implements PartyStatusService {
     }
 
     @Override
-    public Mono<PartyStatusDTO> createPartyStatus(Long partyId, PartyStatusDTO partyStatusDTO) {
+    public Mono<PartyStatusDTO> createPartyStatus(UUID partyId, PartyStatusDTO partyStatusDTO) {
         return Mono.just(partyStatusDTO)
                 .map(mapper::toEntity)
                 .flatMap(repository::save)
@@ -42,7 +43,7 @@ public class PartyStatusServiceImpl implements PartyStatusService {
     }
 
     @Override
-    public Mono<PartyStatusDTO> updatePartyStatus(Long partyId, PartyStatusDTO partyStatusDTO) {
+    public Mono<PartyStatusDTO> updatePartyStatus(UUID partyId, PartyStatusDTO partyStatusDTO) {
         return repository.findByPartyId(partyId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Party status not found for party ID: " + partyId)))
                 .flatMap(existingPartyStatus -> {
@@ -58,14 +59,14 @@ public class PartyStatusServiceImpl implements PartyStatusService {
     }
 
     @Override
-    public Mono<Void> deletePartyStatus(Long partyId, Long partyStatusId) {
+    public Mono<Void> deletePartyStatus(UUID partyId, UUID partyStatusId) {
         return repository.findById(partyStatusId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Party status not found with ID: " + partyStatusId)))
                 .flatMap(partyStatus -> repository.deleteById(partyStatusId));
     }
 
     @Override
-    public Mono<PartyStatusDTO> getPartyStatusById(Long partyId, Long partyStatusId) {
+    public Mono<PartyStatusDTO> getPartyStatusById(UUID partyId, UUID partyStatusId) {
         return repository.findById(partyStatusId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Party status not found with ID: " + partyStatusId)))
                 .map(mapper::toDTO);

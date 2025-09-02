@@ -13,6 +13,7 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 /**
  * Data Transfer Object for Phone Contact entity representing phone contact information for parties.
@@ -25,18 +26,18 @@ import java.time.LocalDateTime;
 public class PhoneContactDTO {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private Long phoneContactId;
+    private UUID phoneContactId;
 
     @FilterableId
     @NotNull(message = "Party ID is required")
-    private Long partyId;
+    private UUID partyId;
     
-    @NotBlank(groups = OnCreate.class, message = "Phone number is required")
+    @NotBlank(message = "Phone number is required")
     @Pattern(regexp = "^[\\+]?[1-9]\\d{1,14}$", message = "Phone number must be a valid format")
     @Size(max = 20, message = "Phone number must not exceed 20 characters")
     private String phoneNumber;
-    
-    @NotNull(groups = OnCreate.class, message = "Phone kind is required")
+
+    @NotNull(message = "Phone kind is required")
     private PhoneKind phoneKind;
     
     private Boolean isPrimary;

@@ -3,8 +3,7 @@ package com.firefly.core.customer.web.controllers;
 import com.firefly.common.core.filters.FilterRequest;
 import com.firefly.common.core.queries.PaginationResponse;
 import com.firefly.core.customer.core.services.PhoneContactService;
-import com.firefly.core.customer.interfaces.dtos.OnCreate;
-import com.firefly.core.customer.interfaces.dtos.OnUpdate;
+
 import com.firefly.core.customer.interfaces.dtos.PhoneContactDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -21,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 import jakarta.validation.Valid;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/parties/{partyId}/contacts/phone")
@@ -58,7 +58,7 @@ public class PhoneContactController {
     })
     public Mono<ResponseEntity<PaginationResponse<PhoneContactDTO>>> filterPhoneContacts(
             @Parameter(description = "Unique identifier of the party", required = true)
-            @PathVariable Long partyId,
+            @PathVariable UUID partyId,
             @Parameter(description = "Filter criteria for phone contacts", required = true)
             @Valid @RequestBody FilterRequest<PhoneContactDTO> filterRequest) {
         return phoneContactService.filterPhoneContacts(partyId, filterRequest)
@@ -89,9 +89,9 @@ public class PhoneContactController {
     })
     public Mono<ResponseEntity<PhoneContactDTO>> createPhoneContact(
             @Parameter(description = "Unique identifier of the party", required = true)
-            @PathVariable Long partyId,
+            @PathVariable UUID partyId,
             @Parameter(description = "Phone contact data to create", required = true)
-            @Validated(OnCreate.class) @RequestBody PhoneContactDTO phoneContactDTO) {
+            @Validated @RequestBody PhoneContactDTO phoneContactDTO) {
         return phoneContactService.createPhoneContact(partyId, phoneContactDTO)
                 .map(phoneContact -> ResponseEntity.status(HttpStatus.CREATED).body(phoneContact));
     }
@@ -115,9 +115,9 @@ public class PhoneContactController {
     })
     public Mono<ResponseEntity<PhoneContactDTO>> getPhoneContactById(
             @Parameter(description = "Unique identifier of the party", required = true)
-            @PathVariable Long partyId,
+            @PathVariable UUID partyId,
             @Parameter(description = "Unique identifier of the phone contact", required = true)
-            @PathVariable Long phoneContactId) {
+            @PathVariable UUID phoneContactId) {
         return phoneContactService.getPhoneContactById(partyId, phoneContactId)
                 .map(ResponseEntity::ok);
     }
@@ -146,11 +146,11 @@ public class PhoneContactController {
     })
     public Mono<ResponseEntity<PhoneContactDTO>> updatePhoneContact(
             @Parameter(description = "Unique identifier of the party", required = true)
-            @PathVariable Long partyId,
+            @PathVariable UUID partyId,
             @Parameter(description = "Unique identifier of the phone contact", required = true)
-            @PathVariable Long phoneContactId,
+            @PathVariable UUID phoneContactId,
             @Parameter(description = "Updated phone contact data", required = true)
-            @Validated(OnUpdate.class) @RequestBody PhoneContactDTO phoneContactDTO) {
+            @Validated @RequestBody PhoneContactDTO phoneContactDTO) {
         return phoneContactService.updatePhoneContact(partyId, phoneContactId, phoneContactDTO)
                 .map(ResponseEntity::ok);
     }
@@ -173,9 +173,9 @@ public class PhoneContactController {
     })
     public Mono<ResponseEntity<Void>> deletePhoneContact(
             @Parameter(description = "Unique identifier of the party", required = true)
-            @PathVariable Long partyId,
+            @PathVariable UUID partyId,
             @Parameter(description = "Unique identifier of the phone contact", required = true)
-            @PathVariable Long phoneContactId) {
+            @PathVariable UUID phoneContactId) {
         return phoneContactService.deletePhoneContact(partyId, phoneContactId)
                 .then(Mono.just(ResponseEntity.noContent().build()));
     }

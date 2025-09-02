@@ -13,6 +13,7 @@ import jakarta.validation.constraints.Pattern;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 /**
  * Data Transfer Object for Party Economic Activity entity representing economic activities for parties.
@@ -25,15 +26,15 @@ import java.time.LocalDateTime;
 public class PartyEconomicActivityDTO {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private Long partyEconomicActivityId;
+    private UUID partyEconomicActivityId;
 
     @FilterableId
     @NotNull(message = "Party ID is required")
-    private Long partyId;
+    private UUID partyId;
 
     @FilterableId
     @NotNull(message = "Economic activity ID is required")
-    private Long economicActivityId;
+    private UUID economicActivityId;
     
     @DecimalMin(value = "0.0", inclusive = true, message = "Annual turnover must be non-negative")
     private BigDecimal annualTurnover;

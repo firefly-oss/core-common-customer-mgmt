@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 import jakarta.validation.Valid;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/parties/{partyId}/party-economic-activities")
@@ -56,7 +57,7 @@ public class PartyEconomicActivityController {
     })
     public Mono<ResponseEntity<PaginationResponse<PartyEconomicActivityDTO>>> filterPartyEconomicActivities(
             @Parameter(description = "Unique identifier of the party", required = true)
-            @PathVariable Long partyId,
+            @PathVariable UUID partyId,
             @Parameter(description = "Filter criteria for party economic activities", required = true)
             @Valid @RequestBody FilterRequest<PartyEconomicActivityDTO> filterRequest) {
         return partyEconomicActivityService.filterPartyEconomicActivities(partyId, filterRequest)
@@ -87,7 +88,7 @@ public class PartyEconomicActivityController {
     })
     public Mono<ResponseEntity<PartyEconomicActivityDTO>> createPartyEconomicActivity(
             @Parameter(description = "Unique identifier of the party", required = true)
-            @PathVariable Long partyId,
+            @PathVariable UUID partyId,
             @Parameter(description = "Party economic activity data to create", required = true)
             @Valid @RequestBody PartyEconomicActivityDTO partyEconomicActivityDTO) {
         return partyEconomicActivityService.createPartyEconomicActivity(partyId, partyEconomicActivityDTO)
@@ -113,9 +114,9 @@ public class PartyEconomicActivityController {
     })
     public Mono<ResponseEntity<PartyEconomicActivityDTO>> getPartyEconomicActivityById(
             @Parameter(description = "Unique identifier of the party", required = true)
-            @PathVariable Long partyId,
+            @PathVariable UUID partyId,
             @Parameter(description = "Unique identifier of the party economic activity", required = true)
-            @PathVariable Long partyEconomicActivityId) {
+            @PathVariable UUID partyEconomicActivityId) {
         return partyEconomicActivityService.getPartyEconomicActivityById(partyId, partyEconomicActivityId)
                 .map(ResponseEntity::ok);
     }
@@ -144,9 +145,9 @@ public class PartyEconomicActivityController {
     })
     public Mono<ResponseEntity<PartyEconomicActivityDTO>> updatePartyEconomicActivity(
             @Parameter(description = "Unique identifier of the party", required = true)
-            @PathVariable Long partyId,
+            @PathVariable UUID partyId,
             @Parameter(description = "Unique identifier of the party economic activity", required = true)
-            @PathVariable Long partyEconomicActivityId,
+            @PathVariable UUID partyEconomicActivityId,
             @Parameter(description = "Updated party economic activity data", required = true)
             @Valid @RequestBody PartyEconomicActivityDTO partyEconomicActivityDTO) {
         return partyEconomicActivityService.updatePartyEconomicActivity(partyId, partyEconomicActivityId, partyEconomicActivityDTO)
@@ -171,9 +172,9 @@ public class PartyEconomicActivityController {
     })
     public Mono<ResponseEntity<Void>> deletePartyEconomicActivity(
             @Parameter(description = "Unique identifier of the party", required = true)
-            @PathVariable Long partyId,
+            @PathVariable UUID partyId,
             @Parameter(description = "Unique identifier of the party economic activity", required = true)
-            @PathVariable Long partyEconomicActivityId) {
+            @PathVariable UUID partyEconomicActivityId) {
         return partyEconomicActivityService.deletePartyEconomicActivity(partyId, partyEconomicActivityId)
                 .then(Mono.just(ResponseEntity.noContent().build()));
     }

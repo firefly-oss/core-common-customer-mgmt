@@ -4,6 +4,7 @@ import com.firefly.common.core.filters.FilterRequest;
 import com.firefly.common.core.queries.PaginationResponse;
 import com.firefly.core.customer.interfaces.dtos.ConsentDTO;
 import reactor.core.publisher.Mono;
+import java.util.UUID;
 
 /**
  * Service interface for managing consents.
@@ -16,7 +17,7 @@ public interface ConsentService {
      * @param filterRequest the request object containing filtering criteria for ConsentDTO
      * @return a reactive {@code Mono} emitting a {@code PaginationResponse} containing the filtered list of consents
      */
-    Mono<PaginationResponse<ConsentDTO>> filterConsents(Long partyId, FilterRequest<ConsentDTO> filterRequest);
+    Mono<PaginationResponse<ConsentDTO>> filterConsents(UUID partyId, FilterRequest<ConsentDTO> filterRequest);
     
     /**
      * Creates a new consent based on the provided information for a specific party.
@@ -25,7 +26,7 @@ public interface ConsentService {
      * @param consentDTO the DTO object containing details of the consent to be created
      * @return a Mono that emits the created ConsentDTO object
      */
-    Mono<ConsentDTO> createConsent(Long partyId, ConsentDTO consentDTO);
+    Mono<ConsentDTO> createConsent(UUID partyId, ConsentDTO consentDTO);
     
     /**
      * Updates an existing consent with updated information.
@@ -35,7 +36,7 @@ public interface ConsentService {
      * @param consentDTO the data transfer object containing the updated details of the consent
      * @return a reactive Mono containing the updated ConsentDTO
      */
-    Mono<ConsentDTO> updateConsent(Long partyId, Long consentId, ConsentDTO consentDTO);
+    Mono<ConsentDTO> updateConsent(UUID partyId, UUID consentId, ConsentDTO consentDTO);
     
     /**
      * Deletes a consent identified by its unique ID, validating party ownership.
@@ -44,7 +45,7 @@ public interface ConsentService {
      * @param consentId the unique identifier of the consent to be deleted
      * @return a Mono that completes when the consent is successfully deleted or errors if the deletion fails
      */
-    Mono<Void> deleteConsent(Long partyId, Long consentId);
+    Mono<Void> deleteConsent(UUID partyId, UUID consentId);
     
     /**
      * Retrieves a consent by its unique identifier.
@@ -54,5 +55,5 @@ public interface ConsentService {
      * @return a Mono emitting the {@link ConsentDTO} representing the consent if found,
      *         or an empty Mono if the consent does not exist
      */
-    Mono<ConsentDTO> getConsentById(Long partyId, Long consentId);
+    Mono<ConsentDTO> getConsentById(UUID partyId, UUID consentId);
 }

@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 import jakarta.validation.Valid;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/parties/{partyId}/consents")
@@ -56,7 +57,7 @@ public class ConsentController {
     })
     public Mono<ResponseEntity<PaginationResponse<ConsentDTO>>> filterConsents(
             @Parameter(description = "Unique identifier of the party", required = true)
-            @PathVariable Long partyId,
+            @PathVariable UUID partyId,
             @Parameter(description = "Filter criteria for consents", required = true)
             @Valid @RequestBody FilterRequest<ConsentDTO> filterRequest) {
         return consentService.filterConsents(partyId, filterRequest)
@@ -87,7 +88,7 @@ public class ConsentController {
     })
     public Mono<ResponseEntity<ConsentDTO>> createConsent(
             @Parameter(description = "Unique identifier of the party", required = true)
-            @PathVariable Long partyId,
+            @PathVariable UUID partyId,
             @Parameter(description = "Consent data to create", required = true)
             @Valid @RequestBody ConsentDTO consentDTO) {
         return consentService.createConsent(partyId, consentDTO)
@@ -113,9 +114,9 @@ public class ConsentController {
     })
     public Mono<ResponseEntity<ConsentDTO>> getConsentById(
             @Parameter(description = "Unique identifier of the party", required = true)
-            @PathVariable Long partyId,
+            @PathVariable UUID partyId,
             @Parameter(description = "Unique identifier of the consent", required = true)
-            @PathVariable Long consentId) {
+            @PathVariable UUID consentId) {
         return consentService.getConsentById(partyId, consentId)
                 .map(ResponseEntity::ok);
     }
@@ -144,9 +145,9 @@ public class ConsentController {
     })
     public Mono<ResponseEntity<ConsentDTO>> updateConsent(
             @Parameter(description = "Unique identifier of the party", required = true)
-            @PathVariable Long partyId,
+            @PathVariable UUID partyId,
             @Parameter(description = "Unique identifier of the consent", required = true)
-            @PathVariable Long consentId,
+            @PathVariable UUID consentId,
             @Parameter(description = "Updated consent data", required = true)
             @Valid @RequestBody ConsentDTO consentDTO) {
         return consentService.updateConsent(partyId, consentId, consentDTO)
@@ -171,9 +172,9 @@ public class ConsentController {
     })
     public Mono<ResponseEntity<Void>> deleteConsent(
             @Parameter(description = "Unique identifier of the party", required = true)
-            @PathVariable Long partyId,
+            @PathVariable UUID partyId,
             @Parameter(description = "Unique identifier of the consent", required = true)
-            @PathVariable Long consentId) {
+            @PathVariable UUID consentId) {
         return consentService.deleteConsent(partyId, consentId)
                 .then(Mono.just(ResponseEntity.noContent().build()));
     }

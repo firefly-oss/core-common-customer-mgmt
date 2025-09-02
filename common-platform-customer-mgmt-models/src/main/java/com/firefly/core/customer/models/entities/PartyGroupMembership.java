@@ -9,6 +9,7 @@ import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 /**
  * Party Group Membership entity representing group memberships for parties.
@@ -23,13 +24,13 @@ public class PartyGroupMembership {
 
     @Id
     @Column("party_group_membership_id")
-    private Long partyGroupMembershipId;
+    private UUID partyGroupMembershipId;
 
     @Column("group_id")
-    private Long groupId;
+    private UUID groupId;
 
     @Column("party_id")
-    private Long partyId;
+    private UUID partyId;
 
     @Column("is_active")
     private Boolean isActive;

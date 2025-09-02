@@ -10,6 +10,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 /**
  * Data Transfer Object for Party Group Membership entity representing group memberships for parties.
@@ -22,15 +23,15 @@ import java.time.LocalDateTime;
 public class PartyGroupMembershipDTO {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private Long partyGroupMembershipId;
+    private UUID partyGroupMembershipId;
 
     @FilterableId
     @NotNull(message = "Group ID is required")
-    private Long groupId;
+    private UUID groupId;
 
     @FilterableId
     @NotNull(message = "Party ID is required")
-    private Long partyId;
+    private UUID partyId;
 
     private Boolean isActive;
 

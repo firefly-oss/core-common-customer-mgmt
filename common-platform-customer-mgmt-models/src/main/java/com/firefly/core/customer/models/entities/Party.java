@@ -10,6 +10,7 @@ import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 /**
  * Party entity representing the supertype for all customer types.
@@ -24,7 +25,7 @@ public class Party {
 
     @Id
     @Column("party_id")
-    private Long partyId;
+    private UUID partyId;
 
     @Column("party_kind")
     private PartyKind partyKind;

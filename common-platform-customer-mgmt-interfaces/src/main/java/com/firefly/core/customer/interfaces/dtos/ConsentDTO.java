@@ -10,6 +10,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 /**
  * Data Transfer Object for Consent entity representing user consent records for parties.
@@ -22,15 +23,15 @@ import java.time.LocalDateTime;
 public class ConsentDTO {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private Long consentId;
+    private UUID consentId;
 
     @FilterableId
     @NotNull(message = "Party ID is required")
-    private Long partyId;
+    private UUID partyId;
 
     @FilterableId
     @NotNull(message = "Consent type ID is required")
-    private Long consentTypeId;
+    private UUID consentTypeId;
     
     @NotNull(message = "Granted status is required")
     private Boolean granted;

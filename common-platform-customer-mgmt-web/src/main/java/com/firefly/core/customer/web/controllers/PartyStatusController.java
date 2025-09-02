@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 import jakarta.validation.Valid;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/parties/{partyId}/party-statuses")
@@ -56,7 +57,7 @@ public class PartyStatusController {
     })
     public Mono<ResponseEntity<PaginationResponse<PartyStatusDTO>>> filterPartyStatuses(
             @Parameter(description = "Unique identifier of the party", required = true)
-            @PathVariable Long partyId,
+            @PathVariable UUID partyId,
             @Parameter(description = "Filter criteria for party statuses", required = true)
             @Valid @RequestBody FilterRequest<PartyStatusDTO> filterRequest) {
         return partyStatusService.filterPartyStatuses(partyId, filterRequest)
@@ -87,7 +88,7 @@ public class PartyStatusController {
     })
     public Mono<ResponseEntity<PartyStatusDTO>> createPartyStatus(
             @Parameter(description = "Unique identifier of the party", required = true)
-            @PathVariable Long partyId,
+            @PathVariable UUID partyId,
             @Parameter(description = "Party status data to create", required = true)
             @Valid @RequestBody PartyStatusDTO partyStatusDTO) {
         return partyStatusService.createPartyStatus(partyId, partyStatusDTO)
@@ -113,9 +114,9 @@ public class PartyStatusController {
     })
     public Mono<ResponseEntity<PartyStatusDTO>> getPartyStatusById(
             @Parameter(description = "Unique identifier of the party", required = true)
-            @PathVariable Long partyId,
+            @PathVariable UUID partyId,
             @Parameter(description = "Unique identifier of the party status", required = true)
-            @PathVariable Long partyStatusId) {
+            @PathVariable UUID partyStatusId) {
         return partyStatusService.getPartyStatusById(partyId, partyStatusId)
                 .map(ResponseEntity::ok);
     }
@@ -144,7 +145,7 @@ public class PartyStatusController {
     })
     public Mono<ResponseEntity<PartyStatusDTO>> updatePartyStatus(
             @Parameter(description = "Unique identifier of the party", required = true)
-            @PathVariable Long partyId,
+            @PathVariable UUID partyId,
             @Parameter(description = "Updated party status data", required = true)
             @Valid @RequestBody PartyStatusDTO partyStatusDTO) {
         return partyStatusService.updatePartyStatus(partyId, partyStatusDTO)
@@ -169,9 +170,9 @@ public class PartyStatusController {
     })
     public Mono<ResponseEntity<Void>> deletePartyStatus(
             @Parameter(description = "Unique identifier of the party", required = true)
-            @PathVariable Long partyId,
+            @PathVariable UUID partyId,
             @Parameter(description = "Unique identifier of the party status", required = true)
-            @PathVariable Long partyStatusId) {
+            @PathVariable UUID partyStatusId) {
         return partyStatusService.deletePartyStatus(partyId, partyStatusId)
                 .then(Mono.just(ResponseEntity.noContent().build()));
     }

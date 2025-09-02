@@ -12,6 +12,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 /**
  * Data Transfer Object for Party Provider entity representing external system mappings for parties.
@@ -24,11 +25,11 @@ import java.time.LocalDateTime;
 public class PartyProviderDTO {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private Long partyProviderId;
+    private UUID partyProviderId;
 
     @FilterableId
     @NotNull(message = "Party ID is required")
-    private Long partyId;
+    private UUID partyId;
     
     @NotBlank(message = "Provider name is required")
     @Size(max = 100, message = "Provider name must not exceed 100 characters")

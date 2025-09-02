@@ -10,6 +10,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 /**
  * Data Transfer Object for Party Relationship entity representing relationships between parties.
@@ -22,19 +23,19 @@ import java.time.LocalDateTime;
 public class PartyRelationshipDTO {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private Long partyRelationshipId;
+    private UUID partyRelationshipId;
 
     @FilterableId
     @NotNull(message = "From party ID is required")
-    private Long fromPartyId;
+    private UUID fromPartyId;
 
     @FilterableId
     @NotNull(message = "To party ID is required")
-    private Long toPartyId;
+    private UUID toPartyId;
 
     @FilterableId
     @NotNull(message = "Relationship type ID is required")
-    private Long relationshipTypeId;
+    private UUID relationshipTypeId;
     
     private LocalDateTime startDate;
     private LocalDateTime endDate;

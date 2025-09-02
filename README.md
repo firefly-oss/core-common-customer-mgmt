@@ -48,23 +48,23 @@ The following diagram illustrates the complete data model and relationships betw
 
 **Note on Foreign Keys vs Logical References:**
 - Fields marked as `FK` have actual database foreign key constraints enforced by PostgreSQL
-- Fields without `FK` marking (but with `bigint` type ending in `_id`) are logical references only - they reference other entities conceptually but without database constraints
+- Fields without `FK` marking (but with `uuid` type ending in `_id`) are logical references only - they reference other entities conceptually but without database constraints
 - This design provides flexibility for referencing external systems (countries, document types, etc.) that may not have corresponding tables in this database
 
 ```mermaid
 erDiagram
     PARTY {
-        bigint party_id PK
+        uuid party_id PK
         varchar party_kind "NATURAL_PERSON | LEGAL_ENTITY"
         varchar preferred_language
         varchar source_system
         timestamp created_at
         timestamp updated_at
     }
-    
+
     NATURAL_PERSON {
-        bigint natural_person_id PK
-        bigint party_id FK
+        uuid natural_person_id PK
+        uuid party_id FK
         varchar title
         varchar given_name
         varchar middle_name
@@ -72,8 +72,8 @@ erDiagram
         varchar family_name2
         date date_of_birth
         varchar birth_place
-        bigint birth_country_id
-        bigint nationality_country_id
+        uuid birth_country_id
+        uuid nationality_country_id
         varchar gender "MALE | FEMALE | OTHER"
         varchar marital_status "SINGLE | MARRIED | DIVORCED | WIDOWED | SEPARATED"
         varchar tax_id_number
@@ -86,43 +86,43 @@ erDiagram
     }
     
     LEGAL_ENTITY {
-        bigint legal_entity_id PK
-        bigint party_id FK
+        uuid legal_entity_id PK
+        uuid party_id FK
         varchar legal_name
         varchar trade_name
         varchar registration_number
         varchar tax_id_number
-        bigint legal_form_id
+        uuid legal_form_id
         date incorporation_date
         varchar industry_description
         bigint headcount
         decimal share_capital
         varchar website_url
-        bigint incorporation_country_id
+        uuid incorporation_country_id
         timestamp created_at
         timestamp updated_at
     }
     
     ADDRESS {
-        bigint address_id PK
-        bigint party_id FK
+        uuid address_id PK
+        uuid party_id FK
         varchar address_kind "HOME | WORK | BILLING | MAILING | OTHER"
         varchar line1
         varchar line2
         varchar city
         varchar region
         varchar postal_code
-        bigint country_id
+        uuid country_id
         boolean is_primary
         decimal latitude
         decimal longitude
         timestamp created_at
         timestamp updated_at
     }
-    
+
     EMAIL_CONTACT {
-        bigint email_contact_id PK
-        bigint party_id FK
+        uuid email_contact_id PK
+        uuid party_id FK
         varchar email
         varchar email_kind "PERSONAL | WORK | OTHER"
         boolean is_primary
@@ -130,10 +130,10 @@ erDiagram
         timestamp created_at
         timestamp updated_at
     }
-    
+
     PHONE_CONTACT {
-        bigint phone_contact_id PK
-        bigint party_id FK
+        uuid phone_contact_id PK
+        uuid party_id FK
         varchar phone_number
         varchar phone_kind "MOBILE | HOME | WORK | FAX | OTHER"
         varchar extension
@@ -144,12 +144,12 @@ erDiagram
     }
     
     IDENTITY_DOCUMENT {
-        bigint identity_document_id PK
-        bigint party_id FK
-        bigint identity_document_category_id
-        bigint identity_document_type_id
+        uuid identity_document_id PK
+        uuid party_id FK
+        uuid identity_document_category_id
+        uuid identity_document_type_id
         varchar document_number
-        bigint issuing_country_id
+        uuid issuing_country_id
         timestamp issue_date
         timestamp expiry_date
         varchar issuing_authority
@@ -158,11 +158,11 @@ erDiagram
         timestamp created_at
         timestamp updated_at
     }
-    
+
     CONSENT {
-        bigint consent_id PK
-        bigint party_id FK
-        bigint consent_type_id
+        uuid consent_id PK
+        uuid party_id FK
+        uuid consent_type_id
         boolean granted
         timestamp granted_at
         timestamp revoked_at
@@ -172,10 +172,10 @@ erDiagram
     }
     
     PARTY_RELATIONSHIP {
-        bigint party_relationship_id PK
-        bigint from_party_id FK
-        bigint to_party_id FK
-        bigint relationship_type_id
+        uuid party_relationship_id PK
+        uuid from_party_id FK
+        uuid to_party_id FK
+        uuid relationship_type_id
         timestamp start_date
         timestamp end_date
         boolean active
@@ -183,10 +183,10 @@ erDiagram
         timestamp created_at
         timestamp updated_at
     }
-    
+
     PARTY_STATUS {
-        bigint party_status_id PK
-        bigint party_id FK
+        uuid party_status_id PK
+        uuid party_id FK
         varchar status_type "ACTIVE | INACTIVE | SUSPENDED | BLOCKED | PENDING"
         varchar reason
         timestamp effective_date
@@ -198,9 +198,9 @@ erDiagram
     }
     
     PARTY_ECONOMIC_ACTIVITY {
-        bigint party_economic_activity_id PK
-        bigint party_id FK
-        bigint economic_activity_id
+        uuid party_economic_activity_id PK
+        uuid party_id FK
+        uuid economic_activity_id
         decimal annual_turnover
         varchar currency_code
         timestamp start_date
@@ -209,10 +209,10 @@ erDiagram
         timestamp created_at
         timestamp updated_at
     }
-    
+
     PARTY_PROVIDER {
-        bigint party_provider_id PK
-        bigint party_id FK
+        uuid party_provider_id PK
+        uuid party_id FK
         varchar provider_name
         varchar external_reference
         varchar provider_status "ACTIVE | INACTIVE | SUSPENDED"
@@ -220,14 +220,14 @@ erDiagram
         timestamp created_at
         timestamp updated_at
     }
-    
+
     POLITICALLY_EXPOSED_PERSON {
-        bigint pep_id PK
-        bigint party_id FK
+        uuid pep_id PK
+        uuid party_id FK
         boolean pep
         varchar category
         varchar public_position
-        bigint country_of_position_id
+        uuid country_of_position_id
         timestamp start_date
         timestamp end_date
         varchar notes

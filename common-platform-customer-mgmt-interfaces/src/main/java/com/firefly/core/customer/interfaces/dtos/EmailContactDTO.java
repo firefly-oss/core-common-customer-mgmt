@@ -13,6 +13,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 /**
  * Data Transfer Object for Email Contact entity representing email contact information for parties.
@@ -25,18 +26,18 @@ import java.time.LocalDateTime;
 public class EmailContactDTO {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private Long emailContactId;
+    private UUID emailContactId;
 
     @FilterableId
     @NotNull(message = "Party ID is required")
-    private Long partyId;
+    private UUID partyId;
     
-    @NotBlank(groups = OnCreate.class, message = "Email is required")
+    @NotBlank(message = "Email is required")
     @Email(message = "Email must be valid")
     @Size(max = 320, message = "Email must not exceed 320 characters")
     private String email;
-    
-    @NotNull(groups = OnCreate.class, message = "Email kind is required")
+
+    @NotNull(message = "Email kind is required")
     private EmailKind emailKind;
     
     private Boolean isPrimary;

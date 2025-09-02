@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
+import java.util.UUID;
 
 @Service
 @Transactional
@@ -24,7 +25,7 @@ public class AddressServiceImpl implements AddressService {
     private AddressMapper mapper;
 
     @Override
-    public Mono<PaginationResponse<AddressDTO>> filterAddresses(Long partyId, FilterRequest<AddressDTO> filterRequest) {
+    public Mono<PaginationResponse<AddressDTO>> filterAddresses(UUID partyId, FilterRequest<AddressDTO> filterRequest) {
         // Add partyId filter to the existing filter request
         // For now, we'll delegate to FilterUtils but this could be enhanced to add partyId filtering
         return FilterUtils
@@ -37,7 +38,7 @@ public class AddressServiceImpl implements AddressService {
     }
 
     @Override
-    public Mono<AddressDTO> createAddress(Long partyId, AddressDTO addressDTO) {
+    public Mono<AddressDTO> createAddress(UUID partyId, AddressDTO addressDTO) {
         return Mono.just(addressDTO)
                 .doOnNext(dto -> dto.setPartyId(partyId)) // Ensure partyId is set
                 .map(mapper::toEntity)
@@ -46,7 +47,7 @@ public class AddressServiceImpl implements AddressService {
     }
 
     @Override
-    public Mono<AddressDTO> updateAddress(Long partyId, Long addressId, AddressDTO addressDTO) {
+    public Mono<AddressDTO> updateAddress(UUID partyId, UUID addressId, AddressDTO addressDTO) {
         return repository.findById(addressId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Address not found with ID: " + addressId)))
                 .flatMap(existingAddress -> {
@@ -61,7 +62,7 @@ public class AddressServiceImpl implements AddressService {
     }
 
     @Override
-    public Mono<Void> deleteAddress(Long partyId, Long addressId) {
+    public Mono<Void> deleteAddress(UUID partyId, UUID addressId) {
         return repository.findById(addressId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Address not found with ID: " + addressId)))
                 .flatMap(address -> {
@@ -74,7 +75,7 @@ public class AddressServiceImpl implements AddressService {
     }
 
     @Override
-    public Mono<AddressDTO> getAddressById(Long partyId, Long addressId) {
+    public Mono<AddressDTO> getAddressById(UUID partyId, UUID addressId) {
         return repository.findById(addressId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Address not found with ID: " + addressId)))
                 .flatMap(address -> {

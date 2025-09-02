@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
+import java.util.UUID;
 
 @Service
 @Transactional
@@ -24,7 +25,7 @@ public class NaturalPersonServiceImpl implements NaturalPersonService {
     private NaturalPersonMapper mapper;
 
     @Override
-    public Mono<PaginationResponse<NaturalPersonDTO>> filterNaturalPersons(Long partyId, FilterRequest<NaturalPersonDTO> filterRequest) {
+    public Mono<PaginationResponse<NaturalPersonDTO>> filterNaturalPersons(UUID partyId, FilterRequest<NaturalPersonDTO> filterRequest) {
         // Add partyId filter to the existing filter request
         // For now, we'll delegate to FilterUtils but this could be enhanced to add partyId filtering
         return FilterUtils
@@ -37,7 +38,7 @@ public class NaturalPersonServiceImpl implements NaturalPersonService {
     }
 
     @Override
-    public Mono<NaturalPersonDTO> createNaturalPerson(Long partyId, NaturalPersonDTO naturalPersonDTO) {
+    public Mono<NaturalPersonDTO> createNaturalPerson(UUID partyId, NaturalPersonDTO naturalPersonDTO) {
         return Mono.just(naturalPersonDTO)
                 .doOnNext(dto -> dto.setPartyId(partyId)) // Ensure partyId is set
                 .map(mapper::toEntity)
@@ -46,7 +47,7 @@ public class NaturalPersonServiceImpl implements NaturalPersonService {
     }
 
     @Override
-    public Mono<NaturalPersonDTO> updateNaturalPerson(Long partyId, Long naturalPersonId, NaturalPersonDTO naturalPersonDTO) {
+    public Mono<NaturalPersonDTO> updateNaturalPerson(UUID partyId, UUID naturalPersonId, NaturalPersonDTO naturalPersonDTO) {
         return repository.findById(naturalPersonId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Natural person not found with ID: " + naturalPersonId)))
                 .flatMap(existingNaturalPerson -> {
@@ -61,7 +62,7 @@ public class NaturalPersonServiceImpl implements NaturalPersonService {
     }
 
     @Override
-    public Mono<Void> deleteNaturalPerson(Long partyId, Long naturalPersonId) {
+    public Mono<Void> deleteNaturalPerson(UUID partyId, UUID naturalPersonId) {
         return repository.findById(naturalPersonId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Natural person not found with ID: " + naturalPersonId)))
                 .flatMap(naturalPerson -> {
@@ -74,7 +75,7 @@ public class NaturalPersonServiceImpl implements NaturalPersonService {
     }
 
     @Override
-    public Mono<NaturalPersonDTO> getNaturalPersonById(Long partyId, Long naturalPersonId) {
+    public Mono<NaturalPersonDTO> getNaturalPersonById(UUID partyId, UUID naturalPersonId) {
         return repository.findById(naturalPersonId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Natural person not found with ID: " + naturalPersonId)))
                 .flatMap(naturalPerson -> {
@@ -87,7 +88,7 @@ public class NaturalPersonServiceImpl implements NaturalPersonService {
     }
 
     @Override
-    public Mono<NaturalPersonDTO> getNaturalPersonByPartyId(Long partyId) {
+    public Mono<NaturalPersonDTO> getNaturalPersonByPartyId(UUID partyId) {
         return repository.findByPartyId(partyId)
                 .map(mapper::toDTO)
                 .next();

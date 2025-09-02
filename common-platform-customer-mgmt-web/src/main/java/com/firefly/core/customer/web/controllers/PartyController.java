@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 import jakarta.validation.Valid;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/parties")
@@ -99,7 +100,7 @@ public class PartyController {
     })
     public Mono<ResponseEntity<PartyDTO>> getPartyById(
             @Parameter(description = "Unique identifier of the party", required = true)
-            @PathVariable Long partyId) {
+            @PathVariable UUID partyId) {
         return partyService.getPartyById(partyId)
                 .map(ResponseEntity::ok);
     }
@@ -128,7 +129,7 @@ public class PartyController {
     })
     public Mono<ResponseEntity<PartyDTO>> updateParty(
             @Parameter(description = "Unique identifier of the party", required = true)
-            @PathVariable Long partyId,
+            @PathVariable UUID partyId,
             @Parameter(description = "Updated party data", required = true)
             @Valid @RequestBody PartyDTO partyDTO) {
         return partyService.updateParty(partyId, partyDTO)
@@ -153,7 +154,7 @@ public class PartyController {
     })
     public Mono<ResponseEntity<Void>> deleteParty(
             @Parameter(description = "Unique identifier of the party", required = true)
-            @PathVariable Long partyId) {
+            @PathVariable UUID partyId) {
         return partyService.deleteParty(partyId)
                 .then(Mono.just(ResponseEntity.noContent().build()));
     }

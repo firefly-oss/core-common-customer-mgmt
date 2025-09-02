@@ -8,9 +8,9 @@
 -- PARTY GROUP MEMBERSHIP
 -- ======================================================
 CREATE TABLE party_group_membership (
-    party_group_membership_id BIGSERIAL PRIMARY KEY,
-    group_id BIGINT NOT NULL,
-    party_id BIGINT NOT NULL,
+    party_group_membership_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    group_id UUID NOT NULL,
+    party_id UUID NOT NULL,
     is_active BOOLEAN,
     start_date TIMESTAMP WITH TIME ZONE,
     end_date TIMESTAMP WITH TIME ZONE,

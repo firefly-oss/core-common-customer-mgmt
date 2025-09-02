@@ -9,6 +9,7 @@ import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 /**
  * Consent entity representing user consent records for parties.
@@ -23,13 +24,13 @@ public class Consent {
 
     @Id
     @Column("consent_id")
-    private Long consentId;
+    private UUID consentId;
 
     @Column("party_id")
-    private Long partyId;
+    private UUID partyId;
 
     @Column("consent_type_id")
-    private Long consentTypeId;
+    private UUID consentTypeId;
 
     @Column("granted")
     private Boolean granted;

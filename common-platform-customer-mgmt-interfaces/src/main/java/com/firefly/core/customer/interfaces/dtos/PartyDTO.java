@@ -10,6 +10,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 /**
  * Data Transfer Object for Party entity representing the supertype for all customer types.
@@ -22,7 +23,7 @@ import java.time.LocalDateTime;
 public class PartyDTO {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private Long partyId;
+    private UUID partyId;
     
     @NotNull(message = "Party kind is required")
     private PartyKind partyKind;

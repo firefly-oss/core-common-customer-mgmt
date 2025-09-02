@@ -21,6 +21,7 @@ import java.time.LocalDateTime;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
+import java.util.UUID;
 
 @ExtendWith(MockitoExtension.class)
 class PartyEconomicActivityServiceImplTest {
@@ -36,13 +37,13 @@ class PartyEconomicActivityServiceImplTest {
 
     private PartyEconomicActivityDTO partyEconomicActivityDTO;
     private PartyEconomicActivity partyEconomicActivity;
-    private Long partyEconomicActivityId;
-    private Long partyId;
+    private UUID partyEconomicActivityId;
+    private UUID partyId;
 
     @BeforeEach
     void setUp() {
-        partyEconomicActivityId = 1L;
-        partyId = 1L;
+        partyEconomicActivityId = UUID.fromString("123e4567-e89b-12d3-a456-426614174001");
+        partyId = UUID.fromString("123e4567-e89b-12d3-a456-426614174001");
         
         partyEconomicActivity = new PartyEconomicActivity();
         partyEconomicActivity.setPartyEconomicActivityId(partyEconomicActivityId);
@@ -175,7 +176,7 @@ class PartyEconomicActivityServiceImplTest {
                 .verify();
 
         verify(partyEconomicActivityRepository).findById(partyEconomicActivityId);
-        verify(partyEconomicActivityRepository, never()).deleteById(any(Long.class));
+        verify(partyEconomicActivityRepository, never()).deleteById(any(UUID.class));
     }
 
     @Test

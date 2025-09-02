@@ -9,6 +9,7 @@ import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 /**
  * Politically Exposed Person entity representing PEP information for parties.
@@ -23,10 +24,10 @@ public class PoliticallyExposedPerson {
 
     @Id
     @Column("pep_id")
-    private Long pepId;
+    private UUID pepId;
 
     @Column("party_id")
-    private Long partyId;
+    private UUID partyId;
 
     @Column("pep")
     private Boolean pep;
@@ -38,7 +39,7 @@ public class PoliticallyExposedPerson {
     private String publicPosition;
 
     @Column("country_of_position_id")
-    private Long countryOfPositionId;
+    private UUID countryOfPositionId;
 
     @Column("start_date")
     private LocalDateTime startDate;

@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 import jakarta.validation.Valid;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/parties/{partyId}/documents/identity")
@@ -56,7 +57,7 @@ public class IdentityDocumentController {
     })
     public Mono<ResponseEntity<PaginationResponse<IdentityDocumentDTO>>> filterIdentityDocuments(
             @Parameter(description = "Unique identifier of the party", required = true)
-            @PathVariable Long partyId,
+            @PathVariable UUID partyId,
             @Parameter(description = "Filter criteria for identity documents", required = true)
             @Valid @RequestBody FilterRequest<IdentityDocumentDTO> filterRequest) {
         return identityDocumentService.filterIdentityDocuments(partyId, filterRequest)
@@ -87,7 +88,7 @@ public class IdentityDocumentController {
     })
     public Mono<ResponseEntity<IdentityDocumentDTO>> createIdentityDocument(
             @Parameter(description = "Unique identifier of the party", required = true)
-            @PathVariable Long partyId,
+            @PathVariable UUID partyId,
             @Parameter(description = "Identity document data to create", required = true)
             @Valid @RequestBody IdentityDocumentDTO identityDocumentDTO) {
         return identityDocumentService.createIdentityDocument(partyId, identityDocumentDTO)
@@ -113,9 +114,9 @@ public class IdentityDocumentController {
     })
     public Mono<ResponseEntity<IdentityDocumentDTO>> getIdentityDocumentById(
             @Parameter(description = "Unique identifier of the party", required = true)
-            @PathVariable Long partyId,
+            @PathVariable UUID partyId,
             @Parameter(description = "Unique identifier of the identity document", required = true)
-            @PathVariable Long identityDocumentId) {
+            @PathVariable UUID identityDocumentId) {
         return identityDocumentService.getIdentityDocumentById(partyId, identityDocumentId)
                 .map(ResponseEntity::ok);
     }
@@ -144,9 +145,9 @@ public class IdentityDocumentController {
     })
     public Mono<ResponseEntity<IdentityDocumentDTO>> updateIdentityDocument(
             @Parameter(description = "Unique identifier of the party", required = true)
-            @PathVariable Long partyId,
+            @PathVariable UUID partyId,
             @Parameter(description = "Unique identifier of the identity document", required = true)
-            @PathVariable Long identityDocumentId,
+            @PathVariable UUID identityDocumentId,
             @Parameter(description = "Updated identity document data", required = true)
             @Valid @RequestBody IdentityDocumentDTO identityDocumentDTO) {
         return identityDocumentService.updateIdentityDocument(partyId, identityDocumentId, identityDocumentDTO)
@@ -171,9 +172,9 @@ public class IdentityDocumentController {
     })
     public Mono<ResponseEntity<Void>> deleteIdentityDocument(
             @Parameter(description = "Unique identifier of the party", required = true)
-            @PathVariable Long partyId,
+            @PathVariable UUID partyId,
             @Parameter(description = "Unique identifier of the identity document", required = true)
-            @PathVariable Long identityDocumentId) {
+            @PathVariable UUID identityDocumentId) {
         return identityDocumentService.deleteIdentityDocument(partyId, identityDocumentId)
                 .then(Mono.just(ResponseEntity.noContent().build()));
     }

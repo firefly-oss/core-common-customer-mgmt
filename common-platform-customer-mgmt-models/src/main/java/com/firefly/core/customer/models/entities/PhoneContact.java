@@ -10,6 +10,7 @@ import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 /**
  * Phone Contact entity representing phone contact information for parties.
@@ -24,10 +25,10 @@ public class PhoneContact {
 
     @Id
     @Column("phone_contact_id")
-    private Long phoneContactId;
+    private UUID phoneContactId;
 
     @Column("party_id")
-    private Long partyId;
+    private UUID partyId;
 
     @Column("phone_number")
     private String phoneNumber;

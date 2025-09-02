@@ -4,8 +4,7 @@ import com.firefly.common.core.filters.FilterRequest;
 import com.firefly.common.core.queries.PaginationResponse;
 import com.firefly.core.customer.core.services.EmailContactService;
 import com.firefly.core.customer.interfaces.dtos.EmailContactDTO;
-import com.firefly.core.customer.interfaces.dtos.OnCreate;
-import com.firefly.core.customer.interfaces.dtos.OnUpdate;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -21,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 import jakarta.validation.Valid;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/parties/{partyId}/contacts/email")
@@ -58,7 +58,7 @@ public class EmailContactController {
     })
     public Mono<ResponseEntity<PaginationResponse<EmailContactDTO>>> filterEmailContacts(
             @Parameter(description = "Unique identifier of the party", required = true)
-            @PathVariable Long partyId,
+            @PathVariable UUID partyId,
             @Parameter(description = "Filter criteria for email contacts", required = true)
             @Valid @RequestBody FilterRequest<EmailContactDTO> filterRequest) {
         return emailContactService.filterEmailContacts(partyId, filterRequest)
@@ -89,9 +89,9 @@ public class EmailContactController {
     })
     public Mono<ResponseEntity<EmailContactDTO>> createEmailContact(
             @Parameter(description = "Unique identifier of the party", required = true)
-            @PathVariable Long partyId,
+            @PathVariable UUID partyId,
             @Parameter(description = "Email contact data to create", required = true)
-            @Validated(OnCreate.class) @RequestBody EmailContactDTO emailContactDTO) {
+            @Validated @RequestBody EmailContactDTO emailContactDTO) {
         return emailContactService.createEmailContact(partyId, emailContactDTO)
                 .map(emailContact -> ResponseEntity.status(HttpStatus.CREATED).body(emailContact));
     }
@@ -115,9 +115,9 @@ public class EmailContactController {
     })
     public Mono<ResponseEntity<EmailContactDTO>> getEmailContactById(
             @Parameter(description = "Unique identifier of the party", required = true)
-            @PathVariable Long partyId,
+            @PathVariable UUID partyId,
             @Parameter(description = "Unique identifier of the email contact", required = true)
-            @PathVariable Long emailContactId) {
+            @PathVariable UUID emailContactId) {
         return emailContactService.getEmailContactById(partyId, emailContactId)
                 .map(ResponseEntity::ok);
     }
@@ -146,11 +146,11 @@ public class EmailContactController {
     })
     public Mono<ResponseEntity<EmailContactDTO>> updateEmailContact(
             @Parameter(description = "Unique identifier of the party", required = true)
-            @PathVariable Long partyId,
+            @PathVariable UUID partyId,
             @Parameter(description = "Unique identifier of the email contact", required = true)
-            @PathVariable Long emailContactId,
+            @PathVariable UUID emailContactId,
             @Parameter(description = "Updated email contact data", required = true)
-            @Validated(OnUpdate.class) @RequestBody EmailContactDTO emailContactDTO) {
+            @Validated @RequestBody EmailContactDTO emailContactDTO) {
         return emailContactService.updateEmailContact(partyId, emailContactId, emailContactDTO)
                 .map(ResponseEntity::ok);
     }
@@ -173,9 +173,9 @@ public class EmailContactController {
     })
     public Mono<ResponseEntity<Void>> deleteEmailContact(
             @Parameter(description = "Unique identifier of the party", required = true)
-            @PathVariable Long partyId,
+            @PathVariable UUID partyId,
             @Parameter(description = "Unique identifier of the email contact", required = true)
-            @PathVariable Long emailContactId) {
+            @PathVariable UUID emailContactId) {
         return emailContactService.deleteEmailContact(partyId, emailContactId)
                 .then(Mono.just(ResponseEntity.noContent().build()));
     }

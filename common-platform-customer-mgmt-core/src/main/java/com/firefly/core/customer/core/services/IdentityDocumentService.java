@@ -4,6 +4,7 @@ import com.firefly.common.core.filters.FilterRequest;
 import com.firefly.common.core.queries.PaginationResponse;
 import com.firefly.core.customer.interfaces.dtos.IdentityDocumentDTO;
 import reactor.core.publisher.Mono;
+import java.util.UUID;
 
 /**
  * Service interface for managing identity documents.
@@ -16,7 +17,7 @@ public interface IdentityDocumentService {
      * @param filterRequest the request object containing filtering criteria for IdentityDocumentDTO
      * @return a reactive {@code Mono} emitting a {@code PaginationResponse} containing the filtered list of identity documents
      */
-    Mono<PaginationResponse<IdentityDocumentDTO>> filterIdentityDocuments(Long partyId, FilterRequest<IdentityDocumentDTO> filterRequest);
+    Mono<PaginationResponse<IdentityDocumentDTO>> filterIdentityDocuments(UUID partyId, FilterRequest<IdentityDocumentDTO> filterRequest);
     
     /**
      * Creates a new identity document based on the provided information for a specific party.
@@ -25,7 +26,7 @@ public interface IdentityDocumentService {
      * @param identityDocumentDTO the DTO object containing details of the identity document to be created
      * @return a Mono that emits the created IdentityDocumentDTO object
      */
-    Mono<IdentityDocumentDTO> createIdentityDocument(Long partyId, IdentityDocumentDTO identityDocumentDTO);
+    Mono<IdentityDocumentDTO> createIdentityDocument(UUID partyId, IdentityDocumentDTO identityDocumentDTO);
     
     /**
      * Updates an existing identity document with updated information.
@@ -35,7 +36,7 @@ public interface IdentityDocumentService {
      * @param identityDocumentDTO the data transfer object containing the updated details of the identity document
      * @return a reactive Mono containing the updated IdentityDocumentDTO
      */
-    Mono<IdentityDocumentDTO> updateIdentityDocument(Long partyId, Long identityDocumentId, IdentityDocumentDTO identityDocumentDTO);
+    Mono<IdentityDocumentDTO> updateIdentityDocument(UUID partyId, UUID identityDocumentId, IdentityDocumentDTO identityDocumentDTO);
     
     /**
      * Deletes an identity document identified by its unique ID, validating party ownership.
@@ -44,7 +45,7 @@ public interface IdentityDocumentService {
      * @param identityDocumentId the unique identifier of the identity document to be deleted
      * @return a Mono that completes when the identity document is successfully deleted or errors if the deletion fails
      */
-    Mono<Void> deleteIdentityDocument(Long partyId, Long identityDocumentId);
+    Mono<Void> deleteIdentityDocument(UUID partyId, UUID identityDocumentId);
     
     /**
      * Retrieves an identity document by its unique identifier.
@@ -54,5 +55,5 @@ public interface IdentityDocumentService {
      * @return a Mono emitting the {@link IdentityDocumentDTO} representing the identity document if found,
      *         or an empty Mono if the identity document does not exist
      */
-    Mono<IdentityDocumentDTO> getIdentityDocumentById(Long partyId, Long identityDocumentId);
+    Mono<IdentityDocumentDTO> getIdentityDocumentById(UUID partyId, UUID identityDocumentId);
 }

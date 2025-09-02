@@ -2,7 +2,8 @@ package com.firefly.core.customer.models.repositories;
 
 import com.firefly.core.customer.models.entities.IdentityDocument;
 import org.springframework.stereotype.Repository;
+import java.util.UUID;
 
 @Repository
-public interface IdentityDocumentRepository extends BaseRepository<IdentityDocument, Long> {
+public interface IdentityDocumentRepository extends BaseRepository<IdentityDocument, UUID> {
 }

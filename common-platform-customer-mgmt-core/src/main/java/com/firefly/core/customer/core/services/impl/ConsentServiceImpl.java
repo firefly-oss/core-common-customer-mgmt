@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
+import java.util.UUID;
 
 @Service
 @Transactional
@@ -24,7 +25,7 @@ public class ConsentServiceImpl implements ConsentService {
     private ConsentMapper mapper;
 
     @Override
-    public Mono<PaginationResponse<ConsentDTO>> filterConsents(Long partyId, FilterRequest<ConsentDTO> filterRequest) {
+    public Mono<PaginationResponse<ConsentDTO>> filterConsents(UUID partyId, FilterRequest<ConsentDTO> filterRequest) {
         return FilterUtils
                 .createFilter(
                         Consent.class,
@@ -34,7 +35,7 @@ public class ConsentServiceImpl implements ConsentService {
     }
 
     @Override
-    public Mono<ConsentDTO> createConsent(Long partyId, ConsentDTO consentDTO) {
+    public Mono<ConsentDTO> createConsent(UUID partyId, ConsentDTO consentDTO) {
         return Mono.just(consentDTO)
                 .map(mapper::toEntity)
                 .flatMap(repository::save)
@@ -42,7 +43,7 @@ public class ConsentServiceImpl implements ConsentService {
     }
 
     @Override
-    public Mono<ConsentDTO> updateConsent(Long partyId, Long consentId, ConsentDTO consentDTO) {
+    public Mono<ConsentDTO> updateConsent(UUID partyId, UUID consentId, ConsentDTO consentDTO) {
         return repository.findById(consentId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Consent not found with ID: " + consentId)))
                 .flatMap(existingConsent -> {
@@ -54,14 +55,14 @@ public class ConsentServiceImpl implements ConsentService {
     }
 
     @Override
-    public Mono<Void> deleteConsent(Long partyId, Long consentId) {
+    public Mono<Void> deleteConsent(UUID partyId, UUID consentId) {
         return repository.findById(consentId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Consent not found with ID: " + consentId)))
                 .flatMap(consent -> repository.deleteById(consentId));
     }
 
     @Override
-    public Mono<ConsentDTO> getConsentById(Long partyId, Long consentId) {
+    public Mono<ConsentDTO> getConsentById(UUID partyId, UUID consentId) {
         return repository.findById(consentId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Consent not found with ID: " + consentId)))
                 .map(mapper::toDTO);

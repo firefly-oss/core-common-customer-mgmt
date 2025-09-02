@@ -21,6 +21,7 @@ import java.time.LocalDateTime;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
+import java.util.UUID;
 
 @ExtendWith(MockitoExtension.class)
 class LegalEntityServiceImplTest {
@@ -36,13 +37,13 @@ class LegalEntityServiceImplTest {
 
     private LegalEntityDTO legalEntityDTO;
     private LegalEntity legalEntity;
-    private Long legalEntityId;
-    private Long partyId;
+    private UUID legalEntityId;
+    private UUID partyId;
 
     @BeforeEach
     void setUp() {
-        legalEntityId = 1L;
-        partyId = 1L;
+        legalEntityId = UUID.fromString("123e4567-e89b-12d3-a456-426614174001");
+        partyId = UUID.fromString("123e4567-e89b-12d3-a456-426614174001");
         
         legalEntity = new LegalEntity();
         legalEntity.setLegalEntityId(legalEntityId);
@@ -175,7 +176,7 @@ class LegalEntityServiceImplTest {
                 .verify();
 
         verify(legalEntityRepository).findById(legalEntityId);
-        verify(legalEntityRepository, never()).deleteById(any(Long.class));
+        verify(legalEntityRepository, never()).deleteById(any(UUID.class));
     }
 
     @Test

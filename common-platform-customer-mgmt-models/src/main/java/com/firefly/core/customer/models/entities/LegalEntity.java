@@ -11,6 +11,7 @@ import org.springframework.data.relational.core.mapping.Table;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 /**
  * Legal Entity entity representing organizational customers.
@@ -26,10 +27,10 @@ public class LegalEntity {
 
     @Id
     @Column("legal_entity_id")
-    private Long legalEntityId;
+    private UUID legalEntityId;
 
     @Column("party_id")
-    private Long partyId;
+    private UUID partyId;
 
     @Column("legal_name")
     private String legalName;
@@ -44,7 +45,7 @@ public class LegalEntity {
     private String taxIdNumber;
 
     @Column("legal_form_id")
-    private Long legalFormId;
+    private UUID legalFormId;
 
     @Column("incorporation_date")
     private LocalDate incorporationDate;
@@ -62,7 +63,7 @@ public class LegalEntity {
     private String websiteUrl;
 
     @Column("incorporation_country_id")
-    private Long incorporationCountryId;
+    private UUID incorporationCountryId;
 
     @Column("created_at")
     private LocalDateTime createdAt;

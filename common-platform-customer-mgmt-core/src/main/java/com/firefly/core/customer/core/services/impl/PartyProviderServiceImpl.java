@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
+import java.util.UUID;
 
 @Service
 @Transactional
@@ -24,7 +25,7 @@ public class PartyProviderServiceImpl implements PartyProviderService {
     private PartyProviderMapper mapper;
 
     @Override
-    public Mono<PaginationResponse<PartyProviderDTO>> filterPartyProviders(Long partyId, FilterRequest<PartyProviderDTO> filterRequest) {
+    public Mono<PaginationResponse<PartyProviderDTO>> filterPartyProviders(UUID partyId, FilterRequest<PartyProviderDTO> filterRequest) {
         return FilterUtils
                 .createFilter(
                         PartyProvider.class,
@@ -34,7 +35,7 @@ public class PartyProviderServiceImpl implements PartyProviderService {
     }
 
     @Override
-    public Mono<PartyProviderDTO> createPartyProvider(Long partyId, PartyProviderDTO partyProviderDTO) {
+    public Mono<PartyProviderDTO> createPartyProvider(UUID partyId, PartyProviderDTO partyProviderDTO) {
         return Mono.just(partyProviderDTO)
                 .map(mapper::toEntity)
                 .flatMap(repository::save)
@@ -42,7 +43,7 @@ public class PartyProviderServiceImpl implements PartyProviderService {
     }
 
     @Override
-    public Mono<PartyProviderDTO> updatePartyProvider(Long partyId, Long partyProviderId, PartyProviderDTO partyProviderDTO) {
+    public Mono<PartyProviderDTO> updatePartyProvider(UUID partyId, UUID partyProviderId, PartyProviderDTO partyProviderDTO) {
         return repository.findById(partyProviderId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Party provider not found with ID: " + partyProviderId)))
                 .flatMap(existingPartyProvider -> {
@@ -54,14 +55,14 @@ public class PartyProviderServiceImpl implements PartyProviderService {
     }
 
     @Override
-    public Mono<Void> deletePartyProvider(Long partyId, Long partyProviderId) {
+    public Mono<Void> deletePartyProvider(UUID partyId, UUID partyProviderId) {
         return repository.findById(partyProviderId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Party provider not found with ID: " + partyProviderId)))
                 .flatMap(partyProvider -> repository.deleteById(partyProviderId));
     }
 
     @Override
-    public Mono<PartyProviderDTO> getPartyProviderById(Long partyId, Long partyProviderId) {
+    public Mono<PartyProviderDTO> getPartyProviderById(UUID partyId, UUID partyProviderId) {
         return repository.findById(partyProviderId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Party provider not found with ID: " + partyProviderId)))
                 .map(mapper::toDTO);

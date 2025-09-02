@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 import jakarta.validation.Valid;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/parties/{partyId}/addresses")
@@ -56,7 +57,7 @@ public class AddressController {
     })
     public Mono<ResponseEntity<PaginationResponse<AddressDTO>>> filterAddresses(
             @Parameter(description = "Unique identifier of the party", required = true)
-            @PathVariable Long partyId,
+            @PathVariable UUID partyId,
             @Parameter(description = "Filter criteria for addresses", required = true)
             @Valid @RequestBody FilterRequest<AddressDTO> filterRequest) {
         return addressService.filterAddresses(partyId, filterRequest)
@@ -87,7 +88,7 @@ public class AddressController {
     })
     public Mono<ResponseEntity<AddressDTO>> createAddress(
             @Parameter(description = "Unique identifier of the party", required = true)
-            @PathVariable Long partyId,
+            @PathVariable UUID partyId,
             @Parameter(description = "Address data to create", required = true)
             @Valid @RequestBody AddressDTO addressDTO) {
         return addressService.createAddress(partyId, addressDTO)
@@ -113,9 +114,9 @@ public class AddressController {
     })
     public Mono<ResponseEntity<AddressDTO>> getAddressById(
             @Parameter(description = "Unique identifier of the party", required = true)
-            @PathVariable Long partyId,
+            @PathVariable UUID partyId,
             @Parameter(description = "Unique identifier of the address", required = true)
-            @PathVariable Long addressId) {
+            @PathVariable UUID addressId) {
         return addressService.getAddressById(partyId, addressId)
                 .map(ResponseEntity::ok);
     }
@@ -144,9 +145,9 @@ public class AddressController {
     })
     public Mono<ResponseEntity<AddressDTO>> updateAddress(
             @Parameter(description = "Unique identifier of the party", required = true)
-            @PathVariable Long partyId,
+            @PathVariable UUID partyId,
             @Parameter(description = "Unique identifier of the address", required = true)
-            @PathVariable Long addressId,
+            @PathVariable UUID addressId,
             @Parameter(description = "Updated address data", required = true)
             @Valid @RequestBody AddressDTO addressDTO) {
         return addressService.updateAddress(partyId, addressId, addressDTO)
@@ -171,9 +172,9 @@ public class AddressController {
     })
     public Mono<ResponseEntity<Void>> deleteAddress(
             @Parameter(description = "Unique identifier of the party", required = true)
-            @PathVariable Long partyId,
+            @PathVariable UUID partyId,
             @Parameter(description = "Unique identifier of the address", required = true)
-            @PathVariable Long addressId) {
+            @PathVariable UUID addressId) {
         return addressService.deleteAddress(partyId, addressId)
                 .then(Mono.just(ResponseEntity.noContent().build()));
     }

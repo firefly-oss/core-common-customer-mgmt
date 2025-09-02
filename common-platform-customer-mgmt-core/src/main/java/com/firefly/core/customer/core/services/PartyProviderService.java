@@ -4,6 +4,7 @@ import com.firefly.common.core.filters.FilterRequest;
 import com.firefly.common.core.queries.PaginationResponse;
 import com.firefly.core.customer.interfaces.dtos.PartyProviderDTO;
 import reactor.core.publisher.Mono;
+import java.util.UUID;
 
 /**
  * Service interface for managing party providers.
@@ -16,7 +17,7 @@ public interface PartyProviderService {
      * @param filterRequest the request object containing filtering criteria for PartyProviderDTO
      * @return a reactive {@code Mono} emitting a {@code PaginationResponse} containing the filtered list of party providers
      */
-    Mono<PaginationResponse<PartyProviderDTO>> filterPartyProviders(Long partyId, FilterRequest<PartyProviderDTO> filterRequest);
+    Mono<PaginationResponse<PartyProviderDTO>> filterPartyProviders(UUID partyId, FilterRequest<PartyProviderDTO> filterRequest);
     
     /**
      * Creates a new party provider based on the provided information for a specific party.
@@ -25,7 +26,7 @@ public interface PartyProviderService {
      * @param partyProviderDTO the DTO object containing details of the party provider to be created
      * @return a Mono that emits the created PartyProviderDTO object
      */
-    Mono<PartyProviderDTO> createPartyProvider(Long partyId, PartyProviderDTO partyProviderDTO);
+    Mono<PartyProviderDTO> createPartyProvider(UUID partyId, PartyProviderDTO partyProviderDTO);
     
     /**
      * Updates an existing party provider with updated information.
@@ -35,7 +36,7 @@ public interface PartyProviderService {
      * @param partyProviderDTO the data transfer object containing the updated details of the party provider
      * @return a reactive Mono containing the updated PartyProviderDTO
      */
-    Mono<PartyProviderDTO> updatePartyProvider(Long partyId, Long partyProviderId, PartyProviderDTO partyProviderDTO);
+    Mono<PartyProviderDTO> updatePartyProvider(UUID partyId, UUID partyProviderId, PartyProviderDTO partyProviderDTO);
     
     /**
      * Deletes a party provider identified by its unique ID, validating party ownership.
@@ -44,7 +45,7 @@ public interface PartyProviderService {
      * @param partyProviderId the unique identifier of the party provider to be deleted
      * @return a Mono that completes when the party provider is successfully deleted or errors if the deletion fails
      */
-    Mono<Void> deletePartyProvider(Long partyId, Long partyProviderId);
+    Mono<Void> deletePartyProvider(UUID partyId, UUID partyProviderId);
     
     /**
      * Retrieves a party provider by its unique identifier for a specific party.
@@ -54,5 +55,5 @@ public interface PartyProviderService {
      * @return a Mono emitting the {@link PartyProviderDTO} representing the party provider if found,
      *         or an empty Mono if the party provider does not exist
      */
-    Mono<PartyProviderDTO> getPartyProviderById(Long partyId, Long partyProviderId);
+    Mono<PartyProviderDTO> getPartyProviderById(UUID partyId, UUID partyProviderId);
 }

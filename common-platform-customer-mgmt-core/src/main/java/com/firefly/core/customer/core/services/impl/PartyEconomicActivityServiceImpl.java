@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
+import java.util.UUID;
 
 @Service
 @Transactional
@@ -24,7 +25,7 @@ public class PartyEconomicActivityServiceImpl implements PartyEconomicActivitySe
     private PartyEconomicActivityMapper mapper;
 
     @Override
-    public Mono<PaginationResponse<PartyEconomicActivityDTO>> filterPartyEconomicActivities(Long partyId, FilterRequest<PartyEconomicActivityDTO> filterRequest) {
+    public Mono<PaginationResponse<PartyEconomicActivityDTO>> filterPartyEconomicActivities(UUID partyId, FilterRequest<PartyEconomicActivityDTO> filterRequest) {
         return FilterUtils
                 .createFilter(
                         PartyEconomicActivity.class,
@@ -34,7 +35,7 @@ public class PartyEconomicActivityServiceImpl implements PartyEconomicActivitySe
     }
 
     @Override
-    public Mono<PartyEconomicActivityDTO> createPartyEconomicActivity(Long partyId, PartyEconomicActivityDTO partyEconomicActivityDTO) {
+    public Mono<PartyEconomicActivityDTO> createPartyEconomicActivity(UUID partyId, PartyEconomicActivityDTO partyEconomicActivityDTO) {
         return Mono.just(partyEconomicActivityDTO)
                 .map(mapper::toEntity)
                 .flatMap(repository::save)
@@ -42,7 +43,7 @@ public class PartyEconomicActivityServiceImpl implements PartyEconomicActivitySe
     }
 
     @Override
-    public Mono<PartyEconomicActivityDTO> updatePartyEconomicActivity(Long partyId, Long partyEconomicActivityId, PartyEconomicActivityDTO partyEconomicActivityDTO) {
+    public Mono<PartyEconomicActivityDTO> updatePartyEconomicActivity(UUID partyId, UUID partyEconomicActivityId, PartyEconomicActivityDTO partyEconomicActivityDTO) {
         return repository.findById(partyEconomicActivityId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Party economic activity not found with ID: " + partyEconomicActivityId)))
                 .flatMap(existingPartyEconomicActivity -> {
@@ -54,14 +55,14 @@ public class PartyEconomicActivityServiceImpl implements PartyEconomicActivitySe
     }
 
     @Override
-    public Mono<Void> deletePartyEconomicActivity(Long partyId, Long partyEconomicActivityId) {
+    public Mono<Void> deletePartyEconomicActivity(UUID partyId, UUID partyEconomicActivityId) {
         return repository.findById(partyEconomicActivityId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Party economic activity not found with ID: " + partyEconomicActivityId)))
                 .flatMap(partyEconomicActivity -> repository.deleteById(partyEconomicActivityId));
     }
 
     @Override
-    public Mono<PartyEconomicActivityDTO> getPartyEconomicActivityById(Long partyId, Long partyEconomicActivityId) {
+    public Mono<PartyEconomicActivityDTO> getPartyEconomicActivityById(UUID partyId, UUID partyEconomicActivityId) {
         return repository.findById(partyEconomicActivityId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Party economic activity not found with ID: " + partyEconomicActivityId)))
                 .map(mapper::toDTO);

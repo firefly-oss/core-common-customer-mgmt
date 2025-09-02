@@ -4,6 +4,7 @@ import com.firefly.common.core.filters.FilterRequest;
 import com.firefly.common.core.queries.PaginationResponse;
 import com.firefly.core.customer.interfaces.dtos.LegalEntityDTO;
 import reactor.core.publisher.Mono;
+import java.util.UUID;
 
 /**
  * Service interface for managing legal entities.
@@ -24,7 +25,7 @@ public interface LegalEntityService {
      * @param legalEntityDTO the DTO object containing details of the legal entity to be created
      * @return a Mono that emits the created LegalEntityDTO object
      */
-    Mono<LegalEntityDTO> createLegalEntity(Long partyId, LegalEntityDTO legalEntityDTO);
+    Mono<LegalEntityDTO> createLegalEntity(UUID partyId, LegalEntityDTO legalEntityDTO);
     
     /**
      * Updates an existing legal entity with updated information.
@@ -34,7 +35,7 @@ public interface LegalEntityService {
      * @param legalEntityDTO the data transfer object containing the updated details of the legal entity
      * @return a reactive Mono containing the updated LegalEntityDTO
      */
-    Mono<LegalEntityDTO> updateLegalEntity(Long partyId, Long legalEntityId, LegalEntityDTO legalEntityDTO);
+    Mono<LegalEntityDTO> updateLegalEntity(UUID partyId, UUID legalEntityId, LegalEntityDTO legalEntityDTO);
     
     /**
      * Deletes a legal entity identified by its unique ID, validating party ownership.
@@ -43,7 +44,7 @@ public interface LegalEntityService {
      * @param legalEntityId the unique identifier of the legal entity to be deleted
      * @return a Mono that completes when the legal entity is successfully deleted or errors if the deletion fails
      */
-    Mono<Void> deleteLegalEntity(Long partyId, Long legalEntityId);
+    Mono<Void> deleteLegalEntity(UUID partyId, UUID legalEntityId);
     
     /**
      * Retrieves a legal entity by its unique identifier.
@@ -53,7 +54,7 @@ public interface LegalEntityService {
      * @return a Mono emitting the {@link LegalEntityDTO} representing the legal entity if found,
      *         or an empty Mono if the legal entity does not exist
      */
-    Mono<LegalEntityDTO> getLegalEntityById(Long partyId, Long legalEntityId);
+    Mono<LegalEntityDTO> getLegalEntityById(UUID partyId, UUID legalEntityId);
     
     /**
      * Retrieves the legal entity associated with a specific party.
@@ -61,5 +62,5 @@ public interface LegalEntityService {
      * @param partyId the unique identifier of the party
      * @return a Mono emitting the LegalEntityDTO object belonging to the specified party
      */
-    Mono<LegalEntityDTO> getLegalEntityByPartyId(Long partyId);
+    Mono<LegalEntityDTO> getLegalEntityByPartyId(UUID partyId);
 }

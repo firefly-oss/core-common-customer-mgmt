@@ -21,6 +21,7 @@ import java.time.LocalDateTime;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
+import java.util.UUID;
 
 @ExtendWith(MockitoExtension.class)
 class IdentityDocumentServiceImplTest {
@@ -36,13 +37,13 @@ class IdentityDocumentServiceImplTest {
 
     private IdentityDocumentDTO identityDocumentDTO;
     private IdentityDocument identityDocument;
-    private Long identityDocumentId;
-    private Long partyId;
+    private UUID identityDocumentId;
+    private UUID partyId;
 
     @BeforeEach
     void setUp() {
-        identityDocumentId = 1L;
-        partyId = 1L;
+        identityDocumentId = UUID.fromString("123e4567-e89b-12d3-a456-426614174001");
+        partyId = UUID.fromString("123e4567-e89b-12d3-a456-426614174001");
         
         identityDocument = new IdentityDocument();
         identityDocument.setIdentityDocumentId(identityDocumentId);
@@ -175,7 +176,7 @@ class IdentityDocumentServiceImplTest {
                 .verify();
 
         verify(identityDocumentRepository).findById(identityDocumentId);
-        verify(identityDocumentRepository, never()).deleteById(any(Long.class));
+        verify(identityDocumentRepository, never()).deleteById(any(UUID.class));
     }
 
     @Test

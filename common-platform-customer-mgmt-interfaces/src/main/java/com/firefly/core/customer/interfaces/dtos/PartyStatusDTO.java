@@ -11,6 +11,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 /**
  * Data Transfer Object for Party Status entity representing status history for parties.
@@ -23,11 +24,11 @@ import java.time.LocalDateTime;
 public class PartyStatusDTO {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private Long partyStatusId;
+    private UUID partyStatusId;
 
     @FilterableId
     @NotNull(message = "Party ID is required")
-    private Long partyId;
+    private UUID partyId;
     
     @NotNull(message = "Status code is required")
     private StatusCode statusCode;

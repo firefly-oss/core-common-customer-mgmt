@@ -21,6 +21,7 @@ import java.time.LocalDateTime;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
+import java.util.UUID;
 
 @ExtendWith(MockitoExtension.class)
 class ConsentServiceImplTest {
@@ -36,13 +37,13 @@ class ConsentServiceImplTest {
 
     private ConsentDTO consentDTO;
     private Consent consent;
-    private Long consentId;
-    private Long partyId;
+    private UUID consentId;
+    private UUID partyId;
 
     @BeforeEach
     void setUp() {
-        consentId = 1L;
-        partyId = 1L;
+        consentId = UUID.fromString("123e4567-e89b-12d3-a456-426614174001");
+        partyId = UUID.fromString("123e4567-e89b-12d3-a456-426614174001");
         
         consent = new Consent();
         consent.setConsentId(consentId);
@@ -175,7 +176,7 @@ class ConsentServiceImplTest {
                 .verify();
 
         verify(consentRepository).findById(consentId);
-        verify(consentRepository, never()).deleteById(any(Long.class));
+        verify(consentRepository, never()).deleteById(any(UUID.class));
     }
 
     @Test

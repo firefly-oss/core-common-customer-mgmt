@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
+import java.util.UUID;
 
 @Service
 @Transactional
@@ -24,7 +25,7 @@ public class PhoneContactServiceImpl implements PhoneContactService {
     private PhoneContactMapper mapper;
 
     @Override
-    public Mono<PaginationResponse<PhoneContactDTO>> filterPhoneContacts(Long partyId, FilterRequest<PhoneContactDTO> filterRequest) {
+    public Mono<PaginationResponse<PhoneContactDTO>> filterPhoneContacts(UUID partyId, FilterRequest<PhoneContactDTO> filterRequest) {
         return FilterUtils
                 .createFilter(
                         PhoneContact.class,
@@ -34,7 +35,7 @@ public class PhoneContactServiceImpl implements PhoneContactService {
     }
 
     @Override
-    public Mono<PhoneContactDTO> createPhoneContact(Long partyId, PhoneContactDTO phoneContactDTO) {
+    public Mono<PhoneContactDTO> createPhoneContact(UUID partyId, PhoneContactDTO phoneContactDTO) {
         return Mono.just(phoneContactDTO)
                 .map(mapper::toEntity)
                 .flatMap(repository::save)
@@ -42,7 +43,7 @@ public class PhoneContactServiceImpl implements PhoneContactService {
     }
 
     @Override
-    public Mono<PhoneContactDTO> updatePhoneContact(Long partyId, Long phoneContactId, PhoneContactDTO phoneContactDTO) {
+    public Mono<PhoneContactDTO> updatePhoneContact(UUID partyId, UUID phoneContactId, PhoneContactDTO phoneContactDTO) {
         return repository.findById(phoneContactId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Phone contact not found with ID: " + phoneContactId)))
                 .flatMap(existingPhoneContact -> {
@@ -57,14 +58,14 @@ public class PhoneContactServiceImpl implements PhoneContactService {
     }
 
     @Override
-    public Mono<Void> deletePhoneContact(Long partyId, Long phoneContactId) {
+    public Mono<Void> deletePhoneContact(UUID partyId, UUID phoneContactId) {
         return repository.findById(phoneContactId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Phone contact not found with ID: " + phoneContactId)))
                 .flatMap(phoneContact -> repository.deleteById(phoneContactId));
     }
 
     @Override
-    public Mono<PhoneContactDTO> getPhoneContactById(Long partyId, Long phoneContactId) {
+    public Mono<PhoneContactDTO> getPhoneContactById(UUID partyId, UUID phoneContactId) {
         return repository.findById(phoneContactId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Phone contact not found with ID: " + phoneContactId)))
                 .map(mapper::toDTO);

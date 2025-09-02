@@ -17,6 +17,7 @@ import jakarta.validation.constraints.Pattern;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 /**
  * Data Transfer Object for Legal Entity entity representing organizational customers.
@@ -30,11 +31,11 @@ import java.time.LocalDateTime;
 public class LegalEntityDTO {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private Long legalEntityId;
+    private UUID legalEntityId;
 
     @FilterableId
     @NotNull(message = "Party ID is required")
-    private Long partyId;
+    private UUID partyId;
 
     @NotBlank(message = "Legal name is required")
     @Size(max = 200, message = "Legal name must not exceed 200 characters")
@@ -50,7 +51,7 @@ public class LegalEntityDTO {
     private String taxIdNumber;
 
     @FilterableId
-    private Long legalFormId;
+    private UUID legalFormId;
 
     @Past(message = "Incorporation date must be in the past")
     private LocalDate incorporationDate;
@@ -69,7 +70,7 @@ public class LegalEntityDTO {
     private String websiteUrl;
 
     @FilterableId
-    private Long incorporationCountryId;
+    private UUID incorporationCountryId;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

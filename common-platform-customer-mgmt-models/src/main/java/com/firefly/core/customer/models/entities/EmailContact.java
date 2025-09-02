@@ -10,6 +10,7 @@ import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 /**
  * Email Contact entity representing email contact information for parties.
@@ -24,10 +25,10 @@ public class EmailContact {
 
     @Id
     @Column("email_contact_id")
-    private Long emailContactId;
+    private UUID emailContactId;
 
     @Column("party_id")
-    private Long partyId;
+    private UUID partyId;
 
     @Column("email")
     private String email;

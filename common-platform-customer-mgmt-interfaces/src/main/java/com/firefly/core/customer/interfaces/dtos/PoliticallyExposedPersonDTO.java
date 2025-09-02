@@ -10,6 +10,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 /**
  * Data Transfer Object for Politically Exposed Person entity representing PEP information for parties.
@@ -22,11 +23,11 @@ import java.time.LocalDateTime;
 public class PoliticallyExposedPersonDTO {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private Long pepId;
+    private UUID pepId;
 
     @FilterableId
     @NotNull(message = "Party ID is required")
-    private Long partyId;
+    private UUID partyId;
 
     @NotNull(message = "PEP status is required")
     private Boolean pep;
@@ -38,7 +39,7 @@ public class PoliticallyExposedPersonDTO {
     private String publicPosition;
 
     @FilterableId
-    private Long countryOfPositionId;
+    private UUID countryOfPositionId;
     
     private LocalDateTime startDate;
     private LocalDateTime endDate;

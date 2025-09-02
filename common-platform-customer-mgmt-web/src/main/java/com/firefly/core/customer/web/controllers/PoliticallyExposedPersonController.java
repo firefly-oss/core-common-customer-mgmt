@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 import jakarta.validation.Valid;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/parties/{partyId}/politically-exposed-persons")
@@ -56,7 +57,7 @@ public class PoliticallyExposedPersonController {
     })
     public Mono<ResponseEntity<PaginationResponse<PoliticallyExposedPersonDTO>>> filterPoliticallyExposedPersons(
             @Parameter(description = "Unique identifier of the party", required = true)
-            @PathVariable Long partyId,
+            @PathVariable UUID partyId,
             @Parameter(description = "Filter criteria for politically exposed persons", required = true)
             @Valid @RequestBody FilterRequest<PoliticallyExposedPersonDTO> filterRequest) {
         return politicallyExposedPersonService.filterPoliticallyExposedPersons(partyId, filterRequest)
@@ -87,7 +88,7 @@ public class PoliticallyExposedPersonController {
     })
     public Mono<ResponseEntity<PoliticallyExposedPersonDTO>> createPoliticallyExposedPerson(
             @Parameter(description = "Unique identifier of the party", required = true)
-            @PathVariable Long partyId,
+            @PathVariable UUID partyId,
             @Parameter(description = "Politically exposed person data to create", required = true)
             @Valid @RequestBody PoliticallyExposedPersonDTO politicallyExposedPersonDTO) {
         return politicallyExposedPersonService.createPoliticallyExposedPerson(partyId, politicallyExposedPersonDTO)
@@ -113,9 +114,9 @@ public class PoliticallyExposedPersonController {
     })
     public Mono<ResponseEntity<PoliticallyExposedPersonDTO>> getPoliticallyExposedPersonById(
             @Parameter(description = "Unique identifier of the party", required = true)
-            @PathVariable Long partyId,
+            @PathVariable UUID partyId,
             @Parameter(description = "Unique identifier of the politically exposed person", required = true)
-            @PathVariable Long pepId) {
+            @PathVariable UUID pepId) {
         return politicallyExposedPersonService.getPoliticallyExposedPersonById(partyId, pepId)
                 .map(ResponseEntity::ok);
     }
@@ -144,9 +145,9 @@ public class PoliticallyExposedPersonController {
     })
     public Mono<ResponseEntity<PoliticallyExposedPersonDTO>> updatePoliticallyExposedPerson(
             @Parameter(description = "Unique identifier of the party", required = true)
-            @PathVariable Long partyId,
+            @PathVariable UUID partyId,
             @Parameter(description = "Unique identifier of the politically exposed person", required = true)
-            @PathVariable Long pepId,
+            @PathVariable UUID pepId,
             @Parameter(description = "Updated politically exposed person data", required = true)
             @Valid @RequestBody PoliticallyExposedPersonDTO politicallyExposedPersonDTO) {
         return politicallyExposedPersonService.updatePoliticallyExposedPerson(partyId, pepId, politicallyExposedPersonDTO)
@@ -171,9 +172,9 @@ public class PoliticallyExposedPersonController {
     })
     public Mono<ResponseEntity<Void>> deletePoliticallyExposedPerson(
             @Parameter(description = "Unique identifier of the party", required = true)
-            @PathVariable Long partyId,
+            @PathVariable UUID partyId,
             @Parameter(description = "Unique identifier of the politically exposed person", required = true)
-            @PathVariable Long pepId) {
+            @PathVariable UUID pepId) {
         return politicallyExposedPersonService.deletePoliticallyExposedPerson(partyId, pepId)
                 .then(Mono.just(ResponseEntity.noContent().build()));
     }

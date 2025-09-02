@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 import jakarta.validation.Valid;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/parties/{partyId}/legal-entities")
@@ -56,7 +57,7 @@ public class LegalEntityController {
     })
     public Mono<ResponseEntity<PaginationResponse<LegalEntityDTO>>> filterLegalEntities(
             @Parameter(description = "Unique identifier of the party", required = true)
-            @PathVariable Long partyId,
+            @PathVariable UUID partyId,
             @Parameter(description = "Filter criteria for legal entities", required = true)
             @Valid @RequestBody FilterRequest<LegalEntityDTO> filterRequest) {
         return legalEntityService.filterLegalEntities(filterRequest)
@@ -87,7 +88,7 @@ public class LegalEntityController {
     })
     public Mono<ResponseEntity<LegalEntityDTO>> createLegalEntity(
             @Parameter(description = "Unique identifier of the party", required = true)
-            @PathVariable Long partyId,
+            @PathVariable UUID partyId,
             @Parameter(description = "Legal entity data to create", required = true)
             @Valid @RequestBody LegalEntityDTO legalEntityDTO) {
         return legalEntityService.createLegalEntity(partyId, legalEntityDTO)
@@ -113,7 +114,7 @@ public class LegalEntityController {
     })
     public Mono<ResponseEntity<LegalEntityDTO>> getLegalEntityByPartyId(
             @Parameter(description = "Unique identifier of the party", required = true)
-            @PathVariable Long partyId) {
+            @PathVariable UUID partyId) {
         return legalEntityService.getLegalEntityByPartyId(partyId)
                 .map(ResponseEntity::ok);
     }
@@ -137,9 +138,9 @@ public class LegalEntityController {
     })
     public Mono<ResponseEntity<LegalEntityDTO>> getLegalEntityById(
             @Parameter(description = "Unique identifier of the party", required = true)
-            @PathVariable Long partyId,
+            @PathVariable UUID partyId,
             @Parameter(description = "Unique identifier of the legal entity", required = true)
-            @PathVariable Long legalEntityId) {
+            @PathVariable UUID legalEntityId) {
         return legalEntityService.getLegalEntityById(partyId, legalEntityId)
                 .map(ResponseEntity::ok);
     }
@@ -168,9 +169,9 @@ public class LegalEntityController {
     })
     public Mono<ResponseEntity<LegalEntityDTO>> updateLegalEntity(
             @Parameter(description = "Unique identifier of the party", required = true)
-            @PathVariable Long partyId,
+            @PathVariable UUID partyId,
             @Parameter(description = "Unique identifier of the legal entity", required = true)
-            @PathVariable Long legalEntityId,
+            @PathVariable UUID legalEntityId,
             @Parameter(description = "Updated legal entity data", required = true)
             @Valid @RequestBody LegalEntityDTO legalEntityDTO) {
         return legalEntityService.updateLegalEntity(partyId, legalEntityId, legalEntityDTO)
@@ -195,9 +196,9 @@ public class LegalEntityController {
     })
     public Mono<ResponseEntity<Void>> deleteLegalEntity(
             @Parameter(description = "Unique identifier of the party", required = true)
-            @PathVariable Long partyId,
+            @PathVariable UUID partyId,
             @Parameter(description = "Unique identifier of the legal entity", required = true)
-            @PathVariable Long legalEntityId) {
+            @PathVariable UUID legalEntityId) {
         return legalEntityService.deleteLegalEntity(partyId, legalEntityId)
                 .then(Mono.just(ResponseEntity.noContent().build()));
     }

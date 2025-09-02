@@ -2,7 +2,8 @@ package com.firefly.core.customer.models.repositories;
 
 import com.firefly.core.customer.models.entities.Party;
 import org.springframework.stereotype.Repository;
+import java.util.UUID;
 
 @Repository
-public interface PartyRepository extends BaseRepository<Party, Long> {
+public interface PartyRepository extends BaseRepository<Party, UUID> {
 }

@@ -8,7 +8,7 @@
 -- PARTY (Supertype) - Canonical customer identifier
 -- ======================================================
 CREATE TABLE party (
-    party_id BIGSERIAL PRIMARY KEY,
+    party_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     party_kind party_kind_enum NOT NULL,
     preferred_language VARCHAR(5),
     source_system VARCHAR(50),
@@ -20,8 +20,8 @@ CREATE TABLE party (
 -- NATURAL PERSON (Subtype of PARTY)
 -- ======================================================
 CREATE TABLE natural_person (
-    natural_person_id BIGSERIAL PRIMARY KEY,
-    party_id BIGINT NOT NULL UNIQUE,
+    natural_person_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    party_id UUID NOT NULL UNIQUE,
     title VARCHAR(20),
     given_name VARCHAR(100) NOT NULL,
     middle_name VARCHAR(100),
@@ -29,8 +29,8 @@ CREATE TABLE natural_person (
     family_name2 VARCHAR(100),
     date_of_birth DATE,
     birth_place VARCHAR(255),
-    birth_country_id BIGINT,
-    nationality_country_id BIGINT,
+    birth_country_id UUID,
+    nationality_country_id UUID,
     gender gender_enum,
     marital_status marital_status_enum,
     tax_id_number VARCHAR(50),
@@ -47,19 +47,19 @@ CREATE TABLE natural_person (
 -- LEGAL ENTITY (Subtype of PARTY)
 -- ======================================================
 CREATE TABLE legal_entity (
-    legal_entity_id BIGSERIAL PRIMARY KEY,
-    party_id BIGINT NOT NULL UNIQUE,
+    legal_entity_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    party_id UUID NOT NULL UNIQUE,
     legal_name VARCHAR(500) NOT NULL,
     trade_name VARCHAR(500),
     registration_number VARCHAR(100),
     tax_id_number VARCHAR(50),
-    legal_form_id BIGINT,
+    legal_form_id UUID,
     incorporation_date DATE,
     industry_description VARCHAR(500),
-    headcount BIGINT,
+    headcount UUID,
     share_capital DECIMAL(15,2),
     website_url VARCHAR(500),
-    incorporation_country_id BIGINT,
+    incorporation_country_id UUID,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (party_id) REFERENCES party(party_id) ON DELETE CASCADE
@@ -69,8 +69,8 @@ CREATE TABLE legal_entity (
 -- PARTY STATUS
 -- ======================================================
 CREATE TABLE party_status (
-    party_status_id BIGSERIAL PRIMARY KEY,
-    party_id BIGINT NOT NULL,
+    party_status_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    party_id UUID NOT NULL,
     status_code status_code_enum NOT NULL,
     status_reason VARCHAR(500),
     valid_from TIMESTAMP WITH TIME ZONE NOT NULL,
@@ -84,12 +84,12 @@ CREATE TABLE party_status (
 -- IDENTITY DOCUMENT
 -- ======================================================
 CREATE TABLE identity_document (
-    identity_document_id BIGSERIAL PRIMARY KEY,
-    party_id BIGINT NOT NULL,
-    identity_document_category_id BIGINT NOT NULL,
-    identity_document_type_id BIGINT NOT NULL,
+    identity_document_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    party_id UUID NOT NULL,
+    identity_document_category_id UUID NOT NULL,
+    identity_document_type_id UUID NOT NULL,
     document_number VARCHAR(100) NOT NULL,
-    issuing_country_id BIGINT NOT NULL,
+    issuing_country_id UUID NOT NULL,
     issue_date TIMESTAMP WITH TIME ZONE,
     expiry_date TIMESTAMP WITH TIME ZONE,
     issuing_authority VARCHAR(255),
@@ -104,15 +104,15 @@ CREATE TABLE identity_document (
 -- ADDRESS
 -- ======================================================
 CREATE TABLE address (
-    address_id BIGSERIAL PRIMARY KEY,
-    party_id BIGINT NOT NULL,
+    address_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    party_id UUID NOT NULL,
     address_kind address_kind_enum NOT NULL,
     line1 VARCHAR(255) NOT NULL,
     line2 VARCHAR(255),
     city VARCHAR(100) NOT NULL,
     region VARCHAR(100),
     postal_code VARCHAR(20),
-    country_id BIGINT NOT NULL,
+    country_id UUID NOT NULL,
     is_primary BOOLEAN NOT NULL DEFAULT FALSE,
     latitude DOUBLE PRECISION,
     longitude DOUBLE PRECISION,
@@ -125,8 +125,8 @@ CREATE TABLE address (
 -- EMAIL CONTACT
 -- ======================================================
 CREATE TABLE email_contact (
-    email_contact_id BIGSERIAL PRIMARY KEY,
-    party_id BIGINT NOT NULL,
+    email_contact_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    party_id UUID NOT NULL,
     email VARCHAR(320) NOT NULL,
     email_kind email_kind_enum NOT NULL,
     is_primary BOOLEAN NOT NULL DEFAULT FALSE,
@@ -140,8 +140,8 @@ CREATE TABLE email_contact (
 -- PHONE CONTACT
 -- ======================================================
 CREATE TABLE phone_contact (
-    phone_contact_id BIGSERIAL PRIMARY KEY,
-    party_id BIGINT NOT NULL,
+    phone_contact_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    party_id UUID NOT NULL,
     phone_number VARCHAR(20) NOT NULL,
     phone_kind phone_kind_enum NOT NULL,
     is_primary BOOLEAN NOT NULL DEFAULT FALSE,
@@ -156,10 +156,10 @@ CREATE TABLE phone_contact (
 -- PARTY RELATIONSHIP
 -- ======================================================
 CREATE TABLE party_relationship (
-    party_relationship_id BIGSERIAL PRIMARY KEY,
-    from_party_id BIGINT NOT NULL,
-    to_party_id BIGINT NOT NULL,
-    relationship_type_id BIGINT NOT NULL,
+    party_relationship_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    from_party_id UUID NOT NULL,
+    to_party_id UUID NOT NULL,
+    relationship_type_id UUID NOT NULL,
     start_date TIMESTAMP WITH TIME ZONE NOT NULL,
     end_date TIMESTAMP WITH TIME ZONE,
     active BOOLEAN NOT NULL DEFAULT TRUE,
@@ -175,9 +175,9 @@ CREATE TABLE party_relationship (
 -- PARTY ECONOMIC ACTIVITY
 -- ======================================================
 CREATE TABLE party_economic_activity (
-    party_economic_activity_id BIGSERIAL PRIMARY KEY,
-    party_id BIGINT NOT NULL,
-    economic_activity_id BIGINT NOT NULL,
+    party_economic_activity_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    party_id UUID NOT NULL,
+    economic_activity_id UUID NOT NULL,
     annual_turnover DECIMAL(15,2),
     currency_code VARCHAR(3),
     start_date TIMESTAMP WITH TIME ZONE NOT NULL,
@@ -192,9 +192,9 @@ CREATE TABLE party_economic_activity (
 -- CONSENT
 -- ======================================================
 CREATE TABLE consent (
-    consent_id BIGSERIAL PRIMARY KEY,
-    party_id BIGINT NOT NULL,
-    consent_type_id BIGINT NOT NULL,
+    consent_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    party_id UUID NOT NULL,
+    consent_type_id UUID NOT NULL,
     granted BOOLEAN NOT NULL DEFAULT FALSE,
     granted_at TIMESTAMP WITH TIME ZONE,
     revoked_at TIMESTAMP WITH TIME ZONE,
@@ -208,12 +208,12 @@ CREATE TABLE consent (
 -- POLITICALLY EXPOSED PERSON (PEP)
 -- ======================================================
 CREATE TABLE politically_exposed_person (
-    pep_id BIGSERIAL PRIMARY KEY,
-    party_id BIGINT NOT NULL,
+    pep_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    party_id UUID NOT NULL,
     pep BOOLEAN NOT NULL DEFAULT FALSE,
     category VARCHAR(100),
     public_position VARCHAR(255),
-    country_of_position_id BIGINT,
+    country_of_position_id UUID,
     start_date TIMESTAMP WITH TIME ZONE,
     end_date TIMESTAMP WITH TIME ZONE,
     notes VARCHAR(1000),
@@ -226,8 +226,8 @@ CREATE TABLE politically_exposed_person (
 -- PARTY PROVIDER (External system mapping)
 -- ======================================================
 CREATE TABLE party_provider (
-    party_provider_id BIGSERIAL PRIMARY KEY,
-    party_id BIGINT NOT NULL,
+    party_provider_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    party_id UUID NOT NULL,
     provider_name VARCHAR(100) NOT NULL,
     external_reference VARCHAR(255) NOT NULL,
     provider_status provider_status_enum NOT NULL,

@@ -14,6 +14,7 @@ import org.springframework.data.relational.core.mapping.Table;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 /**
  * Natural Person entity representing individual customers.
@@ -29,10 +30,10 @@ public class NaturalPerson {
 
     @Id
     @Column("natural_person_id")
-    private Long naturalPersonId;
+    private UUID naturalPersonId;
 
     @Column("party_id")
-    private Long partyId;
+    private UUID partyId;
 
     @Column("title")
     private String title;
@@ -56,10 +57,10 @@ public class NaturalPerson {
     private String birthPlace;
 
     @Column("birth_country_id")
-    private Long birthCountryId;
+    private UUID birthCountryId;
 
     @Column("nationality_country_id")
-    private Long nationalityCountryId;
+    private UUID nationalityCountryId;
 
     @Column("gender")
     private Gender gender;

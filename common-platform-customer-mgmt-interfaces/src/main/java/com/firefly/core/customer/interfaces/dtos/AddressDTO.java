@@ -14,6 +14,7 @@ import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 /**
  * Data Transfer Object for Address entity representing addresses for parties.
@@ -26,11 +27,11 @@ import java.time.LocalDateTime;
 public class AddressDTO {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private Long addressId;
+    private UUID addressId;
 
     @FilterableId
     @NotNull(message = "Party ID is required")
-    private Long partyId;
+    private UUID partyId;
 
     @NotNull(message = "Address kind is required")
     private AddressKind addressKind;
@@ -54,7 +55,7 @@ public class AddressDTO {
 
     @FilterableId
     @NotNull(message = "Country ID is required")
-    private Long countryId;
+    private UUID countryId;
 
     private Boolean isPrimary;
     

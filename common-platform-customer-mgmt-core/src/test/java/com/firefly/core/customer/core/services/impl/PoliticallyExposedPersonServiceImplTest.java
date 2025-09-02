@@ -21,6 +21,7 @@ import java.time.LocalDateTime;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
+import java.util.UUID;
 
 @ExtendWith(MockitoExtension.class)
 class PoliticallyExposedPersonServiceImplTest {
@@ -36,13 +37,13 @@ class PoliticallyExposedPersonServiceImplTest {
 
     private PoliticallyExposedPersonDTO politicallyExposedPersonDTO;
     private PoliticallyExposedPerson politicallyExposedPerson;
-    private Long politicallyExposedPersonId;
-    private Long partyId;
+    private UUID politicallyExposedPersonId;
+    private UUID partyId;
 
     @BeforeEach
     void setUp() {
-        politicallyExposedPersonId = 1L;
-        partyId = 1L;
+        politicallyExposedPersonId = UUID.fromString("123e4567-e89b-12d3-a456-426614174000");
+        partyId = UUID.fromString("123e4567-e89b-12d3-a456-426614174001");
         
         politicallyExposedPerson = new PoliticallyExposedPerson();
         politicallyExposedPerson.setPepId(politicallyExposedPersonId);
@@ -175,7 +176,7 @@ class PoliticallyExposedPersonServiceImplTest {
                 .verify();
 
         verify(politicallyExposedPersonRepository).findById(politicallyExposedPersonId);
-        verify(politicallyExposedPersonRepository, never()).deleteById(any(Long.class));
+        verify(politicallyExposedPersonRepository, never()).deleteById(any(UUID.class));
     }
 
     @Test

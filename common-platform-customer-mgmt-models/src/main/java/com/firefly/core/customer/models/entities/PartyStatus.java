@@ -10,6 +10,7 @@ import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 /**
  * Party Status entity representing status history for parties.
@@ -24,10 +25,10 @@ public class PartyStatus {
 
     @Id
     @Column("party_status_id")
-    private Long partyStatusId;
+    private UUID partyStatusId;
 
     @Column("party_id")
-    private Long partyId;
+    private UUID partyId;
 
     @Column("status_code")
     private StatusCode statusCode;

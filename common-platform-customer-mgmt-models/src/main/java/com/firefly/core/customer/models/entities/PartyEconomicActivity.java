@@ -10,6 +10,7 @@ import org.springframework.data.relational.core.mapping.Table;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 /**
  * Party Economic Activity entity representing economic activities for parties.
@@ -24,13 +25,13 @@ public class PartyEconomicActivity {
 
     @Id
     @Column("party_economic_activity_id")
-    private Long partyEconomicActivityId;
+    private UUID partyEconomicActivityId;
 
     @Column("party_id")
-    private Long partyId;
+    private UUID partyId;
 
     @Column("economic_activity_id")
-    private Long economicActivityId;
+    private UUID economicActivityId;
 
     @Column("annual_turnover")
     private BigDecimal annualTurnover;

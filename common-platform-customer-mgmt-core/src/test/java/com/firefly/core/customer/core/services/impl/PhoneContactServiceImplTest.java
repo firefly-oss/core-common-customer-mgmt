@@ -21,6 +21,7 @@ import java.time.LocalDateTime;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
+import java.util.UUID;
 
 @ExtendWith(MockitoExtension.class)
 class PhoneContactServiceImplTest {
@@ -36,13 +37,13 @@ class PhoneContactServiceImplTest {
 
     private PhoneContactDTO phoneContactDTO;
     private PhoneContact phoneContact;
-    private Long phoneContactId;
-    private Long partyId;
+    private UUID phoneContactId;
+    private UUID partyId;
 
     @BeforeEach
     void setUp() {
-        phoneContactId = 1L;
-        partyId = 1L;
+        phoneContactId = UUID.fromString("123e4567-e89b-12d3-a456-426614174001");
+        partyId = UUID.fromString("123e4567-e89b-12d3-a456-426614174001");
         
         phoneContact = new PhoneContact();
         phoneContact.setPhoneContactId(phoneContactId);
@@ -175,7 +176,7 @@ class PhoneContactServiceImplTest {
                 .verify();
 
         verify(phoneContactRepository).findById(phoneContactId);
-        verify(phoneContactRepository, never()).deleteById(any(Long.class));
+        verify(phoneContactRepository, never()).deleteById(any(UUID.class));
     }
 
     @Test
