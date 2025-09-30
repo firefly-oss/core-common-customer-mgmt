@@ -39,7 +39,7 @@ import jakarta.validation.Valid;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/parties/{partyId}/relationships")
+@RequestMapping("/api/v1/parties/relationships")
 @RequiredArgsConstructor
 @Validated
 @Tag(
@@ -73,11 +73,9 @@ public class PartyRelationshipController {
         )
     })
     public Mono<ResponseEntity<PaginationResponse<PartyRelationshipDTO>>> filterPartyRelationships(
-            @Parameter(description = "Unique identifier of the party", required = true)
-            @PathVariable UUID partyId,
             @Parameter(description = "Filter criteria for party relationships", required = true)
             @Valid @RequestBody FilterRequest<PartyRelationshipDTO> filterRequest) {
-        return partyRelationshipService.filterPartyRelationships(partyId, filterRequest)
+        return partyRelationshipService.filterPartyRelationships(filterRequest)
                 .map(ResponseEntity::ok);
     }
 
@@ -104,11 +102,9 @@ public class PartyRelationshipController {
         )
     })
     public Mono<ResponseEntity<PartyRelationshipDTO>> createPartyRelationship(
-            @Parameter(description = "Unique identifier of the party", required = true)
-            @PathVariable UUID partyId,
             @Parameter(description = "Party relationship data to create", required = true)
             @Valid @RequestBody PartyRelationshipDTO partyRelationshipDTO) {
-        return partyRelationshipService.createPartyRelationship(partyId, partyRelationshipDTO)
+        return partyRelationshipService.createPartyRelationship(partyRelationshipDTO)
                 .map(relationship -> ResponseEntity.status(HttpStatus.CREATED).body(relationship));
     }
 
@@ -130,11 +126,9 @@ public class PartyRelationshipController {
         )
     })
     public Mono<ResponseEntity<PartyRelationshipDTO>> getPartyRelationshipById(
-            @Parameter(description = "Unique identifier of the party", required = true)
-            @PathVariable UUID partyId,
             @Parameter(description = "Unique identifier of the party relationship", required = true)
             @PathVariable UUID relationshipId) {
-        return partyRelationshipService.getPartyRelationshipById(partyId, relationshipId)
+        return partyRelationshipService.getPartyRelationshipById(relationshipId)
                 .map(ResponseEntity::ok);
     }
 
@@ -161,13 +155,11 @@ public class PartyRelationshipController {
         )
     })
     public Mono<ResponseEntity<PartyRelationshipDTO>> updatePartyRelationship(
-            @Parameter(description = "Unique identifier of the party", required = true)
-            @PathVariable UUID partyId,
             @Parameter(description = "Unique identifier of the party relationship", required = true)
             @PathVariable UUID relationshipId,
             @Parameter(description = "Updated party relationship data", required = true)
             @Valid @RequestBody PartyRelationshipDTO partyRelationshipDTO) {
-        return partyRelationshipService.updatePartyRelationship(partyId, relationshipId, partyRelationshipDTO)
+        return partyRelationshipService.updatePartyRelationship(relationshipId, partyRelationshipDTO)
                 .map(ResponseEntity::ok);
     }
 
@@ -188,11 +180,9 @@ public class PartyRelationshipController {
         )
     })
     public Mono<ResponseEntity<Void>> deletePartyRelationship(
-            @Parameter(description = "Unique identifier of the party", required = true)
-            @PathVariable UUID partyId,
             @Parameter(description = "Unique identifier of the party relationship", required = true)
             @PathVariable UUID relationshipId) {
-        return partyRelationshipService.deletePartyRelationship(partyId, relationshipId)
+        return partyRelationshipService.deletePartyRelationship(relationshipId)
                 .then(Mono.just(ResponseEntity.noContent().build()));
     }
 }

@@ -55,13 +55,11 @@ class PartyRelationshipServiceImplTest {
     private PartyRelationshipDTO partyRelationshipDTO;
     private PartyRelationship partyRelationship;
     private UUID partyRelationshipId;
-    private UUID partyId;
 
     @BeforeEach
     void setUp() {
         partyRelationshipId = UUID.fromString("123e4567-e89b-12d3-a456-426614174001");
-        partyId = UUID.fromString("123e4567-e89b-12d3-a456-426614174001");
-        
+
         partyRelationship = new PartyRelationship();
         partyRelationship.setPartyRelationshipId(partyRelationshipId);
         partyRelationship.setCreatedAt(LocalDateTime.now());
@@ -81,15 +79,15 @@ class PartyRelationshipServiceImplTest {
         
         // Create a spy of the service to mock the filterPartyRelationships method
         PartyRelationshipServiceImpl spyService = spy(partyRelationshipService);
-        doReturn(Mono.just(mockResponse)).when(spyService).filterPartyRelationships(partyId, filterRequest);
+        doReturn(Mono.just(mockResponse)).when(spyService).filterPartyRelationships(filterRequest);
 
         // Act & Assert
-        StepVerifier.create(spyService.filterPartyRelationships(partyId, filterRequest))
+        StepVerifier.create(spyService.filterPartyRelationships(filterRequest))
                 .expectNext(mockResponse)
                 .verifyComplete();
 
         // Verify that filterPartyRelationships was called
-        verify(spyService).filterPartyRelationships(partyId, filterRequest);
+        verify(spyService).filterPartyRelationships(filterRequest);
     }
 
     @Test
@@ -100,7 +98,7 @@ class PartyRelationshipServiceImplTest {
         when(partyRelationshipMapper.toDTO(partyRelationship)).thenReturn(partyRelationshipDTO);
 
         // Act & Assert
-        StepVerifier.create(partyRelationshipService.createPartyRelationship(partyId, partyRelationshipDTO))
+        StepVerifier.create(partyRelationshipService.createPartyRelationship(partyRelationshipDTO))
                 .expectNext(partyRelationshipDTO)
                 .verifyComplete();
 
@@ -116,7 +114,7 @@ class PartyRelationshipServiceImplTest {
         when(partyRelationshipRepository.save(partyRelationship)).thenReturn(Mono.error(new RuntimeException("Database error")));
 
         // Act & Assert
-        StepVerifier.create(partyRelationshipService.createPartyRelationship(partyId, partyRelationshipDTO))
+        StepVerifier.create(partyRelationshipService.createPartyRelationship(partyRelationshipDTO))
                 .expectErrorMatches(throwable -> throwable instanceof RuntimeException && 
                         throwable.getMessage().equals("Database error"))
                 .verify();
@@ -141,7 +139,7 @@ class PartyRelationshipServiceImplTest {
         when(partyRelationshipMapper.toDTO(updatedPartyRelationship)).thenReturn(partyRelationshipDTO);
 
         // Act & Assert
-        StepVerifier.create(partyRelationshipService.updatePartyRelationship(partyId, partyRelationshipId, updateDTO))
+        StepVerifier.create(partyRelationshipService.updatePartyRelationship(partyRelationshipId, updateDTO))
                 .expectNext(partyRelationshipDTO)
                 .verifyComplete();
 
@@ -157,7 +155,7 @@ class PartyRelationshipServiceImplTest {
         when(partyRelationshipRepository.findById(partyRelationshipId)).thenReturn(Mono.empty());
 
         // Act & Assert
-        StepVerifier.create(partyRelationshipService.updatePartyRelationship(partyId, partyRelationshipId, partyRelationshipDTO))
+        StepVerifier.create(partyRelationshipService.updatePartyRelationship(partyRelationshipId, partyRelationshipDTO))
                 .expectErrorMatches(throwable -> throwable instanceof RuntimeException && 
                         throwable.getMessage().equals("Party relationship not found with ID: " + partyRelationshipId))
                 .verify();
@@ -174,7 +172,7 @@ class PartyRelationshipServiceImplTest {
         when(partyRelationshipRepository.deleteById(partyRelationshipId)).thenReturn(Mono.empty());
 
         // Act & Assert
-        StepVerifier.create(partyRelationshipService.deletePartyRelationship(partyId, partyRelationshipId))
+        StepVerifier.create(partyRelationshipService.deletePartyRelationship(partyRelationshipId))
                 .verifyComplete();
 
         verify(partyRelationshipRepository).findById(partyRelationshipId);
@@ -187,7 +185,7 @@ class PartyRelationshipServiceImplTest {
         when(partyRelationshipRepository.findById(partyRelationshipId)).thenReturn(Mono.empty());
 
         // Act & Assert
-        StepVerifier.create(partyRelationshipService.deletePartyRelationship(partyId, partyRelationshipId))
+        StepVerifier.create(partyRelationshipService.deletePartyRelationship(partyRelationshipId))
                 .expectErrorMatches(throwable -> throwable instanceof RuntimeException && 
                         throwable.getMessage().equals("Party relationship not found with ID: " + partyRelationshipId))
                 .verify();
@@ -203,7 +201,7 @@ class PartyRelationshipServiceImplTest {
         when(partyRelationshipRepository.deleteById(partyRelationshipId)).thenReturn(Mono.error(new RuntimeException("Delete failed")));
 
         // Act & Assert
-        StepVerifier.create(partyRelationshipService.deletePartyRelationship(partyId, partyRelationshipId))
+        StepVerifier.create(partyRelationshipService.deletePartyRelationship(partyRelationshipId))
                 .expectErrorMatches(throwable -> throwable instanceof RuntimeException && 
                         throwable.getMessage().equals("Delete failed"))
                 .verify();
@@ -219,7 +217,7 @@ class PartyRelationshipServiceImplTest {
         when(partyRelationshipMapper.toDTO(partyRelationship)).thenReturn(partyRelationshipDTO);
 
         // Act & Assert
-        StepVerifier.create(partyRelationshipService.getPartyRelationshipById(partyId, partyRelationshipId))
+        StepVerifier.create(partyRelationshipService.getPartyRelationshipById(partyRelationshipId))
                 .expectNext(partyRelationshipDTO)
                 .verifyComplete();
 
@@ -233,7 +231,7 @@ class PartyRelationshipServiceImplTest {
         when(partyRelationshipRepository.findById(partyRelationshipId)).thenReturn(Mono.empty());
 
         // Act & Assert
-        StepVerifier.create(partyRelationshipService.getPartyRelationshipById(partyId, partyRelationshipId))
+        StepVerifier.create(partyRelationshipService.getPartyRelationshipById(partyRelationshipId))
                 .expectErrorMatches(throwable -> throwable instanceof RuntimeException && 
                         throwable.getMessage().equals("Party relationship not found with ID: " + partyRelationshipId))
                 .verify();
@@ -248,7 +246,7 @@ class PartyRelationshipServiceImplTest {
         when(partyRelationshipRepository.findById(partyRelationshipId)).thenReturn(Mono.error(new RuntimeException("Database connection failed")));
 
         // Act & Assert
-        StepVerifier.create(partyRelationshipService.getPartyRelationshipById(partyId, partyRelationshipId))
+        StepVerifier.create(partyRelationshipService.getPartyRelationshipById(partyRelationshipId))
                 .expectErrorMatches(throwable -> throwable instanceof RuntimeException && 
                         throwable.getMessage().equals("Database connection failed"))
                 .verify();

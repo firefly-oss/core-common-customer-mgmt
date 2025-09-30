@@ -59,8 +59,7 @@ public class PhoneContactController {
     @ApiResponses({
         @ApiResponse(
             responseCode = "200", 
-            description = "Successfully retrieved filtered phone contacts",
-            content = @Content(schema = @Schema(implementation = PaginationResponse.class))
+            description = "Successfully retrieved filtered phone contacts"
         ),
         @ApiResponse(
             responseCode = "400", 
@@ -108,7 +107,7 @@ public class PhoneContactController {
             @Parameter(description = "Unique identifier of the party", required = true)
             @PathVariable UUID partyId,
             @Parameter(description = "Phone contact data to create", required = true)
-            @Validated @RequestBody PhoneContactDTO phoneContactDTO) {
+            @Valid @RequestBody PhoneContactDTO phoneContactDTO) {
         return phoneContactService.createPhoneContact(partyId, phoneContactDTO)
                 .map(phoneContact -> ResponseEntity.status(HttpStatus.CREATED).body(phoneContact));
     }
@@ -167,7 +166,7 @@ public class PhoneContactController {
             @Parameter(description = "Unique identifier of the phone contact", required = true)
             @PathVariable UUID phoneContactId,
             @Parameter(description = "Updated phone contact data", required = true)
-            @Validated @RequestBody PhoneContactDTO phoneContactDTO) {
+            @Valid @RequestBody PhoneContactDTO phoneContactDTO) {
         return phoneContactService.updatePhoneContact(partyId, phoneContactId, phoneContactDTO)
                 .map(ResponseEntity::ok);
     }

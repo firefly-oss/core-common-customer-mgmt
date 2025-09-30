@@ -21,7 +21,6 @@ import com.firefly.common.core.filters.FilterRequest;
 import com.firefly.common.core.queries.PaginationResponse;
 import com.firefly.core.customer.core.services.EmailContactService;
 import com.firefly.core.customer.interfaces.dtos.EmailContactDTO;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -29,6 +28,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,7 +36,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
-import jakarta.validation.Valid;
 import java.util.UUID;
 
 @RestController
@@ -59,8 +58,7 @@ public class EmailContactController {
     @ApiResponses({
         @ApiResponse(
             responseCode = "200", 
-            description = "Successfully retrieved filtered email contacts",
-            content = @Content(schema = @Schema(implementation = PaginationResponse.class))
+            description = "Successfully retrieved filtered email contacts"
         ),
         @ApiResponse(
             responseCode = "400", 
@@ -108,7 +106,7 @@ public class EmailContactController {
             @Parameter(description = "Unique identifier of the party", required = true)
             @PathVariable UUID partyId,
             @Parameter(description = "Email contact data to create", required = true)
-            @Validated @RequestBody EmailContactDTO emailContactDTO) {
+            @Valid @RequestBody EmailContactDTO emailContactDTO) {
         return emailContactService.createEmailContact(partyId, emailContactDTO)
                 .map(emailContact -> ResponseEntity.status(HttpStatus.CREATED).body(emailContact));
     }
@@ -167,7 +165,7 @@ public class EmailContactController {
             @Parameter(description = "Unique identifier of the email contact", required = true)
             @PathVariable UUID emailContactId,
             @Parameter(description = "Updated email contact data", required = true)
-            @Validated @RequestBody EmailContactDTO emailContactDTO) {
+            @Valid @RequestBody EmailContactDTO emailContactDTO) {
         return emailContactService.updateEmailContact(partyId, emailContactId, emailContactDTO)
                 .map(ResponseEntity::ok);
     }
