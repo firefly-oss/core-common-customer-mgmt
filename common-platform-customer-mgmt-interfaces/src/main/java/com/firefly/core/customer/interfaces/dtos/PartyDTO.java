@@ -44,10 +44,13 @@ public class PartyDTO {
     
     @NotNull(message = "Party kind is required")
     private PartyKind partyKind;
-    
+
+    @NotNull(message = "Tenant ID is required")
+    private UUID tenantId;
+
     @Size(max = 10, message = "Preferred language must not exceed 10 characters")
     private String preferredLanguage;
-    
+
     @Size(max = 100, message = "Source system must not exceed 100 characters")
     private String sourceSystem;
     private LocalDateTime createdAt;
