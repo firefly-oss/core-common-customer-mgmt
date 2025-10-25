@@ -56,6 +56,7 @@ erDiagram
     PARTY {
         uuid party_id PK
         varchar party_kind "NATURAL_PERSON | LEGAL_ENTITY"
+        uuid tenant_id "Firefly core banking deployment tenant identifier"
         varchar preferred_language
         varchar source_system
         timestamp created_at
