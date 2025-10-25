@@ -47,6 +47,9 @@ public class Party {
     @Column("party_kind")
     private PartyKind partyKind;
 
+    @Column("tenant_id")
+    private UUID tenantId;
+
     @Column("preferred_language")
     private String preferredLanguage;
 
