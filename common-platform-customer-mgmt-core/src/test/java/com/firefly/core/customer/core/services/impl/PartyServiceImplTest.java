@@ -59,14 +59,17 @@ class PartyServiceImplTest {
     @BeforeEach
     void setUp() {
         partyId = UUID.fromString("123e4567-e89b-12d3-a456-426614174000");
-        
+        UUID tenantId = UUID.fromString("223e4567-e89b-12d3-a456-426614174000");
+
         party = new Party();
         party.setPartyId(partyId);
+        party.setTenantId(tenantId);
         party.setCreatedAt(LocalDateTime.now());
         party.setUpdatedAt(LocalDateTime.now());
 
         partyDTO = new PartyDTO();
         partyDTO.setPartyId(partyId);
+        partyDTO.setTenantId(tenantId);
         partyDTO.setCreatedAt(LocalDateTime.now());
         partyDTO.setUpdatedAt(LocalDateTime.now());
     }
