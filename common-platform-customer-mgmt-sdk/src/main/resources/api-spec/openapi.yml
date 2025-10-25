@@ -3817,7 +3817,8 @@
     "schemas": {
       "PartyDTO": {
         "required": [
-          "partyKind"
+          "partyKind",
+          "tenantId"
         ],
         "type": "object",
         "properties": {
@@ -3832,6 +3833,11 @@
               "INDIVIDUAL",
               "ORGANIZATION"
             ]
+          },
+          "tenantId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "UUID identifier of the Firefly core banking deployment tenant where this customer resides"
           },
           "preferredLanguage": {
             "maxLength": 10,
