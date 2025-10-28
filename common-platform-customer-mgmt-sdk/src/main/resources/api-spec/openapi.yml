@@ -96,9 +96,21 @@
               "type": "string",
               "format": "uuid"
             }
+          },
+          {
+            "name": "X-Idempotency-Key",
+            "in": "header",
+            "description": "Unique key for idempotent requests. If provided, ensures that identical requests with the same key will only be processed once.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
+          "404": {
+            "description": "Party not found"
+          },
           "200": {
             "description": "Party found",
             "content": {
@@ -108,9 +120,6 @@
                 }
               }
             }
-          },
-          "404": {
-            "description": "Party not found"
           }
         }
       },
@@ -153,6 +162,12 @@
           "required": true
         },
         "responses": {
+          "400": {
+            "description": "Invalid party data"
+          },
+          "404": {
+            "description": "Party not found"
+          },
           "200": {
             "description": "Party successfully updated",
             "content": {
@@ -162,12 +177,6 @@
                 }
               }
             }
-          },
-          "400": {
-            "description": "Invalid party data"
-          },
-          "404": {
-            "description": "Party not found"
           }
         }
       },
@@ -187,6 +196,15 @@
             "schema": {
               "type": "string",
               "format": "uuid"
+            }
+          },
+          {
+            "name": "X-Idempotency-Key",
+            "in": "header",
+            "description": "Unique key for idempotent requests. If provided, ensures that identical requests with the same key will only be processed once.",
+            "required": false,
+            "schema": {
+              "type": "string"
             }
           }
         ],
@@ -227,6 +245,15 @@
             "schema": {
               "type": "string",
               "format": "uuid"
+            }
+          },
+          {
+            "name": "X-Idempotency-Key",
+            "in": "header",
+            "description": "Unique key for idempotent requests. If provided, ensures that identical requests with the same key will only be processed once.",
+            "required": false,
+            "schema": {
+              "type": "string"
             }
           }
         ],
@@ -295,6 +322,9 @@
           "required": true
         },
         "responses": {
+          "400": {
+            "description": "Invalid politically exposed person data"
+          },
           "200": {
             "description": "Politically exposed person successfully updated",
             "content": {
@@ -304,9 +334,6 @@
                 }
               }
             }
-          },
-          "400": {
-            "description": "Invalid politically exposed person data"
           },
           "404": {
             "description": "Politically exposed person or party not found"
@@ -339,6 +366,15 @@
             "schema": {
               "type": "string",
               "format": "uuid"
+            }
+          },
+          {
+            "name": "X-Idempotency-Key",
+            "in": "header",
+            "description": "Unique key for idempotent requests. If provided, ensures that identical requests with the same key will only be processed once.",
+            "required": false,
+            "schema": {
+              "type": "string"
             }
           }
         ],
@@ -449,12 +485,6 @@
           "required": true
         },
         "responses": {
-          "404": {
-            "description": "Party not found"
-          },
-          "400": {
-            "description": "Invalid party status data"
-          },
           "201": {
             "description": "Party status successfully created",
             "content": {
@@ -464,6 +494,12 @@
                 }
               }
             }
+          },
+          "404": {
+            "description": "Party not found"
+          },
+          "400": {
+            "description": "Invalid party status data"
           }
         }
       }
@@ -495,6 +531,15 @@
             "schema": {
               "type": "string",
               "format": "uuid"
+            }
+          },
+          {
+            "name": "X-Idempotency-Key",
+            "in": "header",
+            "description": "Unique key for idempotent requests. If provided, ensures that identical requests with the same key will only be processed once.",
+            "required": false,
+            "schema": {
+              "type": "string"
             }
           }
         ],
@@ -608,6 +653,15 @@
               "type": "string",
               "format": "uuid"
             }
+          },
+          {
+            "name": "X-Idempotency-Key",
+            "in": "header",
+            "description": "Unique key for idempotent requests. If provided, ensures that identical requests with the same key will only be processed once.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -647,6 +701,15 @@
             "schema": {
               "type": "string",
               "format": "uuid"
+            }
+          },
+          {
+            "name": "X-Idempotency-Key",
+            "in": "header",
+            "description": "Unique key for idempotent requests. If provided, ensures that identical requests with the same key will only be processed once.",
+            "required": false,
+            "schema": {
+              "type": "string"
             }
           }
         ],
@@ -760,6 +823,15 @@
               "type": "string",
               "format": "uuid"
             }
+          },
+          {
+            "name": "X-Idempotency-Key",
+            "in": "header",
+            "description": "Unique key for idempotent requests. If provided, ensures that identical requests with the same key will only be processed once.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -800,9 +872,21 @@
               "type": "string",
               "format": "uuid"
             }
+          },
+          {
+            "name": "X-Idempotency-Key",
+            "in": "header",
+            "description": "Unique key for idempotent requests. If provided, ensures that identical requests with the same key will only be processed once.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
+          "404": {
+            "description": "Party economic activity or party not found"
+          },
           "200": {
             "description": "Party economic activity found",
             "content": {
@@ -812,9 +896,6 @@
                 }
               }
             }
-          },
-          "404": {
-            "description": "Party economic activity or party not found"
           }
         }
       },
@@ -867,6 +948,9 @@
           "required": true
         },
         "responses": {
+          "404": {
+            "description": "Party economic activity or party not found"
+          },
           "200": {
             "description": "Party economic activity successfully updated",
             "content": {
@@ -879,9 +963,6 @@
           },
           "400": {
             "description": "Invalid party economic activity data"
-          },
-          "404": {
-            "description": "Party economic activity or party not found"
           }
         }
       },
@@ -911,6 +992,15 @@
             "schema": {
               "type": "string",
               "format": "uuid"
+            }
+          },
+          {
+            "name": "X-Idempotency-Key",
+            "in": "header",
+            "description": "Unique key for idempotent requests. If provided, ensures that identical requests with the same key will only be processed once.",
+            "required": false,
+            "schema": {
+              "type": "string"
             }
           }
         ],
@@ -951,6 +1041,15 @@
             "schema": {
               "type": "string",
               "format": "uuid"
+            }
+          },
+          {
+            "name": "X-Idempotency-Key",
+            "in": "header",
+            "description": "Unique key for idempotent requests. If provided, ensures that identical requests with the same key will only be processed once.",
+            "required": false,
+            "schema": {
+              "type": "string"
             }
           }
         ],
@@ -1019,6 +1118,9 @@
           "required": true
         },
         "responses": {
+          "400": {
+            "description": "Invalid natural person data"
+          },
           "200": {
             "description": "Natural person successfully updated",
             "content": {
@@ -1028,9 +1130,6 @@
                 }
               }
             }
-          },
-          "400": {
-            "description": "Invalid natural person data"
           },
           "404": {
             "description": "Natural person or party not found"
@@ -1063,6 +1162,15 @@
             "schema": {
               "type": "string",
               "format": "uuid"
+            }
+          },
+          {
+            "name": "X-Idempotency-Key",
+            "in": "header",
+            "description": "Unique key for idempotent requests. If provided, ensures that identical requests with the same key will only be processed once.",
+            "required": false,
+            "schema": {
+              "type": "string"
             }
           }
         ],
@@ -1104,12 +1212,18 @@
               "type": "string",
               "format": "uuid"
             }
+          },
+          {
+            "name": "X-Idempotency-Key",
+            "in": "header",
+            "description": "Unique key for idempotent requests. If provided, ensures that identical requests with the same key will only be processed once.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
-          "404": {
-            "description": "Legal entity or party not found"
-          },
           "200": {
             "description": "Legal entity found",
             "content": {
@@ -1119,6 +1233,9 @@
                 }
               }
             }
+          },
+          "404": {
+            "description": "Legal entity or party not found"
           }
         }
       },
@@ -1171,11 +1288,11 @@
           "required": true
         },
         "responses": {
-          "400": {
-            "description": "Invalid legal entity data"
-          },
           "404": {
             "description": "Legal entity or party not found"
+          },
+          "400": {
+            "description": "Invalid legal entity data"
           },
           "200": {
             "description": "Legal entity successfully updated",
@@ -1216,6 +1333,15 @@
               "type": "string",
               "format": "uuid"
             }
+          },
+          {
+            "name": "X-Idempotency-Key",
+            "in": "header",
+            "description": "Unique key for idempotent requests. If provided, ensures that identical requests with the same key will only be processed once.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -1255,6 +1381,15 @@
             "schema": {
               "type": "string",
               "format": "uuid"
+            }
+          },
+          {
+            "name": "X-Idempotency-Key",
+            "in": "header",
+            "description": "Unique key for idempotent requests. If provided, ensures that identical requests with the same key will only be processed once.",
+            "required": false,
+            "schema": {
+              "type": "string"
             }
           }
         ],
@@ -1368,6 +1503,15 @@
               "type": "string",
               "format": "uuid"
             }
+          },
+          {
+            "name": "X-Idempotency-Key",
+            "in": "header",
+            "description": "Unique key for idempotent requests. If provided, ensures that identical requests with the same key will only be processed once.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -1407,6 +1551,15 @@
             "schema": {
               "type": "string",
               "format": "uuid"
+            }
+          },
+          {
+            "name": "X-Idempotency-Key",
+            "in": "header",
+            "description": "Unique key for idempotent requests. If provided, ensures that identical requests with the same key will only be processed once.",
+            "required": false,
+            "schema": {
+              "type": "string"
             }
           }
         ],
@@ -1478,6 +1631,9 @@
           "404": {
             "description": "Phone contact or party not found"
           },
+          "400": {
+            "description": "Invalid phone contact data"
+          },
           "200": {
             "description": "Phone contact successfully updated",
             "content": {
@@ -1487,9 +1643,6 @@
                 }
               }
             }
-          },
-          "400": {
-            "description": "Invalid phone contact data"
           }
         }
       },
@@ -1519,6 +1672,15 @@
             "schema": {
               "type": "string",
               "format": "uuid"
+            }
+          },
+          {
+            "name": "X-Idempotency-Key",
+            "in": "header",
+            "description": "Unique key for idempotent requests. If provided, ensures that identical requests with the same key will only be processed once.",
+            "required": false,
+            "schema": {
+              "type": "string"
             }
           }
         ],
@@ -1560,12 +1722,18 @@
               "type": "string",
               "format": "uuid"
             }
+          },
+          {
+            "name": "X-Idempotency-Key",
+            "in": "header",
+            "description": "Unique key for idempotent requests. If provided, ensures that identical requests with the same key will only be processed once.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
-          "404": {
-            "description": "Email contact or party not found"
-          },
           "200": {
             "description": "Email contact found",
             "content": {
@@ -1575,6 +1743,9 @@
                 }
               }
             }
+          },
+          "404": {
+            "description": "Email contact or party not found"
           }
         }
       },
@@ -1627,9 +1798,6 @@
           "required": true
         },
         "responses": {
-          "404": {
-            "description": "Email contact or party not found"
-          },
           "200": {
             "description": "Email contact successfully updated",
             "content": {
@@ -1639,6 +1807,9 @@
                 }
               }
             }
+          },
+          "404": {
+            "description": "Email contact or party not found"
           },
           "400": {
             "description": "Invalid email contact data"
@@ -1671,6 +1842,15 @@
             "schema": {
               "type": "string",
               "format": "uuid"
+            }
+          },
+          {
+            "name": "X-Idempotency-Key",
+            "in": "header",
+            "description": "Unique key for idempotent requests. If provided, ensures that identical requests with the same key will only be processed once.",
+            "required": false,
+            "schema": {
+              "type": "string"
             }
           }
         ],
@@ -1711,6 +1891,15 @@
             "schema": {
               "type": "string",
               "format": "uuid"
+            }
+          },
+          {
+            "name": "X-Idempotency-Key",
+            "in": "header",
+            "description": "Unique key for idempotent requests. If provided, ensures that identical requests with the same key will only be processed once.",
+            "required": false,
+            "schema": {
+              "type": "string"
             }
           }
         ],
@@ -1824,6 +2013,15 @@
               "type": "string",
               "format": "uuid"
             }
+          },
+          {
+            "name": "X-Idempotency-Key",
+            "in": "header",
+            "description": "Unique key for idempotent requests. If provided, ensures that identical requests with the same key will only be processed once.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -1864,9 +2062,21 @@
               "type": "string",
               "format": "uuid"
             }
+          },
+          {
+            "name": "X-Idempotency-Key",
+            "in": "header",
+            "description": "Unique key for idempotent requests. If provided, ensures that identical requests with the same key will only be processed once.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
+          "404": {
+            "description": "Address or party not found"
+          },
           "200": {
             "description": "Address found",
             "content": {
@@ -1876,9 +2086,6 @@
                 }
               }
             }
-          },
-          "404": {
-            "description": "Address or party not found"
           }
         }
       },
@@ -1931,6 +2138,12 @@
           "required": true
         },
         "responses": {
+          "400": {
+            "description": "Invalid address data"
+          },
+          "404": {
+            "description": "Address or party not found"
+          },
           "200": {
             "description": "Address successfully updated",
             "content": {
@@ -1940,12 +2153,6 @@
                 }
               }
             }
-          },
-          "400": {
-            "description": "Invalid address data"
-          },
-          "404": {
-            "description": "Address or party not found"
           }
         }
       },
@@ -1975,6 +2182,15 @@
             "schema": {
               "type": "string",
               "format": "uuid"
+            }
+          },
+          {
+            "name": "X-Idempotency-Key",
+            "in": "header",
+            "description": "Unique key for idempotent requests. If provided, ensures that identical requests with the same key will only be processed once.",
+            "required": false,
+            "schema": {
+              "type": "string"
             }
           }
         ],
@@ -2006,12 +2222,18 @@
               "type": "string",
               "format": "uuid"
             }
+          },
+          {
+            "name": "X-Idempotency-Key",
+            "in": "header",
+            "description": "Unique key for idempotent requests. If provided, ensures that identical requests with the same key will only be processed once.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
-          "404": {
-            "description": "Party relationship or party not found"
-          },
           "200": {
             "description": "Party relationship found",
             "content": {
@@ -2021,6 +2243,9 @@
                 }
               }
             }
+          },
+          "404": {
+            "description": "Party relationship or party not found"
           }
         }
       },
@@ -2063,9 +2288,6 @@
           "required": true
         },
         "responses": {
-          "404": {
-            "description": "Party relationship or party not found"
-          },
           "400": {
             "description": "Invalid party relationship data"
           },
@@ -2078,6 +2300,9 @@
                 }
               }
             }
+          },
+          "404": {
+            "description": "Party relationship or party not found"
           }
         }
       },
@@ -2097,6 +2322,15 @@
             "schema": {
               "type": "string",
               "format": "uuid"
+            }
+          },
+          {
+            "name": "X-Idempotency-Key",
+            "in": "header",
+            "description": "Unique key for idempotent requests. If provided, ensures that identical requests with the same key will only be processed once.",
+            "required": false,
+            "schema": {
+              "type": "string"
             }
           }
         ],
@@ -2140,9 +2374,6 @@
           "required": true
         },
         "responses": {
-          "400": {
-            "description": "Invalid party data"
-          },
           "201": {
             "description": "Party successfully created",
             "content": {
@@ -2152,6 +2383,9 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "Invalid party data"
           }
         }
       }
@@ -2373,6 +2607,9 @@
           "required": true
         },
         "responses": {
+          "400": {
+            "description": "Invalid party provider data"
+          },
           "201": {
             "description": "Party provider successfully created",
             "content": {
@@ -2382,9 +2619,6 @@
                 }
               }
             }
-          },
-          "400": {
-            "description": "Invalid party provider data"
           },
           "404": {
             "description": "Party not found"
@@ -2435,9 +2669,6 @@
           "404": {
             "description": "Party not found"
           },
-          "400": {
-            "description": "Invalid filter request"
-          },
           "200": {
             "description": "Successfully retrieved filtered party providers",
             "content": {
@@ -2447,6 +2678,9 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "Invalid filter request"
           }
         }
       }
@@ -2553,9 +2787,6 @@
           "404": {
             "description": "Party not found"
           },
-          "400": {
-            "description": "Invalid filter request"
-          },
           "200": {
             "description": "Successfully retrieved filtered party group memberships",
             "content": {
@@ -2565,6 +2796,9 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "Invalid filter request"
           }
         }
       }
@@ -2609,12 +2843,6 @@
           "required": true
         },
         "responses": {
-          "404": {
-            "description": "Party not found"
-          },
-          "400": {
-            "description": "Invalid party economic activity data"
-          },
           "201": {
             "description": "Party economic activity successfully created",
             "content": {
@@ -2624,6 +2852,12 @@
                 }
               }
             }
+          },
+          "404": {
+            "description": "Party not found"
+          },
+          "400": {
+            "description": "Invalid party economic activity data"
           }
         }
       }
@@ -2668,6 +2902,9 @@
           "required": true
         },
         "responses": {
+          "404": {
+            "description": "Party not found"
+          },
           "200": {
             "description": "Successfully retrieved filtered party economic activities",
             "content": {
@@ -2677,9 +2914,6 @@
                 }
               }
             }
-          },
-          "404": {
-            "description": "Party not found"
           },
           "400": {
             "description": "Invalid filter request"
@@ -2705,9 +2939,21 @@
               "type": "string",
               "format": "uuid"
             }
+          },
+          {
+            "name": "X-Idempotency-Key",
+            "in": "header",
+            "description": "Unique key for idempotent requests. If provided, ensures that identical requests with the same key will only be processed once.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
+          "404": {
+            "description": "Party not found"
+          },
           "200": {
             "description": "Natural person found",
             "content": {
@@ -2717,9 +2963,6 @@
                 }
               }
             }
-          },
-          "404": {
-            "description": "Party not found"
           }
         }
       },
@@ -2762,9 +3005,6 @@
           "required": true
         },
         "responses": {
-          "400": {
-            "description": "Invalid natural person data"
-          },
           "201": {
             "description": "Natural person successfully created",
             "content": {
@@ -2774,6 +3014,9 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "Invalid natural person data"
           },
           "404": {
             "description": "Party not found"
@@ -2858,12 +3101,18 @@
               "type": "string",
               "format": "uuid"
             }
+          },
+          {
+            "name": "X-Idempotency-Key",
+            "in": "header",
+            "description": "Unique key for idempotent requests. If provided, ensures that identical requests with the same key will only be processed once.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
-          "404": {
-            "description": "Party not found"
-          },
           "200": {
             "description": "Legal entity found",
             "content": {
@@ -2873,6 +3122,9 @@
                 }
               }
             }
+          },
+          "404": {
+            "description": "Party not found"
           }
         }
       },
@@ -2915,12 +3167,6 @@
           "required": true
         },
         "responses": {
-          "400": {
-            "description": "Invalid legal entity data"
-          },
-          "404": {
-            "description": "Party not found"
-          },
           "201": {
             "description": "Legal entity successfully created",
             "content": {
@@ -2930,6 +3176,12 @@
                 }
               }
             }
+          },
+          "404": {
+            "description": "Party not found"
+          },
+          "400": {
+            "description": "Invalid legal entity data"
           }
         }
       }
@@ -2974,9 +3226,6 @@
           "required": true
         },
         "responses": {
-          "404": {
-            "description": "Party not found"
-          },
           "200": {
             "description": "Successfully retrieved filtered legal entities",
             "content": {
@@ -2986,6 +3235,9 @@
                 }
               }
             }
+          },
+          "404": {
+            "description": "Party not found"
           },
           "400": {
             "description": "Invalid filter request"
@@ -3033,6 +3285,12 @@
           "required": true
         },
         "responses": {
+          "404": {
+            "description": "Party not found"
+          },
+          "400": {
+            "description": "Invalid identity document data"
+          },
           "201": {
             "description": "Identity document successfully created",
             "content": {
@@ -3042,12 +3300,6 @@
                 }
               }
             }
-          },
-          "404": {
-            "description": "Party not found"
-          },
-          "400": {
-            "description": "Invalid identity document data"
           }
         }
       }
@@ -3095,9 +3347,6 @@
           "404": {
             "description": "Party not found"
           },
-          "400": {
-            "description": "Invalid filter request"
-          },
           "200": {
             "description": "Successfully retrieved filtered identity documents",
             "content": {
@@ -3107,6 +3356,9 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "Invalid filter request"
           }
         }
       }
@@ -3151,9 +3403,6 @@
           "required": true
         },
         "responses": {
-          "400": {
-            "description": "Invalid phone contact data"
-          },
           "201": {
             "description": "Phone contact successfully created",
             "content": {
@@ -3163,6 +3412,9 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "Invalid phone contact data"
           },
           "404": {
             "description": "Party not found"
@@ -3213,9 +3465,6 @@
           "404": {
             "description": "Party not found"
           },
-          "400": {
-            "description": "Invalid filter request"
-          },
           "200": {
             "description": "Successfully retrieved filtered phone contacts",
             "content": {
@@ -3225,6 +3474,9 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "Invalid filter request"
           }
         }
       }
@@ -3269,6 +3521,9 @@
           "required": true
         },
         "responses": {
+          "404": {
+            "description": "Party not found"
+          },
           "201": {
             "description": "Email contact successfully created",
             "content": {
@@ -3278,9 +3533,6 @@
                 }
               }
             }
-          },
-          "404": {
-            "description": "Party not found"
           },
           "400": {
             "description": "Invalid email contact data"
@@ -3387,12 +3639,6 @@
           "required": true
         },
         "responses": {
-          "400": {
-            "description": "Invalid consent data"
-          },
-          "404": {
-            "description": "Party not found"
-          },
           "201": {
             "description": "Consent successfully created",
             "content": {
@@ -3402,6 +3648,12 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "Invalid consent data"
+          },
+          "404": {
+            "description": "Party not found"
           }
         }
       }
@@ -3449,9 +3701,6 @@
           "404": {
             "description": "Party not found"
           },
-          "400": {
-            "description": "Invalid filter request"
-          },
           "200": {
             "description": "Successfully retrieved filtered consents",
             "content": {
@@ -3461,6 +3710,9 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "Invalid filter request"
           }
         }
       }
@@ -3564,6 +3816,9 @@
           "required": true
         },
         "responses": {
+          "404": {
+            "description": "Party not found"
+          },
           "200": {
             "description": "Successfully retrieved filtered addresses",
             "content": {
@@ -3573,9 +3828,6 @@
                 }
               }
             }
-          },
-          "404": {
-            "description": "Party not found"
           },
           "400": {
             "description": "Invalid filter request"
@@ -3662,6 +3914,9 @@
           "required": true
         },
         "responses": {
+          "404": {
+            "description": "Party not found"
+          },
           "200": {
             "description": "Successfully retrieved filtered party relationships",
             "content": {
@@ -3671,9 +3926,6 @@
                 }
               }
             }
-          },
-          "404": {
-            "description": "Party not found"
           },
           "400": {
             "description": "Invalid filter request"
@@ -3711,18 +3963,18 @@
           "required": true
         },
         "responses": {
-          "400": {
-            "description": "Invalid filter request"
-          },
           "200": {
             "description": "Successfully retrieved filtered parties",
             "content": {
               "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/PaginationResponse"
+                  "$ref": "#/components/schemas/PaginationResponsePartyDTO"
                 }
               }
             }
+          },
+          "400": {
+            "description": "Invalid filter request"
           }
         }
       }
@@ -3754,6 +4006,15 @@
             "schema": {
               "type": "string",
               "format": "uuid"
+            }
+          },
+          {
+            "name": "X-Idempotency-Key",
+            "in": "header",
+            "description": "Unique key for idempotent requests. If provided, ensures that identical requests with the same key will only be processed once.",
+            "required": false,
+            "schema": {
+              "type": "string"
             }
           }
         ],
@@ -3800,6 +4061,15 @@
               "type": "string",
               "format": "uuid"
             }
+          },
+          {
+            "name": "X-Idempotency-Key",
+            "in": "header",
+            "description": "Unique key for idempotent requests. If provided, ensures that identical requests with the same key will only be processed once.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -3836,8 +4106,7 @@
           },
           "tenantId": {
             "type": "string",
-            "format": "uuid",
-            "description": "UUID identifier of the Firefly core banking deployment tenant where this customer resides"
+            "format": "uuid"
           },
           "preferredLanguage": {
             "maxLength": 10,
@@ -5104,6 +5373,34 @@
           }
         },
         "description": "Filter criteria for parties"
+      },
+      "PaginationResponsePartyDTO": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "array",
+            "description": "The list of items for the current page.",
+            "items": {
+              "$ref": "#/components/schemas/PartyDTO"
+            }
+          },
+          "totalElements": {
+            "type": "integer",
+            "description": "The total number of elements across all pages.",
+            "format": "int64"
+          },
+          "totalPages": {
+            "type": "integer",
+            "description": "The total number of pages based on the data size and page size.",
+            "format": "int32"
+          },
+          "currentPage": {
+            "type": "integer",
+            "description": "The current page number, typically zero-based.",
+            "format": "int32"
+          }
+        },
+        "description": "Represents a paginated response containing a list of items and pagination metadata."
       }
     }
   }

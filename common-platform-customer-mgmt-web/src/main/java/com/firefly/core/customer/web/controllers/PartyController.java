@@ -58,8 +58,7 @@ public class PartyController {
     @ApiResponses({
         @ApiResponse(
             responseCode = "200", 
-            description = "Successfully retrieved filtered parties",
-            content = @Content(schema = @Schema(implementation = PaginationResponse.class))
+            description = "Successfully retrieved filtered parties"
         ),
         @ApiResponse(
             responseCode = "400", 
