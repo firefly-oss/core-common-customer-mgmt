@@ -20,7 +20,7 @@ package com.firefly.core.customer.interfaces.dtos;
 import com.firefly.core.customer.interfaces.enums.Gender;
 import com.firefly.core.customer.interfaces.enums.MaritalStatus;
 import com.firefly.core.customer.interfaces.enums.ResidencyStatus;
-import com.firefly.core.utils.annotations.FilterableId;
+import org.fireflyframework.utils.annotations.FilterableId;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

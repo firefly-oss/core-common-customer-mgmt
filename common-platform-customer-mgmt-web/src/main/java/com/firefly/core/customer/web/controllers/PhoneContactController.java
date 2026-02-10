@@ -17,8 +17,8 @@
 
 package com.firefly.core.customer.web.controllers;
 
-import com.firefly.common.core.filters.FilterRequest;
-import com.firefly.common.core.queries.PaginationResponse;
+import org.fireflyframework.core.filters.FilterRequest;
+import org.fireflyframework.core.queries.PaginationResponse;
 import com.firefly.core.customer.core.services.PhoneContactService;
 
 import com.firefly.core.customer.interfaces.dtos.PhoneContactDTO;
