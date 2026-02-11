@@ -5,11 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.firefly</groupId>
-        <artifactId>common-platform-customer-mgmt</artifactId>
+        <artifactId>core-common-customer-mgmt</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>common-platform-customer-mgmt-sdk</artifactId>
+    <artifactId>core-common-customer-mgmt-sdk</artifactId>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -27,7 +27,7 @@
         <!-- Web module for OpenAPI spec -->
         <dependency>
             <groupId>com.firefly</groupId>
-            <artifactId>common-platform-customer-mgmt-web</artifactId>
+            <artifactId>core-common-customer-mgmt-web</artifactId>
             <scope>provided</scope>
         </dependency>
 
@@ -99,7 +99,7 @@
                 <version>${openapi-generator.version}</version>
                 <executions>
                     <execution>
-                        <id>common-platform-customer-mgmt-sdk</id>
+                        <id>core-common-customer-mgmt-sdk</id>
                         <goals>
                             <goal>generate</goal>
                         </goals>

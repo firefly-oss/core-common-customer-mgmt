@@ -1,6 +1,6 @@
 # Firefly OpenCore Banking Platform - Customer Management Core Module
 
-[![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com/firefly-oss/common-platform-customer-mgmt)
+[![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com/firefly-oss/core-common-customer-mgmt)
 [![License](https://img.shields.io/badge/license-Apache%20License%202.0-blue)](LICENSE)
 [![Version](https://img.shields.io/badge/version-1.0.0--SNAPSHOT-orange.svg)](pom.xml)
 
@@ -25,12 +25,12 @@ The **Firefly OpenCore Banking Platform - Customer Management Core Module** is a
 ### Module Structure
 
 ```
-common-platform-customer-mgmt/
-├── common-platform-customer-mgmt-core/       # Business logic and services
-├── common-platform-customer-mgmt-interfaces/ # Enums and interface definitions
-├── common-platform-customer-mgmt-models/     # R2DBC entities and data models
-├── common-platform-customer-mgmt-sdk/        # Client SDK for integration
-└── common-platform-customer-mgmt-web/        # REST controllers and web layer
+core-common-customer-mgmt/
+├── core-common-customer-mgmt-core/       # Business logic and services
+├── core-common-customer-mgmt-interfaces/ # Enums and interface definitions
+├── core-common-customer-mgmt-models/     # R2DBC entities and data models
+├── core-common-customer-mgmt-sdk/        # Client SDK for integration
+└── core-common-customer-mgmt-web/        # REST controllers and web layer
 ```
 
 ### Technology Stack
@@ -329,8 +329,8 @@ All API endpoints follow RESTful conventions and start with `/api/v1`. The syste
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/firefly-oss/common-platform-customer-mgmt.git
-   cd common-platform-customer-mgmt
+   git clone https://github.com/firefly-oss/core-common-customer-mgmt.git
+   cd core-common-customer-mgmt
    ```
 
 2. **Build the project**
@@ -390,13 +390,13 @@ springdoc:
 #### Development Mode
 
 ```bash
-mvn spring-boot:run -pl common-platform-customer-mgmt-web
+mvn spring-boot:run -pl core-common-customer-mgmt-web
 ```
 
 #### Production Mode
 
 ```bash
-java -jar common-platform-customer-mgmt-web/target/common-platform-customer-mgmt-web-1.0.0-SNAPSHOT.jar
+java -jar core-common-customer-mgmt-web/target/core-common-customer-mgmt-web-1.0.0-SNAPSHOT.jar
 ```
 
 #### Docker Deployment
@@ -532,8 +532,8 @@ spring:
 
 ### Community
 
-- **Issues**: [GitHub Issues](https://github.com/firefly-oss/common-platform-customer-mgmt/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/firefly-oss/common-platform-customer-mgmt/discussions)
+- **Issues**: [GitHub Issues](https://github.com/firefly-oss/core-common-customer-mgmt/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/firefly-oss/core-common-customer-mgmt/discussions)
 - **Team**: Firefly Team
 
 ### Commercial Support

@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.1",
   "info": {
-    "title": "common-platform-customer-mgmt",
+    "title": "core-common-customer-mgmt",
     "description": "Customer Management Core Application",
     "contact": {
       "name": "Firefly Software Solutions Inc",

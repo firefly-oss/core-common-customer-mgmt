@@ -5,17 +5,17 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.firefly</groupId>
-        <artifactId>common-platform-customer-mgmt</artifactId>
+        <artifactId>core-common-customer-mgmt</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>common-platform-customer-mgmt-models</artifactId>
+    <artifactId>core-common-customer-mgmt-models</artifactId>
 
     <dependencies>
         <!-- Internal -->
         <dependency>
             <groupId>com.firefly</groupId>
-            <artifactId>common-platform-customer-mgmt-interfaces</artifactId>
+            <artifactId>core-common-customer-mgmt-interfaces</artifactId>
         </dependency>
 
         <!-- Common Libraries -->

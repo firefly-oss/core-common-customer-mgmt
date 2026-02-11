@@ -11,14 +11,14 @@
     </parent>
 
     <groupId>com.firefly</groupId>
-    <artifactId>common-platform-customer-mgmt</artifactId>
+    <artifactId>core-common-customer-mgmt</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>common-platform-customer-mgmt-core</module>
-        <module>common-platform-customer-mgmt-interfaces</module>
-        <module>common-platform-customer-mgmt-models</module>
-        <module>common-platform-customer-mgmt-sdk</module>
-        <module>common-platform-customer-mgmt-web</module>
+        <module>core-common-customer-mgmt-core</module>
+        <module>core-common-customer-mgmt-interfaces</module>
+        <module>core-common-customer-mgmt-models</module>
+        <module>core-common-customer-mgmt-sdk</module>
+        <module>core-common-customer-mgmt-web</module>
     </modules>
 
     <properties>
@@ -27,9 +27,9 @@
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <maven.compiler.release>${java.version}</maven.compiler.release>
         <fireflyframework.bom.version>26.01.01</fireflyframework.bom.version>
-        <common-platform-customer-mgmt.version>
+        <core-common-customer-mgmt.version>
             1.0.0-SNAPSHOT
-        </common-platform-customer-mgmt.version>
+        </core-common-customer-mgmt.version>
     </properties>
 
     <dependencyManagement>
@@ -44,27 +44,27 @@
             <!-- Internal modules -->
             <dependency>
                 <groupId>com.firefly</groupId>
-                <artifactId>common-platform-customer-mgmt-interfaces</artifactId>
+                <artifactId>core-common-customer-mgmt-interfaces</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.firefly</groupId>
-                <artifactId>common-platform-customer-mgmt-models</artifactId>
+                <artifactId>core-common-customer-mgmt-models</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.firefly</groupId>
-                <artifactId>common-platform-customer-mgmt-core</artifactId>
+                <artifactId>core-common-customer-mgmt-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.firefly</groupId>
-                <artifactId>common-platform-customer-mgmt-web</artifactId>
+                <artifactId>core-common-customer-mgmt-web</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.firefly</groupId>
-                <artifactId>common-platform-customer-mgmt-sdk</artifactId>
+                <artifactId>core-common-customer-mgmt-sdk</artifactId>
                 <version>${project.version}</version>
             </dependency>
         </dependencies>
