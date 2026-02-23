@@ -11,6 +11,12 @@
 
     <artifactId>core-common-customer-mgmt-web</artifactId>
 
+    <properties>
+        <!-- Enable OpenAPI generation (profile inherited from firefly-parent) -->
+        <openapi.gen.skip>false</openapi.gen.skip>
+        <openapi.gen.mainClass>com.firefly.core.customer.web.openapi.OpenApiGenApplication</openapi.gen.mainClass>
+    </properties>
+
     <dependencies>
         <!-- Internal modules -->
         <dependency>
