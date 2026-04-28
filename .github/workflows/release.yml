@@ -1,0 +1,17 @@
+name: Release
+
+on:
+  workflow_dispatch:
+  push:
+    tags: ['v*']
+
+jobs:
+  release:
+    uses: firefly-oss/.github/.github/workflows/java-release.yml@main
+    permissions:
+      contents: write
+      packages: write
+    with:
+      java-version: '25'
+      deploy-module: 'core-common-customer-mgmt-sdk'
+    secrets: inherit
