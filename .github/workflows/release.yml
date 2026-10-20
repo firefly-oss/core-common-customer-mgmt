@@ -13,5 +13,6 @@ jobs:
       packages: write
     with:
       java-version: '25'
+      destination: both
       deploy-module: 'core-common-customer-mgmt-sdk'
     secrets: inherit
