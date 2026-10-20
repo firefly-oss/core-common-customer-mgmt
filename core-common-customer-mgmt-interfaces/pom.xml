@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.firefly</groupId>
         <artifactId>core-common-customer-mgmt</artifactId>
-        <version>26.10.20</version>
+        <version>26.10.1</version>
     </parent>
 
     <artifactId>core-common-customer-mgmt-interfaces</artifactId>
