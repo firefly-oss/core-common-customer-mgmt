@@ -10,6 +10,7 @@
     </parent>
 
     <artifactId>core-common-customer-mgmt-interfaces</artifactId>
+    <name>core-common-customer-mgmt-interfaces</name>
 
     <dependencies>
 

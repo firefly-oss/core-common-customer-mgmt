@@ -12,6 +12,7 @@
     </parent>
 
     <artifactId>core-common-customer-mgmt</artifactId>
+    <name>core-common-customer-mgmt</name>
     <packaging>pom</packaging>
     <modules>
         <module>core-common-customer-mgmt-core</module>

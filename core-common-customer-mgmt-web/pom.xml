@@ -10,6 +10,7 @@
     </parent>
 
     <artifactId>core-common-customer-mgmt-web</artifactId>
+    <name>core-common-customer-mgmt-web</name>
 
     <properties>
         <!-- Enable OpenAPI generation (profile inherited from firefly-parent) -->
