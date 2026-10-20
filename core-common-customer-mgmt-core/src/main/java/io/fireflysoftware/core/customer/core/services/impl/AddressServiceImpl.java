@@ -1,0 +1,107 @@
+/*
+ * Copyright 2025 Firefly Software Foundation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+
+package io.fireflysoftware.core.customer.core.services.impl;
+
+import org.fireflyframework.core.filters.FilterRequest;
+import org.fireflyframework.core.filters.FilterUtils;
+import org.fireflyframework.core.queries.PaginationResponse;
+import io.fireflysoftware.core.customer.core.mappers.AddressMapper;
+import io.fireflysoftware.core.customer.core.services.AddressService;
+import io.fireflysoftware.core.customer.interfaces.dtos.AddressDTO;
+import io.fireflysoftware.core.customer.models.entities.Address;
+import io.fireflysoftware.core.customer.models.repositories.AddressRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import reactor.core.publisher.Mono;
+import java.util.UUID;
+
+@Service
+@Transactional
+public class AddressServiceImpl implements AddressService {
+
+    @Autowired
+    private AddressRepository repository;
+
+    @Autowired
+    private AddressMapper mapper;
+
+    @Override
+    public Mono<PaginationResponse<AddressDTO>> filterAddresses(UUID partyId, FilterRequest<AddressDTO> filterRequest) {
+        if (filterRequest.getFilters() == null) {
+            filterRequest.setFilters(new AddressDTO());
+        }
+        filterRequest.getFilters().setPartyId(partyId);
+        return FilterUtils
+                .createFilter(
+                        Address.class,
+                        mapper::toDTO
+                )
+                .filter(filterRequest);
+    }
+
+    @Override
+    public Mono<AddressDTO> createAddress(UUID partyId, AddressDTO addressDTO) {
+        return Mono.just(addressDTO)
+                .doOnNext(dto -> dto.setPartyId(partyId)) // Ensure partyId is set
+                .map(mapper::toEntity)
+                .flatMap(repository::save)
+                .map(mapper::toDTO);
+    }
+
+    @Override
+    public Mono<AddressDTO> updateAddress(UUID partyId, UUID addressId, AddressDTO addressDTO) {
+        return repository.findById(addressId)
+                .switchIfEmpty(Mono.error(new RuntimeException("Address not found with ID: " + addressId)))
+                .flatMap(existingAddress -> {
+                    // Validate that the address belongs to the specified party
+                    if (!partyId.equals(existingAddress.getPartyId())) {
+                        return Mono.error(new RuntimeException("Address with ID " + addressId + " does not belong to party " + partyId));
+                    }
+                    mapper.updateEntityFromDto(addressDTO, existingAddress);
+                    return repository.save(existingAddress);
+                })
+                .map(mapper::toDTO);
+    }
+
+    @Override
+    public Mono<Void> deleteAddress(UUID partyId, UUID addressId) {
+        return repository.findById(addressId)
+                .switchIfEmpty(Mono.error(new RuntimeException("Address not found with ID: " + addressId)))
+                .flatMap(address -> {
+                    // Validate that the address belongs to the specified party
+                    if (!partyId.equals(address.getPartyId())) {
+                        return Mono.error(new RuntimeException("Address with ID " + addressId + " does not belong to party " + partyId));
+                    }
+                    return repository.deleteById(addressId);
+                });
+    }
+
+    @Override
+    public Mono<AddressDTO> getAddressById(UUID partyId, UUID addressId) {
+        return repository.findById(addressId)
+                .switchIfEmpty(Mono.error(new RuntimeException("Address not found with ID: " + addressId)))
+                .flatMap(address -> {
+                    // Validate that the address belongs to the specified party
+                    if (!partyId.equals(address.getPartyId())) {
+                        return Mono.error(new RuntimeException("Address with ID " + addressId + " does not belong to party " + partyId));
+                    }
+                    return Mono.just(mapper.toDTO(address));
+                });
+    }
+}

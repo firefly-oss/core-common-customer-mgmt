@@ -435,7 +435,7 @@ Once the application is running, access the interactive API documentation at:
 
 ```
 src/
-├── main/java/com/firefly/core/customer/
+├── main/java/io/fireflysoftware/core/customer/
 │   ├── core/           # Business logic and services
 │   ├── interfaces/     # Enums and interfaces
 │   ├── models/         # Entity definitions
