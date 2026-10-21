@@ -17,10 +17,17 @@
 
 package io.fireflysoftware.core.customer.models.repositories;
 
+import io.fireflysoftware.core.customer.interfaces.enums.RelationshipKind;
 import io.fireflysoftware.core.customer.models.entities.PartyRelationship;
 import org.springframework.stereotype.Repository;
+import reactor.core.publisher.Flux;
+
 import java.util.UUID;
 
 @Repository
 public interface PartyRelationshipRepository extends BaseRepository<PartyRelationship, UUID> {
+
+    Flux<PartyRelationship> findByRelationshipKind(RelationshipKind relationshipKind);
+
+    Flux<PartyRelationship> findByTargetPartyIdAndRelationshipKind(UUID targetPartyId, RelationshipKind relationshipKind);
 }

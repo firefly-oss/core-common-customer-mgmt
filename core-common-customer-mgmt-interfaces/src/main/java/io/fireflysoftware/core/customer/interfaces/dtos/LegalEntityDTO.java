@@ -96,9 +96,6 @@ public class LegalEntityDTO {
     @DecimalMin(value = "0.0", inclusive = true, message = "Annual revenue must be non-negative")
     private BigDecimal annualRevenue;
 
-    @Size(max = 10, message = "CNAE code must not exceed 10 characters")
-    private String cnaeCode;
-
     @Size(max = 255, message = "Contact name must not exceed 255 characters")
     private String contactName;
 

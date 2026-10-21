@@ -77,7 +77,7 @@ public class LegalEntityController {
             @PathVariable UUID partyId,
             @Parameter(description = "Filter criteria for legal entities", required = true)
             @Valid @RequestBody FilterRequest<LegalEntityDTO> filterRequest) {
-        return legalEntityService.filterLegalEntities(filterRequest)
+        return legalEntityService.filterLegalEntities(partyId, filterRequest)
                 .map(ResponseEntity::ok);
     }
 

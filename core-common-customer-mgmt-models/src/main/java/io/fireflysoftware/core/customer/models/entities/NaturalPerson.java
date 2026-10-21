@@ -61,11 +61,11 @@ public class NaturalPerson {
     @Column("middle_name")
     private String middleName;
 
-    @Column("family_name1")
-    private String familyName1;
+    @Column("family_name")
+    private String familyName;
 
-    @Column("family_name2")
-    private String familyName2;
+    @Column("second_family_name")
+    private String secondFamilyName;
 
     @Column("date_of_birth")
     private LocalDate dateOfBirth;
@@ -102,36 +102,6 @@ public class NaturalPerson {
 
     @Column("number_of_children")
     private Short numberOfChildren;
-
-    @Column("employment_status")
-    private String employmentStatus;
-
-    @Column("employment_type")
-    private String employmentType;
-
-    @Column("employer")
-    private String employer;
-
-    @Column("employment_start_date")
-    private java.time.LocalDate employmentStartDate;
-
-    @Column("annual_paydays")
-    private Short annualPaydays;
-
-    @Column("housing_type")
-    private String housingType;
-
-    @Column("housing_cost")
-    private BigDecimal housingCost;
-
-    @Column("housing_start_date")
-    private java.time.LocalDate housingStartDate;
-
-    @Column("existing_loans")
-    private Short existingLoans;
-
-    @Column("other_debts")
-    private BigDecimal otherDebts;
 
     @Column("created_at")
     private LocalDateTime createdAt;

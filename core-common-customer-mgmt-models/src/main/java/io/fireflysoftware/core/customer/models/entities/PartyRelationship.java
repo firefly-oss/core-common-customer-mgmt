@@ -17,6 +17,7 @@
 
 package io.fireflysoftware.core.customer.models.entities;
 
+import io.fireflysoftware.core.customer.interfaces.enums.RelationshipKind;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,6 +26,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -43,20 +45,29 @@ public class PartyRelationship {
     @Column("party_relationship_id")
     private UUID partyRelationshipId;
 
-    @Column("from_party_id")
-    private UUID fromPartyId;
+    @Column("source_party_id")
+    private UUID sourcePartyId;
 
-    @Column("to_party_id")
-    private UUID toPartyId;
+    @Column("target_party_id")
+    private UUID targetPartyId;
+
+    @Column("relationship_kind")
+    private RelationshipKind relationshipKind;
 
     @Column("relationship_type_id")
     private UUID relationshipTypeId;
 
-    @Column("start_date")
-    private LocalDateTime startDate;
+    @Column("ownership_percentage")
+    private BigDecimal ownershipPercentage;
 
-    @Column("end_date")
-    private LocalDateTime endDate;
+    @Column("tenant_id")
+    private UUID tenantId;
+
+    @Column("effective_from")
+    private LocalDateTime effectiveFrom;
+
+    @Column("effective_to")
+    private LocalDateTime effectiveTo;
 
     @Column("active")
     private Boolean active;

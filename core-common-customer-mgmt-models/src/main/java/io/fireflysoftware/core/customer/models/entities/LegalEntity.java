@@ -88,9 +88,6 @@ public class LegalEntity {
     @Column("annual_revenue")
     private BigDecimal annualRevenue;
 
-    @Column("cnae_code")
-    private String cnaeCode;
-
     @Column("contact_name")
     private String contactName;
 

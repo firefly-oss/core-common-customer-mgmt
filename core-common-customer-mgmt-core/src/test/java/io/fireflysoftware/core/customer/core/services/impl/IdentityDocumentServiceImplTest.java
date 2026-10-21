@@ -64,6 +64,7 @@ class IdentityDocumentServiceImplTest {
         
         identityDocument = new IdentityDocument();
         identityDocument.setIdentityDocumentId(identityDocumentId);
+        identityDocument.setPartyId(partyId);
         identityDocument.setCreatedAt(LocalDateTime.now());
         identityDocument.setUpdatedAt(LocalDateTime.now());
 

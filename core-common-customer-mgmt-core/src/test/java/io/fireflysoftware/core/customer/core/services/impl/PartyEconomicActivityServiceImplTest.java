@@ -64,6 +64,7 @@ class PartyEconomicActivityServiceImplTest {
         
         partyEconomicActivity = new PartyEconomicActivity();
         partyEconomicActivity.setPartyEconomicActivityId(partyEconomicActivityId);
+        partyEconomicActivity.setPartyId(partyId);
         partyEconomicActivity.setCreatedAt(LocalDateTime.now());
         partyEconomicActivity.setUpdatedAt(LocalDateTime.now());
 

@@ -22,8 +22,12 @@ import org.fireflyframework.core.filters.FilterUtils;
 import org.fireflyframework.core.queries.PaginationResponse;
 import io.fireflysoftware.core.customer.core.mappers.PartyRelationshipMapper;
 import io.fireflysoftware.core.customer.interfaces.dtos.PartyRelationshipDTO;
+import io.fireflysoftware.core.customer.interfaces.enums.PartyKind;
+import io.fireflysoftware.core.customer.interfaces.enums.RelationshipKind;
+import io.fireflysoftware.core.customer.models.entities.Party;
 import io.fireflysoftware.core.customer.models.entities.PartyRelationship;
 import io.fireflysoftware.core.customer.models.repositories.PartyRelationshipRepository;
+import io.fireflysoftware.core.customer.models.repositories.PartyRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -45,6 +49,9 @@ class PartyRelationshipServiceImplTest {
 
     @Mock
     private PartyRelationshipRepository partyRelationshipRepository;
+
+    @Mock
+    private PartyRepository partyRepository;
 
     @Mock
     private PartyRelationshipMapper partyRelationshipMapper;
@@ -93,6 +100,7 @@ class PartyRelationshipServiceImplTest {
     @Test
     void createPartyRelationship_ShouldReturnCreatedPartyRelationshipDTO_WhenValidPartyRelationshipDTO() {
         // Arrange
+        stubOfficer(partyRelationshipDTO);
         when(partyRelationshipMapper.toEntity(partyRelationshipDTO)).thenReturn(partyRelationship);
         when(partyRelationshipRepository.save(partyRelationship)).thenReturn(Mono.just(partyRelationship));
         when(partyRelationshipMapper.toDTO(partyRelationship)).thenReturn(partyRelationshipDTO);
@@ -110,6 +118,7 @@ class PartyRelationshipServiceImplTest {
     @Test
     void createPartyRelationship_ShouldHandleRepositoryError_WhenSaveFails() {
         // Arrange
+        stubOfficer(partyRelationshipDTO);
         when(partyRelationshipMapper.toEntity(partyRelationshipDTO)).thenReturn(partyRelationship);
         when(partyRelationshipRepository.save(partyRelationship)).thenReturn(Mono.error(new RuntimeException("Database error")));
 
@@ -129,6 +138,7 @@ class PartyRelationshipServiceImplTest {
         // Arrange
         PartyRelationshipDTO updateDTO = new PartyRelationshipDTO();
         updateDTO.setPartyRelationshipId(null);
+        stubOfficer(updateDTO);
         
         PartyRelationship updatedPartyRelationship = new PartyRelationship();
         updatedPartyRelationship.setPartyRelationshipId(partyRelationshipId);
@@ -253,5 +263,21 @@ class PartyRelationshipServiceImplTest {
 
         verify(partyRelationshipRepository).findById(partyRelationshipId);
         verify(partyRelationshipMapper, never()).toDTO(any());
+    }
+
+    private void stubOfficer(PartyRelationshipDTO dto) {
+        UUID source = UUID.randomUUID();
+        UUID target = UUID.randomUUID();
+        UUID tenant = UUID.randomUUID();
+        dto.setSourcePartyId(source);
+        dto.setTargetPartyId(target);
+        dto.setRelationshipKind(RelationshipKind.OFFICER);
+        dto.setTenantId(tenant);
+        when(partyRepository.findById(source)).thenReturn(Mono.just(party(source, PartyKind.INDIVIDUAL, tenant)));
+        when(partyRepository.findById(target)).thenReturn(Mono.just(party(target, PartyKind.ORGANIZATION, tenant)));
+    }
+
+    private static Party party(UUID id, PartyKind kind, UUID tenant) {
+        return Party.builder().partyId(id).partyKind(kind).tenantId(tenant).build();
     }
 }

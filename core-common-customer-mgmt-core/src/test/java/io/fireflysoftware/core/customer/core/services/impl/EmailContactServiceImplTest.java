@@ -64,6 +64,7 @@ class EmailContactServiceImplTest {
         
         emailContact = new EmailContact();
         emailContact.setEmailContactId(emailContactId);
+        emailContact.setPartyId(partyId);
         emailContact.setCreatedAt(LocalDateTime.now());
         emailContact.setUpdatedAt(LocalDateTime.now());
 

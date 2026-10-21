@@ -19,8 +19,11 @@ package io.fireflysoftware.core.customer.core.services;
 
 import org.fireflyframework.core.filters.FilterRequest;
 import org.fireflyframework.core.queries.PaginationResponse;
+import io.fireflysoftware.core.customer.interfaces.dtos.PartyAncestorDTO;
 import io.fireflysoftware.core.customer.interfaces.dtos.PartyRelationshipDTO;
 import reactor.core.publisher.Mono;
+
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -68,4 +71,19 @@ public interface PartyRelationshipService {
      *         or an empty Mono if the party relationship does not exist
      */
     Mono<PartyRelationshipDTO> getPartyRelationshipById(UUID partyRelationshipId);
+
+    /**
+     * Ownership edges whose target is the legal entity. Several owners are normal.
+     */
+    Mono<List<PartyRelationshipDTO>> directOwners(UUID legalEntityPartyId);
+
+    /**
+     * Direct children: parent edges, and ownership edges whose source is a legal entity.
+     */
+    Mono<List<PartyRelationshipDTO>> directSubsidiaries(UUID legalEntityPartyId);
+
+    /**
+     * Legal entities above this one, nearest first, capped at {@code depth} and at 25.
+     */
+    Mono<List<PartyAncestorDTO>> ancestors(UUID legalEntityPartyId, int depth);
 }

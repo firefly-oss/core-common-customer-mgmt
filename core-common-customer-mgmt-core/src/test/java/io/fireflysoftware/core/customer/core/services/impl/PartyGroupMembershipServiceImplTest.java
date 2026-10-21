@@ -64,6 +64,7 @@ class PartyGroupMembershipServiceImplTest {
         
         partyGroupMembership = new PartyGroupMembership();
         partyGroupMembership.setPartyGroupMembershipId(partyGroupMembershipId);
+        partyGroupMembership.setPartyId(partyId);
         partyGroupMembership.setCreatedAt(LocalDateTime.now());
         partyGroupMembership.setUpdatedAt(LocalDateTime.now());
 

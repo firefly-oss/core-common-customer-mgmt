@@ -64,6 +64,7 @@ class PoliticallyExposedPersonServiceImplTest {
         
         politicallyExposedPerson = new PoliticallyExposedPerson();
         politicallyExposedPerson.setPepId(politicallyExposedPersonId);
+        politicallyExposedPerson.setPartyId(partyId);
         politicallyExposedPerson.setCreatedAt(LocalDateTime.now());
         politicallyExposedPerson.setUpdatedAt(LocalDateTime.now());
 

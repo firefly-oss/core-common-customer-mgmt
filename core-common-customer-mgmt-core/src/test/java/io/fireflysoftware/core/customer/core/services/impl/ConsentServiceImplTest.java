@@ -64,6 +64,7 @@ class ConsentServiceImplTest {
         
         consent = new Consent();
         consent.setConsentId(consentId);
+        consent.setPartyId(partyId);
         consent.setCreatedAt(LocalDateTime.now());
         consent.setUpdatedAt(LocalDateTime.now());
 

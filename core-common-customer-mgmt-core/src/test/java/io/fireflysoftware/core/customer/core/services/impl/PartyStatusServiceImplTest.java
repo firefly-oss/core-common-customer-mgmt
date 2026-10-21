@@ -31,6 +31,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
@@ -64,6 +65,7 @@ class PartyStatusServiceImplTest {
         
         partyStatus = new PartyStatus();
         partyStatus.setPartyStatusId(partyStatusId);
+        partyStatus.setPartyId(partyId);
         partyStatus.setCreatedAt(LocalDateTime.now());
         partyStatus.setUpdatedAt(LocalDateTime.now());
 
@@ -95,6 +97,7 @@ class PartyStatusServiceImplTest {
     @Test
     void createPartyStatus_ShouldReturnCreatedPartyStatusDTO_WhenValidPartyStatusDTO() {
         // Arrange
+        when(partyStatusRepository.findByPartyIdAndValidToIsNull(partyId)).thenReturn(Flux.empty());
         when(partyStatusMapper.toEntity(partyStatusDTO)).thenReturn(partyStatus);
         when(partyStatusRepository.save(partyStatus)).thenReturn(Mono.just(partyStatus));
         when(partyStatusMapper.toDTO(partyStatus)).thenReturn(partyStatusDTO);
@@ -112,6 +115,7 @@ class PartyStatusServiceImplTest {
     @Test
     void createPartyStatus_ShouldHandleRepositoryError_WhenSaveFails() {
         // Arrange
+        when(partyStatusRepository.findByPartyIdAndValidToIsNull(partyId)).thenReturn(Flux.empty());
         when(partyStatusMapper.toEntity(partyStatusDTO)).thenReturn(partyStatus);
         when(partyStatusRepository.save(partyStatus)).thenReturn(Mono.error(new RuntimeException("Database error")));
 
@@ -135,7 +139,7 @@ class PartyStatusServiceImplTest {
         // Set up the existing party status with the correct partyId for validation
         partyStatus.setPartyId(partyId);
         
-        when(partyStatusRepository.findByPartyId(partyId)).thenReturn(Mono.just(partyStatus));
+        when(partyStatusRepository.findByPartyIdAndValidToIsNull(partyId)).thenReturn(Flux.just(partyStatus));
         doNothing().when(partyStatusMapper).updateEntityFromDto(updateDTO, partyStatus);
         when(partyStatusRepository.save(partyStatus)).thenReturn(Mono.just(partyStatus));
         when(partyStatusMapper.toDTO(partyStatus)).thenReturn(partyStatusDTO);
@@ -145,7 +149,7 @@ class PartyStatusServiceImplTest {
                 .expectNext(partyStatusDTO)
                 .verifyComplete();
 
-        verify(partyStatusRepository).findByPartyId(partyId);
+        verify(partyStatusRepository).findByPartyIdAndValidToIsNull(partyId);
         verify(partyStatusMapper).updateEntityFromDto(updateDTO, partyStatus);
         verify(partyStatusRepository).save(partyStatus);
         verify(partyStatusMapper).toDTO(partyStatus);
@@ -154,7 +158,7 @@ class PartyStatusServiceImplTest {
     @Test
     void updatePartyStatus_ShouldReturnError_WhenPartyStatusNotFound() {
         // Arrange
-        when(partyStatusRepository.findByPartyId(partyId)).thenReturn(Mono.empty());
+        when(partyStatusRepository.findByPartyIdAndValidToIsNull(partyId)).thenReturn(Flux.empty());
 
         // Act & Assert
         StepVerifier.create(partyStatusService.updatePartyStatus(partyId, partyStatusDTO))
@@ -162,7 +166,7 @@ class PartyStatusServiceImplTest {
                         throwable.getMessage().equals("Party status not found for party ID: " + partyId))
                 .verify();
 
-        verify(partyStatusRepository).findByPartyId(partyId);
+        verify(partyStatusRepository).findByPartyIdAndValidToIsNull(partyId);
         verify(partyStatusMapper, never()).toEntity(any());
         verify(partyStatusRepository, never()).save(any());
     }
@@ -255,5 +259,23 @@ class PartyStatusServiceImplTest {
 
         verify(partyStatusRepository).findById(partyStatusId);
         verify(partyStatusMapper, never()).toDTO(any());
+    }
+
+    @Test
+    void createPartyStatus_ShouldCloseThePreviousOpenStatus() {
+        PartyStatus open = new PartyStatus();
+        open.setPartyId(partyId);
+        PartyStatus created = new PartyStatus();
+        created.setPartyId(partyId);
+        when(partyStatusRepository.findByPartyIdAndValidToIsNull(partyId)).thenReturn(Flux.just(open));
+        when(partyStatusMapper.toEntity(partyStatusDTO)).thenReturn(created);
+        when(partyStatusRepository.save(any(PartyStatus.class))).thenAnswer(invocation -> Mono.just(invocation.getArgument(0)));
+        when(partyStatusMapper.toDTO(created)).thenReturn(partyStatusDTO);
+
+        StepVerifier.create(partyStatusService.createPartyStatus(partyId, partyStatusDTO))
+                .expectNext(partyStatusDTO)
+                .verifyComplete();
+
+        org.junit.jupiter.api.Assertions.assertNotNull(open.getValidTo());
     }
 }

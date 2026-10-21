@@ -26,8 +26,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.DecimalMin;
@@ -60,19 +61,17 @@ public class NaturalPersonDTO {
     @Size(max = 50, message = "Title must not exceed 50 characters")
     private String title;
     
-    @NotBlank(message = "Given name is required")
     @Size(max = 100, message = "Given name must not exceed 100 characters")
     private String givenName;
     
     @Size(max = 100, message = "Middle name must not exceed 100 characters")
     private String middleName;
     
-    @NotBlank(message = "Family name 1 is required")
-    @Size(max = 100, message = "Family name 1 must not exceed 100 characters")
-    private String familyName1;
-    
-    @Size(max = 100, message = "Family name 2 must not exceed 100 characters")
-    private String familyName2;
+    @Size(max = 100, message = "Family name must not exceed 100 characters")
+    private String familyName;
+
+    @Size(max = 100, message = "Second family name must not exceed 100 characters")
+    private String secondFamilyName;
     
     @Past(message = "Date of birth must be in the past")
     private LocalDate dateOfBirth;
@@ -106,34 +105,13 @@ public class NaturalPersonDTO {
     @Min(value = 0, message = "Number of children must be non-negative")
     private Short numberOfChildren;
 
-    @Size(max = 30, message = "employmentStatus must not exceed 30 characters")
-    private String employmentStatus;
-
-    @Size(max = 20, message = "employmentType must not exceed 20 characters")
-    private String employmentType;
-
-    @Size(max = 200, message = "employer must not exceed 200 characters")
-    private String employer;
-
-    private LocalDate employmentStartDate;
-
-    @Min(value = 0, message = "annualPaydays must be non-negative")
-    private Short annualPaydays;
-
-    @Size(max = 20, message = "housingType must not exceed 20 characters")
-    private String housingType;
-
-    @DecimalMin(value = "0.0", inclusive = true, message = "housingCost must be non-negative")
-    private BigDecimal housingCost;
-
-    private LocalDate housingStartDate;
-
-    @Min(value = 0, message = "existingLoans must be non-negative")
-    private Short existingLoans;
-
-    @DecimalMin(value = "0.0", inclusive = true, message = "otherDebts must be non-negative")
-    private BigDecimal otherDebts;
-
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+
+    @JsonIgnore
+    @AssertTrue(message = "A natural person needs a given name or a family name")
+    public boolean hasName() {
+        return (givenName != null && !givenName.isBlank())
+                || (familyName != null && !familyName.isBlank());
+    }
 }

@@ -64,6 +64,7 @@ class PartyProviderServiceImplTest {
         
         partyProvider = new PartyProvider();
         partyProvider.setPartyProviderId(partyProviderId);
+        partyProvider.setPartyId(partyId);
         partyProvider.setCreatedAt(LocalDateTime.now());
         partyProvider.setUpdatedAt(LocalDateTime.now());
 

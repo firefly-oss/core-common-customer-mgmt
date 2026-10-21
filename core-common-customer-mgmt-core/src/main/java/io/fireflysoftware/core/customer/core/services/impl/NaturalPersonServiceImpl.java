@@ -43,24 +43,28 @@ public class NaturalPersonServiceImpl implements NaturalPersonService {
     @Autowired
     private NaturalPersonMapper mapper;
 
+    @Autowired
+    private PartyProfiles partyProfiles;
+
     @Override
     public Mono<PaginationResponse<NaturalPersonDTO>> filterNaturalPersons(UUID partyId, FilterRequest<NaturalPersonDTO> filterRequest) {
-        // Add partyId filter to the existing filter request
-        // For now, we'll delegate to FilterUtils but this could be enhanced to add partyId filtering
+        PartyScope.scope(filterRequest, NaturalPersonDTO::new, NaturalPersonDTO::setPartyId, partyId);
         return FilterUtils
                 .createFilter(
                         NaturalPerson.class,
                         mapper::toDTO
                 )
                 .filter(filterRequest);
-        // TODO: Enhance FilterUtils to support party-specific filtering
     }
 
     @Override
     public Mono<NaturalPersonDTO> createNaturalPerson(UUID partyId, NaturalPersonDTO naturalPersonDTO) {
-        return Mono.just(naturalPersonDTO)
-                .doOnNext(dto -> dto.setPartyId(partyId)) // Ensure partyId is set
-                .map(mapper::toEntity)
+        return requireName(naturalPersonDTO)
+                .then(partyProfiles.requirePersonSlot(partyId))
+                .then(Mono.fromSupplier(() -> {
+                    naturalPersonDTO.setPartyId(partyId);
+                    return mapper.toEntity(naturalPersonDTO);
+                }))
                 .flatMap(repository::save)
                 .map(mapper::toDTO);
     }
@@ -75,6 +79,10 @@ public class NaturalPersonServiceImpl implements NaturalPersonService {
                         return Mono.error(new RuntimeException("Natural person with ID " + naturalPersonId + " does not belong to party " + partyId));
                     }
                     mapper.updateEntityFromDto(naturalPersonDTO, existingNaturalPerson);
+                    existingNaturalPerson.setPartyId(partyId);
+                    if (blank(existingNaturalPerson.getGivenName()) && blank(existingNaturalPerson.getFamilyName())) {
+                        return Mono.error(new RuntimeException("A natural person needs a given name or a family name"));
+                    }
                     return repository.save(existingNaturalPerson);
                 })
                 .map(mapper::toDTO);
@@ -114,5 +122,16 @@ public class NaturalPersonServiceImpl implements NaturalPersonService {
                 .switchIfEmpty(Mono.error(new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
                         "Natural person not found for partyId: " + partyId)));
+    }
+
+    private static Mono<Void> requireName(NaturalPersonDTO dto) {
+        if (blank(dto.getGivenName()) && blank(dto.getFamilyName())) {
+            return Mono.error(new RuntimeException("A natural person needs a given name or a family name"));
+        }
+        return Mono.empty();
+    }
+
+    private static boolean blank(String value) {
+        return value == null || value.isBlank();
     }
 }

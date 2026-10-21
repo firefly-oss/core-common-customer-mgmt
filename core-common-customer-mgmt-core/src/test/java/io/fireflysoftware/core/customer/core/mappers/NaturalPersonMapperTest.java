@@ -36,7 +36,7 @@ class NaturalPersonMapperTest {
                 .naturalPersonId(UUID.randomUUID())
                 .partyId(UUID.randomUUID())
                 .givenName("Jane")
-                .familyName1("Doe")
+                .familyName("Doe")
                 .numberOfChildren((short) 3)
                 .build();
 
@@ -52,7 +52,7 @@ class NaturalPersonMapperTest {
                 .naturalPersonId(UUID.randomUUID())
                 .partyId(UUID.randomUUID())
                 .givenName("John")
-                .familyName1("Smith")
+                .familyName("Smith")
                 .numberOfChildren((short) 0)
                 .build();
 
@@ -68,7 +68,7 @@ class NaturalPersonMapperTest {
                 .naturalPersonId(UUID.randomUUID())
                 .partyId(UUID.randomUUID())
                 .givenName("Anonymous")
-                .familyName1("Person")
+                .familyName("Person")
                 .build();
 
         NaturalPersonDTO dto = mapper.toDTO(entity);

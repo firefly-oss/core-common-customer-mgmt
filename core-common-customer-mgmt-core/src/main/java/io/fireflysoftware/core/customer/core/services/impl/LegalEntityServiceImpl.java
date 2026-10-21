@@ -43,8 +43,12 @@ public class LegalEntityServiceImpl implements LegalEntityService {
     @Autowired
     private LegalEntityMapper mapper;
 
+    @Autowired
+    private PartyProfiles partyProfiles;
+
     @Override
-    public Mono<PaginationResponse<LegalEntityDTO>> filterLegalEntities(FilterRequest<LegalEntityDTO> filterRequest) {
+    public Mono<PaginationResponse<LegalEntityDTO>> filterLegalEntities(UUID partyId, FilterRequest<LegalEntityDTO> filterRequest) {
+        PartyScope.scope(filterRequest, LegalEntityDTO::new, LegalEntityDTO::setPartyId, partyId);
         return FilterUtils
                 .createFilter(
                         LegalEntity.class,
@@ -55,8 +59,9 @@ public class LegalEntityServiceImpl implements LegalEntityService {
 
     @Override
     public Mono<LegalEntityDTO> createLegalEntity(UUID partyId, LegalEntityDTO legalEntityDTO) {
-        return Mono.just(legalEntityDTO)
-                .map(mapper::toEntity)
+        legalEntityDTO.setPartyId(partyId);
+        return partyProfiles.requireOrganizationSlot(partyId)
+                .then(Mono.fromSupplier(() -> mapper.toEntity(legalEntityDTO)))
                 .flatMap(repository::save)
                 .map(mapper::toDTO);
     }
@@ -71,6 +76,7 @@ public class LegalEntityServiceImpl implements LegalEntityService {
                         return Mono.error(new RuntimeException("Legal entity with ID " + legalEntityId + " does not belong to party " + partyId));
                     }
                     mapper.updateEntityFromDto(legalEntityDTO, existingLegalEntity);
+                    existingLegalEntity.setPartyId(partyId);
                     return repository.save(existingLegalEntity);
                 })
                 .map(mapper::toDTO);
@@ -80,13 +86,15 @@ public class LegalEntityServiceImpl implements LegalEntityService {
     public Mono<Void> deleteLegalEntity(UUID partyId, UUID legalEntityId) {
         return repository.findById(legalEntityId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Legal entity not found with ID: " + legalEntityId)))
-                .flatMap(legalEntity -> repository.deleteById(legalEntityId));
+                .flatMap(legalEntity -> PartyScope.requireOwner(partyId, legalEntity.getPartyId(), legalEntity, "Legal entity", legalEntityId)
+                        .flatMap(owned -> repository.deleteById(legalEntityId)));
     }
 
     @Override
     public Mono<LegalEntityDTO> getLegalEntityById(UUID partyId, UUID legalEntityId) {
         return repository.findById(legalEntityId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Legal entity not found with ID: " + legalEntityId)))
+                .flatMap(legalEntity -> PartyScope.requireOwner(partyId, legalEntity.getPartyId(), legalEntity, "Legal entity", legalEntityId))
                 .map(mapper::toDTO);
     }
 

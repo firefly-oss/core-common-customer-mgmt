@@ -57,6 +57,7 @@ public class IdentityDocumentServiceImpl implements IdentityDocumentService {
 
     @Override
     public Mono<IdentityDocumentDTO> createIdentityDocument(UUID partyId, IdentityDocumentDTO identityDocumentDTO) {
+        identityDocumentDTO.setPartyId(partyId);
         return Mono.just(identityDocumentDTO)
                 .map(mapper::toEntity)
                 .flatMap(repository::save)
@@ -67,11 +68,15 @@ public class IdentityDocumentServiceImpl implements IdentityDocumentService {
     public Mono<IdentityDocumentDTO> updateIdentityDocument(UUID partyId, UUID identityDocumentId, IdentityDocumentDTO identityDocumentDTO) {
         return repository.findById(identityDocumentId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Identity document not found with ID: " + identityDocumentId)))
-                .flatMap(existingIdentityDocument -> {
-                    IdentityDocument updatedIdentityDocument = mapper.toEntity(identityDocumentDTO);
-                    updatedIdentityDocument.setIdentityDocumentId(identityDocumentId);
-                    return repository.save(updatedIdentityDocument);
-                })
+                .flatMap(existingIdentityDocument -> PartyScope.requireOwner(
+                                partyId, existingIdentityDocument.getPartyId(), existingIdentityDocument,
+                                "Identity document", identityDocumentId)
+                        .flatMap(owned -> {
+                            IdentityDocument updatedIdentityDocument = mapper.toEntity(identityDocumentDTO);
+                            updatedIdentityDocument.setIdentityDocumentId(identityDocumentId);
+                            updatedIdentityDocument.setPartyId(partyId);
+                            return repository.save(updatedIdentityDocument);
+                        }))
                 .map(mapper::toDTO);
     }
 
@@ -79,13 +84,15 @@ public class IdentityDocumentServiceImpl implements IdentityDocumentService {
     public Mono<Void> deleteIdentityDocument(UUID partyId, UUID identityDocumentId) {
         return repository.findById(identityDocumentId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Identity document not found with ID: " + identityDocumentId)))
-                .flatMap(identityDocument -> repository.deleteById(identityDocumentId));
+                .flatMap(identityDocument -> PartyScope.requireOwner(partyId, identityDocument.getPartyId(), identityDocument, "Identity document", identityDocumentId)
+                        .flatMap(owned -> repository.deleteById(identityDocumentId)));
     }
 
     @Override
     public Mono<IdentityDocumentDTO> getIdentityDocumentById(UUID partyId, UUID identityDocumentId) {
         return repository.findById(identityDocumentId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Identity document not found with ID: " + identityDocumentId)))
+                .flatMap(identityDocument -> PartyScope.requireOwner(partyId, identityDocument.getPartyId(), identityDocument, "Identity document", identityDocumentId))
                 .map(mapper::toDTO);
     }
 }

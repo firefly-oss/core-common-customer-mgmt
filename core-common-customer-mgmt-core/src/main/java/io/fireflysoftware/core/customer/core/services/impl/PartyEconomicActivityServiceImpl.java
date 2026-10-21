@@ -43,6 +43,7 @@ public class PartyEconomicActivityServiceImpl implements PartyEconomicActivitySe
 
     @Override
     public Mono<PaginationResponse<PartyEconomicActivityDTO>> filterPartyEconomicActivities(UUID partyId, FilterRequest<PartyEconomicActivityDTO> filterRequest) {
+        PartyScope.scope(filterRequest, PartyEconomicActivityDTO::new, PartyEconomicActivityDTO::setPartyId, partyId);
         return FilterUtils
                 .createFilter(
                         PartyEconomicActivity.class,
@@ -53,6 +54,7 @@ public class PartyEconomicActivityServiceImpl implements PartyEconomicActivitySe
 
     @Override
     public Mono<PartyEconomicActivityDTO> createPartyEconomicActivity(UUID partyId, PartyEconomicActivityDTO partyEconomicActivityDTO) {
+        partyEconomicActivityDTO.setPartyId(partyId);
         return Mono.just(partyEconomicActivityDTO)
                 .map(mapper::toEntity)
                 .flatMap(repository::save)
@@ -63,11 +65,15 @@ public class PartyEconomicActivityServiceImpl implements PartyEconomicActivitySe
     public Mono<PartyEconomicActivityDTO> updatePartyEconomicActivity(UUID partyId, UUID partyEconomicActivityId, PartyEconomicActivityDTO partyEconomicActivityDTO) {
         return repository.findById(partyEconomicActivityId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Party economic activity not found with ID: " + partyEconomicActivityId)))
-                .flatMap(existingPartyEconomicActivity -> {
-                    PartyEconomicActivity updatedPartyEconomicActivity = mapper.toEntity(partyEconomicActivityDTO);
-                    updatedPartyEconomicActivity.setPartyEconomicActivityId(partyEconomicActivityId);
-                    return repository.save(updatedPartyEconomicActivity);
-                })
+                .flatMap(existingPartyEconomicActivity -> PartyScope.requireOwner(
+                                partyId, existingPartyEconomicActivity.getPartyId(), existingPartyEconomicActivity,
+                                "Party economic activity", partyEconomicActivityId)
+                        .flatMap(owned -> {
+                            PartyEconomicActivity updatedPartyEconomicActivity = mapper.toEntity(partyEconomicActivityDTO);
+                            updatedPartyEconomicActivity.setPartyEconomicActivityId(partyEconomicActivityId);
+                            updatedPartyEconomicActivity.setPartyId(partyId);
+                            return repository.save(updatedPartyEconomicActivity);
+                        }))
                 .map(mapper::toDTO);
     }
 
@@ -75,13 +81,19 @@ public class PartyEconomicActivityServiceImpl implements PartyEconomicActivitySe
     public Mono<Void> deletePartyEconomicActivity(UUID partyId, UUID partyEconomicActivityId) {
         return repository.findById(partyEconomicActivityId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Party economic activity not found with ID: " + partyEconomicActivityId)))
-                .flatMap(partyEconomicActivity -> repository.deleteById(partyEconomicActivityId));
+                .flatMap(partyEconomicActivity -> PartyScope.requireOwner(
+                                partyId, partyEconomicActivity.getPartyId(), partyEconomicActivity,
+                                "Party economic activity", partyEconomicActivityId)
+                        .flatMap(owned -> repository.deleteById(partyEconomicActivityId)));
     }
 
     @Override
     public Mono<PartyEconomicActivityDTO> getPartyEconomicActivityById(UUID partyId, UUID partyEconomicActivityId) {
         return repository.findById(partyEconomicActivityId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Party economic activity not found with ID: " + partyEconomicActivityId)))
+                .flatMap(partyEconomicActivity -> PartyScope.requireOwner(
+                        partyId, partyEconomicActivity.getPartyId(), partyEconomicActivity,
+                        "Party economic activity", partyEconomicActivityId))
                 .map(mapper::toDTO);
     }
 }

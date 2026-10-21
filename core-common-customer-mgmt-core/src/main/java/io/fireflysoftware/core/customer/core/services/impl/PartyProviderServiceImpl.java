@@ -43,6 +43,7 @@ public class PartyProviderServiceImpl implements PartyProviderService {
 
     @Override
     public Mono<PaginationResponse<PartyProviderDTO>> filterPartyProviders(UUID partyId, FilterRequest<PartyProviderDTO> filterRequest) {
+        PartyScope.scope(filterRequest, PartyProviderDTO::new, PartyProviderDTO::setPartyId, partyId);
         return FilterUtils
                 .createFilter(
                         PartyProvider.class,
@@ -53,6 +54,7 @@ public class PartyProviderServiceImpl implements PartyProviderService {
 
     @Override
     public Mono<PartyProviderDTO> createPartyProvider(UUID partyId, PartyProviderDTO partyProviderDTO) {
+        partyProviderDTO.setPartyId(partyId);
         return Mono.just(partyProviderDTO)
                 .map(mapper::toEntity)
                 .flatMap(repository::save)
@@ -63,11 +65,15 @@ public class PartyProviderServiceImpl implements PartyProviderService {
     public Mono<PartyProviderDTO> updatePartyProvider(UUID partyId, UUID partyProviderId, PartyProviderDTO partyProviderDTO) {
         return repository.findById(partyProviderId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Party provider not found with ID: " + partyProviderId)))
-                .flatMap(existingPartyProvider -> {
-                    PartyProvider updatedPartyProvider = mapper.toEntity(partyProviderDTO);
-                    updatedPartyProvider.setPartyProviderId(partyProviderId);
-                    return repository.save(updatedPartyProvider);
-                })
+                .flatMap(existingPartyProvider -> PartyScope.requireOwner(
+                                partyId, existingPartyProvider.getPartyId(), existingPartyProvider,
+                                "Party provider", partyProviderId)
+                        .flatMap(owned -> {
+                            PartyProvider updatedPartyProvider = mapper.toEntity(partyProviderDTO);
+                            updatedPartyProvider.setPartyProviderId(partyProviderId);
+                            updatedPartyProvider.setPartyId(partyId);
+                            return repository.save(updatedPartyProvider);
+                        }))
                 .map(mapper::toDTO);
     }
 
@@ -75,13 +81,15 @@ public class PartyProviderServiceImpl implements PartyProviderService {
     public Mono<Void> deletePartyProvider(UUID partyId, UUID partyProviderId) {
         return repository.findById(partyProviderId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Party provider not found with ID: " + partyProviderId)))
-                .flatMap(partyProvider -> repository.deleteById(partyProviderId));
+                .flatMap(partyProvider -> PartyScope.requireOwner(partyId, partyProvider.getPartyId(), partyProvider, "Party provider", partyProviderId)
+                        .flatMap(owned -> repository.deleteById(partyProviderId)));
     }
 
     @Override
     public Mono<PartyProviderDTO> getPartyProviderById(UUID partyId, UUID partyProviderId) {
         return repository.findById(partyProviderId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Party provider not found with ID: " + partyProviderId)))
+                .flatMap(partyProvider -> PartyScope.requireOwner(partyId, partyProvider.getPartyId(), partyProvider, "Party provider", partyProviderId))
                 .map(mapper::toDTO);
     }
 }

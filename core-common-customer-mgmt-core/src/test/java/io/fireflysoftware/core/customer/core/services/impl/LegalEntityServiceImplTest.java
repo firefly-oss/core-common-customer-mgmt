@@ -32,6 +32,8 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.core.publisher.Mono;
+
+import static org.mockito.Mockito.lenient;
 import reactor.test.StepVerifier;
 
 import java.time.LocalDateTime;
@@ -49,6 +51,9 @@ class LegalEntityServiceImplTest {
     @Mock
     private LegalEntityMapper legalEntityMapper;
 
+    @Mock
+    private PartyProfiles partyProfiles;
+
     @InjectMocks
     private LegalEntityServiceImpl legalEntityService;
 
@@ -64,6 +69,7 @@ class LegalEntityServiceImplTest {
         
         legalEntity = new LegalEntity();
         legalEntity.setLegalEntityId(legalEntityId);
+        legalEntity.setPartyId(partyId);
         legalEntity.setCreatedAt(LocalDateTime.now());
         legalEntity.setUpdatedAt(LocalDateTime.now());
 
@@ -71,6 +77,7 @@ class LegalEntityServiceImplTest {
         legalEntityDTO.setLegalEntityId(legalEntityId);
         legalEntityDTO.setCreatedAt(LocalDateTime.now());
         legalEntityDTO.setUpdatedAt(LocalDateTime.now());
+        lenient().when(partyProfiles.requireOrganizationSlot(any())).thenReturn(Mono.empty());
     }
 
     @Test
@@ -81,15 +88,15 @@ class LegalEntityServiceImplTest {
         
         // Create a spy of the service to mock the filterLegalEntities method
         LegalEntityServiceImpl spyService = spy(legalEntityService);
-        doReturn(Mono.just(mockResponse)).when(spyService).filterLegalEntities(filterRequest);
+        doReturn(Mono.just(mockResponse)).when(spyService).filterLegalEntities(partyId, filterRequest);
 
         // Act & Assert
-        StepVerifier.create(spyService.filterLegalEntities(filterRequest))
+        StepVerifier.create(spyService.filterLegalEntities(partyId, filterRequest))
                 .expectNext(mockResponse)
                 .verifyComplete();
 
         // Verify that filterLegalEntities was called
-        verify(spyService).filterLegalEntities(filterRequest);
+        verify(spyService).filterLegalEntities(partyId, filterRequest);
     }
 
     @Test

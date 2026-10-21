@@ -43,6 +43,7 @@ public class PoliticallyExposedPersonServiceImpl implements PoliticallyExposedPe
 
     @Override
     public Mono<PaginationResponse<PoliticallyExposedPersonDTO>> filterPoliticallyExposedPersons(UUID partyId, FilterRequest<PoliticallyExposedPersonDTO> filterRequest) {
+        PartyScope.scope(filterRequest, PoliticallyExposedPersonDTO::new, PoliticallyExposedPersonDTO::setPartyId, partyId);
         return FilterUtils
                 .createFilter(
                         PoliticallyExposedPerson.class,
@@ -53,6 +54,7 @@ public class PoliticallyExposedPersonServiceImpl implements PoliticallyExposedPe
 
     @Override
     public Mono<PoliticallyExposedPersonDTO> createPoliticallyExposedPerson(UUID partyId, PoliticallyExposedPersonDTO politicallyExposedPersonDTO) {
+        politicallyExposedPersonDTO.setPartyId(partyId);
         return Mono.just(politicallyExposedPersonDTO)
                 .map(mapper::toEntity)
                 .flatMap(repository::save)
@@ -63,11 +65,15 @@ public class PoliticallyExposedPersonServiceImpl implements PoliticallyExposedPe
     public Mono<PoliticallyExposedPersonDTO> updatePoliticallyExposedPerson(UUID partyId, UUID politicallyExposedPersonId, PoliticallyExposedPersonDTO politicallyExposedPersonDTO) {
         return repository.findById(politicallyExposedPersonId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Politically exposed person not found with ID: " + politicallyExposedPersonId)))
-                .flatMap(existingPoliticallyExposedPerson -> {
-                    PoliticallyExposedPerson updatedPoliticallyExposedPerson = mapper.toEntity(politicallyExposedPersonDTO);
-                    updatedPoliticallyExposedPerson.setPepId(politicallyExposedPersonId);
-                    return repository.save(updatedPoliticallyExposedPerson);
-                })
+                .flatMap(existingPoliticallyExposedPerson -> PartyScope.requireOwner(
+                                partyId, existingPoliticallyExposedPerson.getPartyId(), existingPoliticallyExposedPerson,
+                                "Politically exposed person", politicallyExposedPersonId)
+                        .flatMap(owned -> {
+                            PoliticallyExposedPerson updatedPoliticallyExposedPerson = mapper.toEntity(politicallyExposedPersonDTO);
+                            updatedPoliticallyExposedPerson.setPepId(politicallyExposedPersonId);
+                            updatedPoliticallyExposedPerson.setPartyId(partyId);
+                            return repository.save(updatedPoliticallyExposedPerson);
+                        }))
                 .map(mapper::toDTO);
     }
 
@@ -75,13 +81,19 @@ public class PoliticallyExposedPersonServiceImpl implements PoliticallyExposedPe
     public Mono<Void> deletePoliticallyExposedPerson(UUID partyId, UUID politicallyExposedPersonId) {
         return repository.findById(politicallyExposedPersonId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Politically exposed person not found with ID: " + politicallyExposedPersonId)))
-                .flatMap(politicallyExposedPerson -> repository.deleteById(politicallyExposedPersonId));
+                .flatMap(politicallyExposedPerson -> PartyScope.requireOwner(
+                                partyId, politicallyExposedPerson.getPartyId(), politicallyExposedPerson,
+                                "Politically exposed person", politicallyExposedPersonId)
+                        .flatMap(owned -> repository.deleteById(politicallyExposedPersonId)));
     }
 
     @Override
     public Mono<PoliticallyExposedPersonDTO> getPoliticallyExposedPersonById(UUID partyId, UUID politicallyExposedPersonId) {
         return repository.findById(politicallyExposedPersonId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Politically exposed person not found with ID: " + politicallyExposedPersonId)))
+                .flatMap(politicallyExposedPerson -> PartyScope.requireOwner(
+                        partyId, politicallyExposedPerson.getPartyId(), politicallyExposedPerson,
+                        "Politically exposed person", politicallyExposedPersonId))
                 .map(mapper::toDTO);
     }
 }

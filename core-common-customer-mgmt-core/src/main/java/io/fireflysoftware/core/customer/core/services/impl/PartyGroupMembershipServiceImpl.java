@@ -43,6 +43,7 @@ public class PartyGroupMembershipServiceImpl implements PartyGroupMembershipServ
 
     @Override
     public Mono<PaginationResponse<PartyGroupMembershipDTO>> filterPartyGroupMemberships(UUID partyId, FilterRequest<PartyGroupMembershipDTO> filterRequest) {
+        PartyScope.scope(filterRequest, PartyGroupMembershipDTO::new, PartyGroupMembershipDTO::setPartyId, partyId);
         return FilterUtils
                 .createFilter(
                         PartyGroupMembership.class,
@@ -53,6 +54,7 @@ public class PartyGroupMembershipServiceImpl implements PartyGroupMembershipServ
 
     @Override
     public Mono<PartyGroupMembershipDTO> createPartyGroupMembership(UUID partyId, PartyGroupMembershipDTO partyGroupMembershipDTO) {
+        partyGroupMembershipDTO.setPartyId(partyId);
         return Mono.just(partyGroupMembershipDTO)
                 .map(mapper::toEntity)
                 .flatMap(repository::save)
@@ -63,11 +65,15 @@ public class PartyGroupMembershipServiceImpl implements PartyGroupMembershipServ
     public Mono<PartyGroupMembershipDTO> updatePartyGroupMembership(UUID partyId, UUID partyGroupMembershipId, PartyGroupMembershipDTO partyGroupMembershipDTO) {
         return repository.findById(partyGroupMembershipId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Party group membership not found with ID: " + partyGroupMembershipId)))
-                .flatMap(existingPartyGroupMembership -> {
-                    PartyGroupMembership updatedPartyGroupMembership = mapper.toEntity(partyGroupMembershipDTO);
-                    updatedPartyGroupMembership.setPartyGroupMembershipId(partyGroupMembershipId);
-                    return repository.save(updatedPartyGroupMembership);
-                })
+                .flatMap(existingPartyGroupMembership -> PartyScope.requireOwner(
+                                partyId, existingPartyGroupMembership.getPartyId(), existingPartyGroupMembership,
+                                "Party group membership", partyGroupMembershipId)
+                        .flatMap(owned -> {
+                            PartyGroupMembership updatedPartyGroupMembership = mapper.toEntity(partyGroupMembershipDTO);
+                            updatedPartyGroupMembership.setPartyGroupMembershipId(partyGroupMembershipId);
+                            updatedPartyGroupMembership.setPartyId(partyId);
+                            return repository.save(updatedPartyGroupMembership);
+                        }))
                 .map(mapper::toDTO);
     }
 
@@ -75,13 +81,19 @@ public class PartyGroupMembershipServiceImpl implements PartyGroupMembershipServ
     public Mono<Void> deletePartyGroupMembership(UUID partyId, UUID partyGroupMembershipId) {
         return repository.findById(partyGroupMembershipId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Party group membership not found with ID: " + partyGroupMembershipId)))
-                .flatMap(partyGroupMembership -> repository.deleteById(partyGroupMembershipId));
+                .flatMap(partyGroupMembership -> PartyScope.requireOwner(
+                                partyId, partyGroupMembership.getPartyId(), partyGroupMembership,
+                                "Party group membership", partyGroupMembershipId)
+                        .flatMap(owned -> repository.deleteById(partyGroupMembershipId)));
     }
 
     @Override
     public Mono<PartyGroupMembershipDTO> getPartyGroupMembershipById(UUID partyId, UUID partyGroupMembershipId) {
         return repository.findById(partyGroupMembershipId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Party group membership not found with ID: " + partyGroupMembershipId)))
+                .flatMap(partyGroupMembership -> PartyScope.requireOwner(
+                        partyId, partyGroupMembership.getPartyId(), partyGroupMembership,
+                        "Party group membership", partyGroupMembershipId))
                 .map(mapper::toDTO);
     }
 }

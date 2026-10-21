@@ -38,7 +38,6 @@ class LegalEntityMapperTest {
                 .legalName("Acme Corp")
                 .employeeRange("26-50")
                 .annualRevenue(new BigDecimal("1234567.89"))
-                .cnaeCode("6201")
                 .contactName("Jane Director")
                 .contactPosition("CFO")
                 .contactEmail("jane@acme.example")
@@ -50,7 +49,6 @@ class LegalEntityMapperTest {
         assertNotNull(dto);
         assertEquals("26-50", dto.getEmployeeRange());
         assertEquals(new BigDecimal("1234567.89"), dto.getAnnualRevenue());
-        assertEquals("6201", dto.getCnaeCode());
         assertEquals("Jane Director", dto.getContactName());
         assertEquals("CFO", dto.getContactPosition());
         assertEquals("jane@acme.example", dto.getContactEmail());
@@ -65,7 +63,6 @@ class LegalEntityMapperTest {
                 .legalName("Beta Ltd")
                 .employeeRange("250+")
                 .annualRevenue(new BigDecimal("9999999.99"))
-                .cnaeCode("4711")
                 .contactName("John Buyer")
                 .contactPosition("Procurement Manager")
                 .contactEmail("john@beta.example")
@@ -77,7 +74,6 @@ class LegalEntityMapperTest {
         assertNotNull(entity);
         assertEquals("250+", entity.getEmployeeRange());
         assertEquals(new BigDecimal("9999999.99"), entity.getAnnualRevenue());
-        assertEquals("4711", entity.getCnaeCode());
         assertEquals("John Buyer", entity.getContactName());
         assertEquals("Procurement Manager", entity.getContactPosition());
         assertEquals("john@beta.example", entity.getContactEmail());
@@ -97,7 +93,6 @@ class LegalEntityMapperTest {
                 .partyId(UUID.randomUUID())
                 .employeeRange("51-250")
                 .annualRevenue(new BigDecimal("500000.00"))
-                .cnaeCode("0111")
                 .contactName("Updated Name")
                 .contactPosition("CEO")
                 .contactEmail("ceo@existing.example")
@@ -108,7 +103,6 @@ class LegalEntityMapperTest {
 
         assertEquals("51-250", entity.getEmployeeRange());
         assertEquals(new BigDecimal("500000.00"), entity.getAnnualRevenue());
-        assertEquals("0111", entity.getCnaeCode());
         assertEquals("Updated Name", entity.getContactName());
         assertEquals("CEO", entity.getContactPosition());
         assertEquals("ceo@existing.example", entity.getContactEmail());

@@ -33,7 +33,7 @@ public interface LegalEntityService {
      * @param filterRequest the request object containing filtering criteria for LegalEntityDTO
      * @return a reactive {@code Mono} emitting a {@code PaginationResponse} containing the filtered list of legal entities
      */
-    Mono<PaginationResponse<LegalEntityDTO>> filterLegalEntities(FilterRequest<LegalEntityDTO> filterRequest);
+    Mono<PaginationResponse<LegalEntityDTO>> filterLegalEntities(UUID partyId, FilterRequest<LegalEntityDTO> filterRequest);
     
     /**
      * Creates a new legal entity based on the provided information for a specific party.

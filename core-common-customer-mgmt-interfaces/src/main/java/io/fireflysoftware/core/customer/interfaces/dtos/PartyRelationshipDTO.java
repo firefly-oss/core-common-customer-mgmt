@@ -17,15 +17,19 @@
 
 package io.fireflysoftware.core.customer.interfaces.dtos;
 
+import io.fireflysoftware.core.customer.interfaces.enums.RelationshipKind;
 import org.fireflyframework.utils.annotations.FilterableId;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import jakarta.validation.constraints.DecimalMax;
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -43,19 +47,28 @@ public class PartyRelationshipDTO {
     private UUID partyRelationshipId;
 
     @FilterableId
-    @NotNull(message = "From party ID is required")
-    private UUID fromPartyId;
+    @NotNull(message = "Source party ID is required")
+    private UUID sourcePartyId;
 
     @FilterableId
-    @NotNull(message = "To party ID is required")
-    private UUID toPartyId;
+    @NotNull(message = "Target party ID is required")
+    private UUID targetPartyId;
+
+    @NotNull(message = "Relationship kind is required")
+    private RelationshipKind relationshipKind;
 
     @FilterableId
-    @NotNull(message = "Relationship type ID is required")
     private UUID relationshipTypeId;
-    
-    private LocalDateTime startDate;
-    private LocalDateTime endDate;
+
+    @DecimalMin(value = "0.0", inclusive = true, message = "Ownership percentage must be between 0 and 100")
+    @DecimalMax(value = "100.0", inclusive = true, message = "Ownership percentage must be between 0 and 100")
+    private BigDecimal ownershipPercentage;
+
+    @FilterableId
+    private UUID tenantId;
+
+    private LocalDateTime effectiveFrom;
+    private LocalDateTime effectiveTo;
     private Boolean active;
     
     @Size(max = 500, message = "Notes must not exceed 500 characters")

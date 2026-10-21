@@ -32,6 +32,8 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.core.publisher.Mono;
+
+import static org.mockito.Mockito.lenient;
 import reactor.test.StepVerifier;
 
 import java.time.LocalDateTime;
@@ -48,6 +50,9 @@ class NaturalPersonServiceImplTest {
 
     @Mock
     private NaturalPersonMapper naturalPersonMapper;
+
+    @Mock
+    private PartyProfiles partyProfiles;
 
     @InjectMocks
     private NaturalPersonServiceImpl naturalPersonService;
@@ -67,9 +72,12 @@ class NaturalPersonServiceImplTest {
         naturalPerson.setCreatedAt(LocalDateTime.now());
         naturalPerson.setUpdatedAt(LocalDateTime.now());
         naturalPerson.setPartyId(partyId);
+        naturalPerson.setGivenName("Ada");
 
         naturalPersonDTO = new NaturalPersonDTO();
         naturalPersonDTO.setNaturalPersonId(naturalPersonId);
+        naturalPersonDTO.setGivenName("Ada");
+        lenient().when(partyProfiles.requirePersonSlot(any())).thenReturn(Mono.empty());
         naturalPersonDTO.setCreatedAt(LocalDateTime.now());
         naturalPersonDTO.setUpdatedAt(LocalDateTime.now());
     }
@@ -253,5 +261,30 @@ class NaturalPersonServiceImplTest {
 
         verify(naturalPersonRepository).findById(naturalPersonId);
         verify(naturalPersonMapper, never()).toDTO(any());
+    }
+
+    @Test
+    void createNaturalPerson_ShouldReject_WhenBothNamesAreMissing() {
+        naturalPersonDTO.setGivenName(null);
+        naturalPersonDTO.setFamilyName(" ");
+
+        StepVerifier.create(naturalPersonService.createNaturalPerson(partyId, naturalPersonDTO))
+                .expectErrorMatches(throwable -> throwable.getMessage().contains("given name or a family name"))
+                .verify();
+
+        verify(naturalPersonRepository, never()).save(any());
+    }
+
+    @Test
+    void createNaturalPerson_ShouldAccept_AFamilyNameOnly() {
+        naturalPersonDTO.setGivenName(null);
+        naturalPersonDTO.setFamilyName("Nguyen");
+        when(naturalPersonMapper.toEntity(naturalPersonDTO)).thenReturn(naturalPerson);
+        when(naturalPersonRepository.save(naturalPerson)).thenReturn(Mono.just(naturalPerson));
+        when(naturalPersonMapper.toDTO(naturalPerson)).thenReturn(naturalPersonDTO);
+
+        StepVerifier.create(naturalPersonService.createNaturalPerson(partyId, naturalPersonDTO))
+                .expectNext(naturalPersonDTO)
+                .verifyComplete();
     }
 }

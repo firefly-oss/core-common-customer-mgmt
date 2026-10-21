@@ -64,6 +64,7 @@ class PhoneContactServiceImplTest {
         
         phoneContact = new PhoneContact();
         phoneContact.setPhoneContactId(phoneContactId);
+        phoneContact.setPartyId(partyId);
         phoneContact.setCreatedAt(LocalDateTime.now());
         phoneContact.setUpdatedAt(LocalDateTime.now());
 

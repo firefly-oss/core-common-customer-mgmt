@@ -19,12 +19,17 @@ tags:
 - name: Legal Entities
   description: API for managing legal entities - corporate customers associated with
     parties
+- name: Party attributes
+  description: "Effective-dated facts for any party. Employment, housing, loans, and\
+    \ debts live here."
 - name: Email Contacts
   description: API for managing email contacts associated with parties
 - name: Phone Contacts
   description: API for managing phone contacts associated with parties
 - name: Parties
   description: API for managing parties - the main customer entities in the system
+- name: Industry classifications
+  description: Scheme and code classifications for a party. At most one primary.
 - name: Party Statuses
   description: API for managing party statuses associated with parties
 - name: Party Relationships
@@ -33,6 +38,8 @@ tags:
 - name: Consents
   description: API for managing consents associated with parties - privacy and data
     processing agreements
+- name: Party hierarchy
+  description: "Direct owners, direct subsidiaries, and ancestors of a legal entity"
 - name: Natural Persons
   description: API for managing natural persons - individual customers associated
     with parties
@@ -918,6 +925,105 @@ paths:
           description: Legal entity successfully deleted
         "404":
           description: Legal entity or party not found
+  /api/v1/parties/{partyId}/industry-classifications/{classificationId}:
+    get:
+      tags:
+      - Industry classifications
+      summary: Get an industry classification
+      operationId: get
+      parameters:
+      - name: partyId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: classificationId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PartyIndustryClassificationDTO"
+    put:
+      tags:
+      - Industry classifications
+      summary: Replace an industry classification
+      operationId: update
+      parameters:
+      - name: partyId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: classificationId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PartyIndustryClassificationDTO"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PartyIndustryClassificationDTO"
+    delete:
+      tags:
+      - Industry classifications
+      summary: Delete an industry classification
+      operationId: delete
+      parameters:
+      - name: partyId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: classificationId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
   /api/v1/parties/{partyId}/documents/identity/{identityDocumentId}:
     get:
       tags:
@@ -1387,6 +1493,105 @@ paths:
           description: Consent successfully deleted
         "404":
           description: Consent or party not found
+  /api/v1/parties/{partyId}/attributes/{attributeId}:
+    get:
+      tags:
+      - Party attributes
+      summary: Get a party attribute
+      operationId: get_1
+      parameters:
+      - name: partyId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: attributeId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PartyAttributeDTO"
+    put:
+      tags:
+      - Party attributes
+      summary: Replace a party attribute
+      operationId: update_1
+      parameters:
+      - name: partyId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: attributeId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PartyAttributeDTO"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PartyAttributeDTO"
+    delete:
+      tags:
+      - Party attributes
+      summary: Delete a party attribute
+      operationId: delete_1
+      parameters:
+      - name: partyId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: attributeId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
   /api/v1/parties/{partyId}/addresses/{addressId}:
     get:
       tags:
@@ -2207,6 +2412,72 @@ paths:
           description: Invalid filter request
         "404":
           description: Party not found
+  /api/v1/parties/{partyId}/industry-classifications:
+    post:
+      tags:
+      - Industry classifications
+      summary: Add an industry classification
+      operationId: create
+      parameters:
+      - name: partyId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PartyIndustryClassificationDTO"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PartyIndustryClassificationDTO"
+  /api/v1/parties/{partyId}/industry-classifications/filter:
+    post:
+      tags:
+      - Industry classifications
+      summary: Filter industry classifications
+      operationId: filter
+      parameters:
+      - name: partyId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FilterRequestPartyIndustryClassificationDTO"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PaginationResponsePartyIndustryClassificationDTO"
   /api/v1/parties/{partyId}/documents/identity:
     post:
       tags:
@@ -2524,6 +2795,72 @@ paths:
           description: Invalid filter request
         "404":
           description: Party not found
+  /api/v1/parties/{partyId}/attributes:
+    post:
+      tags:
+      - Party attributes
+      summary: Store a party attribute
+      operationId: create_1
+      parameters:
+      - name: partyId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PartyAttributeDTO"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PartyAttributeDTO"
+  /api/v1/parties/{partyId}/attributes/filter:
+    post:
+      tags:
+      - Party attributes
+      summary: Filter party attributes
+      operationId: filter_1
+      parameters:
+      - name: partyId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FilterRequestPartyAttributeDTO"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PaginationResponsePartyAttributeDTO"
   /api/v1/parties/{partyId}/addresses:
     post:
       tags:
@@ -2699,6 +3036,39 @@ paths:
                 $ref: "#/components/schemas/PaginationResponsePartyDTO"
         "400":
           description: Invalid filter request
+  /api/v1/parties/{partyId}/subsidiaries:
+    get:
+      tags:
+      - Party hierarchy
+      summary: Direct subsidiaries of a legal entity
+      description: "Children stored as PARENT, plus companies this legal entity owns.\
+        \ Sister companies are the other subsidiaries of the same parent and are not\
+        \ stored."
+      operationId: directSubsidiaries
+      parameters:
+      - name: partyId
+        in: path
+        description: Party id of the parent legal entity
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PartyRelationshipDTO"
   /api/v1/parties/{partyId}/party-statuses/{partyStatusId}:
     get:
       tags:
@@ -2771,6 +3141,76 @@ paths:
           description: Party status successfully deleted
         "404":
           description: Party status or party not found
+  /api/v1/parties/{partyId}/owners:
+    get:
+      tags:
+      - Party hierarchy
+      summary: Direct owners of a legal entity
+      description: Ownership edges whose target is this legal entity. A natural person
+        or another legal entity may own it. Percentages do not have to sum to 100.
+      operationId: directOwners
+      parameters:
+      - name: partyId
+        in: path
+        description: Party id of the legal entity
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PartyRelationshipDTO"
+  /api/v1/parties/{partyId}/ancestors:
+    get:
+      tags:
+      - Party hierarchy
+      summary: Ancestors of a legal entity
+      description: Walks parent edges upward. Depth is capped at 25.
+      operationId: ancestors
+      parameters:
+      - name: partyId
+        in: path
+        description: Party id of the legal entity
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: depth
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 25
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PartyAncestorDTO"
 components:
   schemas:
     PartyDTO:
@@ -2998,8 +3438,6 @@ components:
           format: date-time
     NaturalPersonDTO:
       required:
-      - familyName1
-      - givenName
       - partyId
       type: object
       properties:
@@ -3022,11 +3460,11 @@ components:
           maxLength: 100
           minLength: 0
           type: string
-        familyName1:
+        familyName:
           maxLength: 100
           minLength: 0
           type: string
-        familyName2:
+        secondFamilyName:
           maxLength: 100
           minLength: 0
           type: string
@@ -3083,44 +3521,6 @@ components:
           minimum: 0
           type: integer
           format: int32
-        employmentStatus:
-          maxLength: 30
-          minLength: 0
-          type: string
-        employmentType:
-          maxLength: 20
-          minLength: 0
-          type: string
-        employer:
-          maxLength: 200
-          minLength: 0
-          type: string
-        employmentStartDate:
-          type: string
-          format: date
-        annualPaydays:
-          minimum: 0
-          type: integer
-          format: int32
-        housingType:
-          maxLength: 20
-          minLength: 0
-          type: string
-        housingCost:
-          minimum: 0.0
-          exclusiveMinimum: false
-          type: number
-        housingStartDate:
-          type: string
-          format: date
-        existingLoans:
-          minimum: 0
-          type: integer
-          format: int32
-        otherDebts:
-          minimum: 0.0
-          exclusiveMinimum: false
-          type: number
         createdAt:
           type: string
           format: date-time
@@ -3189,10 +3589,6 @@ components:
           minimum: 0.0
           exclusiveMinimum: false
           type: number
-        cnaeCode:
-          maxLength: 10
-          minLength: 0
-          type: string
         contactName:
           maxLength: 255
           minLength: 0
@@ -3210,6 +3606,47 @@ components:
           maxLength: 50
           minLength: 0
           type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    PartyIndustryClassificationDTO:
+      required:
+      - classificationCode
+      - classificationScheme
+      - partyId
+      type: object
+      properties:
+        partyIndustryClassificationId:
+          type: string
+          format: uuid
+          readOnly: true
+        partyId:
+          type: string
+          format: uuid
+        classificationScheme:
+          type: string
+          enum:
+          - ISIC
+          - NACE
+          - NAICS
+          - SIC
+          - CNAE
+          - OTHER
+        classificationCode:
+          maxLength: 32
+          minLength: 0
+          type: string
+        isPrimary:
+          type: boolean
+        effectiveFrom:
+          type: string
+          format: date-time
+        effectiveTo:
+          type: string
+          format: date-time
         createdAt:
           type: string
           format: date-time
@@ -3380,6 +3817,50 @@ components:
         updatedAt:
           type: string
           format: date-time
+    PartyAttributeDTO:
+      required:
+      - attributeKey
+      - attributeType
+      - attributeValue
+      - partyId
+      type: object
+      properties:
+        partyAttributeId:
+          type: string
+          format: uuid
+          readOnly: true
+        partyId:
+          type: string
+          format: uuid
+        attributeKey:
+          maxLength: 100
+          minLength: 0
+          type: string
+        attributeType:
+          type: string
+          enum:
+          - STRING
+          - NUMBER
+          - DATE
+          - BOOLEAN
+        attributeValue:
+          minLength: 1
+          type: string
+        currencyCode:
+          pattern: "^[A-Z]{3}$"
+          type: string
+        effectiveFrom:
+          type: string
+          format: date-time
+        effectiveTo:
+          type: string
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
     AddressDTO:
       required:
       - addressKind
@@ -3450,28 +3931,44 @@ components:
           format: date-time
     PartyRelationshipDTO:
       required:
-      - fromPartyId
-      - relationshipTypeId
-      - toPartyId
+      - relationshipKind
+      - sourcePartyId
+      - targetPartyId
       type: object
       properties:
         partyRelationshipId:
           type: string
           format: uuid
           readOnly: true
-        fromPartyId:
+        sourcePartyId:
           type: string
           format: uuid
-        toPartyId:
+        targetPartyId:
           type: string
           format: uuid
+        relationshipKind:
+          type: string
+          enum:
+          - OWNERSHIP
+          - CONTROL
+          - PARENT
+          - OFFICER
         relationshipTypeId:
           type: string
           format: uuid
-        startDate:
+        ownershipPercentage:
+          maximum: 100.0
+          exclusiveMaximum: false
+          minimum: 0.0
+          exclusiveMinimum: false
+          type: number
+        tenantId:
+          type: string
+          format: uuid
+        effectiveFrom:
           type: string
           format: date-time
-        endDate:
+        effectiveTo:
           type: string
           format: date-time
         active:
@@ -3660,6 +4157,42 @@ components:
         options:
           $ref: "#/components/schemas/FilterOptions"
       description: Filter criteria for legal entities
+    FilterRequestPartyIndustryClassificationDTO:
+      required:
+      - pagination
+      type: object
+      properties:
+        filters:
+          $ref: "#/components/schemas/PartyIndustryClassificationDTO"
+        rangeFilters:
+          $ref: "#/components/schemas/RangeFilter"
+        pagination:
+          $ref: "#/components/schemas/PaginationRequest"
+        options:
+          $ref: "#/components/schemas/FilterOptions"
+      description: Generic filter request that includes both filter criteria and pagination
+    PaginationResponsePartyIndustryClassificationDTO:
+      type: object
+      properties:
+        content:
+          type: array
+          description: The list of items for the current page.
+          items:
+            $ref: "#/components/schemas/PartyIndustryClassificationDTO"
+        totalElements:
+          type: integer
+          description: The total number of elements across all pages.
+          format: int64
+        totalPages:
+          type: integer
+          description: The total number of pages based on the data size and page size.
+          format: int32
+        currentPage:
+          type: integer
+          description: "The current page number, typically zero-based."
+          format: int32
+      description: Represents a paginated response containing a list of items and
+        pagination metadata.
     FilterRequestIdentityDocumentDTO:
       required:
       - pagination
@@ -3760,6 +4293,42 @@ components:
         options:
           $ref: "#/components/schemas/FilterOptions"
       description: Filter criteria for consents
+    FilterRequestPartyAttributeDTO:
+      required:
+      - pagination
+      type: object
+      properties:
+        filters:
+          $ref: "#/components/schemas/PartyAttributeDTO"
+        rangeFilters:
+          $ref: "#/components/schemas/RangeFilter"
+        pagination:
+          $ref: "#/components/schemas/PaginationRequest"
+        options:
+          $ref: "#/components/schemas/FilterOptions"
+      description: Generic filter request that includes both filter criteria and pagination
+    PaginationResponsePartyAttributeDTO:
+      type: object
+      properties:
+        content:
+          type: array
+          description: The list of items for the current page.
+          items:
+            $ref: "#/components/schemas/PartyAttributeDTO"
+        totalElements:
+          type: integer
+          description: The total number of elements across all pages.
+          format: int64
+        totalPages:
+          type: integer
+          description: The total number of pages based on the data size and page size.
+          format: int32
+        currentPage:
+          type: integer
+          description: "The current page number, typically zero-based."
+          format: int32
+      description: Represents a paginated response containing a list of items and
+        pagination metadata.
     FilterRequestAddressDTO:
       required:
       - pagination
@@ -3824,3 +4393,22 @@ components:
           format: int32
       description: Represents a paginated response containing a list of items and
         pagination metadata.
+    PartyAncestorDTO:
+      type: object
+      properties:
+        partyId:
+          type: string
+          format: uuid
+        distance:
+          type: integer
+          format: int32
+        partyRelationshipId:
+          type: string
+          format: uuid
+        relationshipKind:
+          type: string
+          enum:
+          - OWNERSHIP
+          - CONTROL
+          - PARENT
+          - OFFICER

@@ -57,6 +57,7 @@ public class PhoneContactServiceImpl implements PhoneContactService {
 
     @Override
     public Mono<PhoneContactDTO> createPhoneContact(UUID partyId, PhoneContactDTO phoneContactDTO) {
+        phoneContactDTO.setPartyId(partyId);
         return Mono.just(phoneContactDTO)
                 .map(mapper::toEntity)
                 .flatMap(repository::save)
@@ -73,6 +74,7 @@ public class PhoneContactServiceImpl implements PhoneContactService {
                         return Mono.error(new RuntimeException("Phone contact with ID " + phoneContactId + " does not belong to party " + partyId));
                     }
                     mapper.updateEntityFromDto(phoneContactDTO, existingPhoneContact);
+                    existingPhoneContact.setPartyId(partyId);
                     return repository.save(existingPhoneContact);
                 })
                 .map(mapper::toDTO);
@@ -82,13 +84,15 @@ public class PhoneContactServiceImpl implements PhoneContactService {
     public Mono<Void> deletePhoneContact(UUID partyId, UUID phoneContactId) {
         return repository.findById(phoneContactId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Phone contact not found with ID: " + phoneContactId)))
-                .flatMap(phoneContact -> repository.deleteById(phoneContactId));
+                .flatMap(phoneContact -> PartyScope.requireOwner(partyId, phoneContact.getPartyId(), phoneContact, "Phone contact", phoneContactId)
+                        .flatMap(owned -> repository.deleteById(phoneContactId)));
     }
 
     @Override
     public Mono<PhoneContactDTO> getPhoneContactById(UUID partyId, UUID phoneContactId) {
         return repository.findById(phoneContactId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Phone contact not found with ID: " + phoneContactId)))
+                .flatMap(phoneContact -> PartyScope.requireOwner(partyId, phoneContact.getPartyId(), phoneContact, "Phone contact", phoneContactId))
                 .map(mapper::toDTO);
     }
 }

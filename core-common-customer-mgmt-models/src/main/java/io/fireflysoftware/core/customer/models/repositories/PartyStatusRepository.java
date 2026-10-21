@@ -19,6 +19,7 @@ package io.fireflysoftware.core.customer.models.repositories;
 
 import io.fireflysoftware.core.customer.models.entities.PartyStatus;
 import org.springframework.stereotype.Repository;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import java.util.UUID;
 
@@ -32,4 +33,6 @@ public interface PartyStatusRepository extends BaseRepository<PartyStatus, UUID>
      * @return a Mono containing the PartyStatus if found
      */
     Mono<PartyStatus> findByPartyId(UUID partyId);
+
+    Flux<PartyStatus> findByPartyIdAndValidToIsNull(UUID partyId);
 }
