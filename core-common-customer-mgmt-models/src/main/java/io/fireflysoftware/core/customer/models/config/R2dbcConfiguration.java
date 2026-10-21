@@ -20,9 +20,11 @@ package io.fireflysoftware.core.customer.models.config;
 import io.fireflysoftware.core.customer.interfaces.enums.AddressKind;
 import io.fireflysoftware.core.customer.interfaces.enums.EmailKind;
 import io.fireflysoftware.core.customer.interfaces.enums.Gender;
+import io.fireflysoftware.core.customer.interfaces.enums.IndustryClassificationScheme;
 import io.fireflysoftware.core.customer.interfaces.enums.MaritalStatus;
 import io.fireflysoftware.core.customer.interfaces.enums.PartyKind;
 import io.fireflysoftware.core.customer.interfaces.enums.PhoneKind;
+import io.fireflysoftware.core.customer.interfaces.enums.RelationshipKind;
 import io.fireflysoftware.core.customer.interfaces.enums.ProviderStatus;
 import io.fireflysoftware.core.customer.interfaces.enums.ResidencyStatus;
 import io.fireflysoftware.core.customer.interfaces.enums.StatusCode;
@@ -115,6 +117,16 @@ public class R2dbcConfiguration extends AbstractR2dbcConfiguration {
         @Override public ProviderStatus convert(ProviderStatus source) { return source; }
     }
 
+    @WritingConverter
+    static class IndustryClassificationSchemeConverter implements Converter<IndustryClassificationScheme, IndustryClassificationScheme> {
+        @Override public IndustryClassificationScheme convert(IndustryClassificationScheme source) { return source; }
+    }
+
+    @WritingConverter
+    static class RelationshipKindConverter implements Converter<RelationshipKind, RelationshipKind> {
+        @Override public RelationshipKind convert(RelationshipKind source) { return source; }
+    }
+
     @Override
     protected List<Object> getCustomConverters() {
         List<Object> converters = new ArrayList<>();
@@ -127,6 +139,8 @@ public class R2dbcConfiguration extends AbstractR2dbcConfiguration {
         converters.add(new EmailKindConverter());
         converters.add(new PhoneKindConverter());
         converters.add(new ProviderStatusConverter());
+        converters.add(new IndustryClassificationSchemeConverter());
+        converters.add(new RelationshipKindConverter());
         return converters;
     }
 
@@ -152,6 +166,8 @@ public class R2dbcConfiguration extends AbstractR2dbcConfiguration {
                                 .withEnum("email_kind_enum", EmailKind.class)
                                 .withEnum("phone_kind_enum", PhoneKind.class)
                                 .withEnum("provider_status_enum", ProviderStatus.class)
+                                .withEnum("industry_classification_scheme_enum", IndustryClassificationScheme.class)
+                                .withEnum("party_relationship_kind_enum", RelationshipKind.class)
                                 .build())
                         .build()
         );
