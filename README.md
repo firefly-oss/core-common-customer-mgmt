@@ -1,9 +1,9 @@
 <a href="https://fireflysoftware.io/openplatform/">
 <picture>
-  <source media="(max-width: 640px) and (prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/firefly-oss/.github/main/profile/assets/banner-narrow-dark.svg">
-  <source media="(max-width: 640px)" srcset="https://raw.githubusercontent.com/firefly-oss/.github/main/profile/assets/banner-narrow-light.svg">
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/firefly-oss/.github/main/profile/assets/banner-dark.svg">
-  <img src="https://raw.githubusercontent.com/firefly-oss/.github/main/profile/assets/banner-light.svg" alt="Firefly OpenPlatform - Core Common - Customer Management" width="100%">
+  <source media="(max-width: 640px) and (prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/fireflysoftwaresolutions/.github/main/profile/assets/banner-narrow-dark.svg">
+  <source media="(max-width: 640px)" srcset="https://raw.githubusercontent.com/fireflysoftwaresolutions/.github/main/profile/assets/banner-narrow-light.svg">
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/fireflysoftwaresolutions/.github/main/profile/assets/banner-dark.svg">
+  <img src="https://raw.githubusercontent.com/fireflysoftwaresolutions/.github/main/profile/assets/banner-light.svg" alt="Firefly OpenPlatform - Core Common - Customer Management" width="100%">
 </picture>
 </a>
 
@@ -68,7 +68,7 @@ The following diagram illustrates the complete data model and relationships betw
 erDiagram
     PARTY {
         uuid party_id PK
-        varchar party_kind "NATURAL_PERSON | LEGAL_ENTITY"
+        varchar party_kind "INDIVIDUAL | ORGANIZATION"
         uuid tenant_id "Firefly core banking deployment tenant identifier"
         varchar preferred_language
         varchar source_system
@@ -82,8 +82,8 @@ erDiagram
         varchar title
         varchar given_name
         varchar middle_name
-        varchar family_name1
-        varchar family_name2
+        varchar family_name
+        varchar second_family_name
         date date_of_birth
         varchar birth_place
         uuid birth_country_id
@@ -187,13 +187,41 @@ erDiagram
     
     PARTY_RELATIONSHIP {
         uuid party_relationship_id PK
-        uuid from_party_id FK
-        uuid to_party_id FK
+        uuid source_party_id FK
+        uuid target_party_id FK
+        varchar relationship_kind "OWNERSHIP | CONTROL | PARENT | OFFICER"
         uuid relationship_type_id
-        timestamp start_date
-        timestamp end_date
+        decimal ownership_percentage
+        uuid tenant_id
+        timestamp effective_from
+        timestamp effective_to
         boolean active
         text notes
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    PARTY_INDUSTRY_CLASSIFICATION {
+        uuid party_industry_classification_id PK
+        uuid party_id FK
+        varchar classification_scheme "ISIC | NACE | NAICS | SIC | CNAE | OTHER"
+        varchar classification_code
+        boolean is_primary
+        timestamp effective_from
+        timestamp effective_to
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    PARTY_ATTRIBUTE {
+        uuid party_attribute_id PK
+        uuid party_id FK
+        varchar attribute_key
+        varchar attribute_type "STRING | NUMBER | DATE | BOOLEAN"
+        text attribute_value
+        varchar currency_code "ISO 4217, optional"
+        timestamp effective_from
+        timestamp effective_to
         timestamp created_at
         timestamp updated_at
     }
@@ -262,17 +290,19 @@ erDiagram
     PARTY ||--o{ PARTY_PROVIDER : "relates to"
     PARTY ||--o| POLITICALLY_EXPOSED_PERSON : "may be"
     
-    PARTY ||--o{ PARTY_RELATIONSHIP : "from"
-    PARTY ||--o{ PARTY_RELATIONSHIP : "to"
+    PARTY ||--o{ PARTY_RELATIONSHIP : "source"
+    PARTY ||--o{ PARTY_RELATIONSHIP : "target"
+    PARTY ||--o{ PARTY_INDUSTRY_CLASSIFICATION : "classified by"
+    PARTY ||--o{ PARTY_ATTRIBUTE : "has facts"
 ```
 
 ### Entity Descriptions
 
 #### Core Entities
 
-- **Party**: The supertype entity representing any customer (individual or corporate)
-- **Natural Person**: Individual customers with personal information, demographics, and financial data
-- **Legal Entity**: Corporate customers with business registration, incorporation details, and company metrics
+- **Party**: The supertype for any customer. `party_kind` is `INDIVIDUAL` or `ORGANIZATION`
+- **Natural Person**: An individual customer. The name is `given_name`, `family_name`, and optional `second_family_name`
+- **Legal Entity**: An organization customer, with registration and incorporation details. Free-text `industry_description` is separate from the industry classification rows
 
 #### Contact & Address Entities
 
@@ -288,7 +318,9 @@ erDiagram
 
 #### Relationship & Status Entities
 
-- **Party Relationship**: Many-to-many relationships between parties with temporal data
+- **Party Relationship**: An edge from `source_party_id` to `target_party_id`. `relationship_kind` is `OWNERSHIP`, `CONTROL`, `PARENT`, or `OFFICER`. The source is the owner, the controlling party, the parent legal entity, or the officer. The target is the owned or controlled legal entity, the child legal entity, or the entity an officer serves. `ownership_percentage` is optional and runs from 0 to 100. Percentages on one legal entity are independent of each other. Holding, subsidiary, and sister companies are derived from `PARENT` and from ownership between legal entities
+- **Party Industry Classification**: A scheme plus a code for any party. The scheme is `ISIC`, `NACE`, `NAICS`, `SIC`, `CNAE`, or `OTHER`. The code is the value in that catalog. At most one row is primary
+- **Party Attribute**: An effective-dated fact for any party. `attribute_type` is `STRING`, `NUMBER`, `DATE`, or `BOOLEAN`. A number may include an ISO 4217 `currency_code`. Lending, insurance, and commercial profiles store extra facts here
 - **Party Status**: Status tracking with reasons and effective dates
 - **Party Economic Activity**: Employment and business activity information
 - **Party Provider**: Relationships with other financial service providers
@@ -319,7 +351,12 @@ All API endpoints follow RESTful conventions and start with `/api/v1`. The syste
 
 #### Relationships
 
-- **Party Relationships**: `/api/v1/parties/{partyId}/relationships` - Inter-party relationships
+- **Party Relationships**: `/api/v1/parties/relationships` - Inter-party relationships
+- **Owners**: `GET /api/v1/parties/{partyId}/owners` - Direct ownership edges whose target is this legal entity. A natural person or another legal entity may own it
+- **Subsidiaries**: `GET /api/v1/parties/{partyId}/subsidiaries` - Direct children stored as `PARENT`, plus companies this legal entity owns. Sister companies are the other subsidiaries of the same parent
+- **Ancestors**: `GET /api/v1/parties/{partyId}/ancestors` - Parent edges walked upward. Depth defaults to 25 and is capped at 25
+- **Industry Classifications**: `/api/v1/parties/{partyId}/industry-classifications` - Scheme and code for a party
+- **Party Attributes**: `/api/v1/parties/{partyId}/attributes` - Effective-dated facts for a party
 
 ### API Features
 
